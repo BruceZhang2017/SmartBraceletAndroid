@@ -72,4 +72,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
     implementation 'com.jph.takephoto:takephoto_library:latest.integration'
+    implementation 'com.github.zhpanvip:BannerViewPager:latest.integration'
 }

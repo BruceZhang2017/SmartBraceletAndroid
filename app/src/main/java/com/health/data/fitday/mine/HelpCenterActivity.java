@@ -19,15 +19,15 @@ import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class HelpCenterActivity extends BaseActivity {
-    @BindView(2131231197)
+    @BindView(R.id.simple_action_bar)
     ActionBarCommon actionBarCommon;
 
     private HelpCenterAdapter adapter;
 
-    @BindView(2131230955)
+    @BindView(R.id.et_feedback)
     EditText etFeedback;
 
-    @BindView(2131231063)
+    @BindView(R.id.lv_common_question)
     ListView listView;
 
     private List<HelpCenterBean> mList = new ArrayList<>();
@@ -61,11 +61,11 @@ public class HelpCenterActivity extends BaseActivity {
         });
     }
 
-    @OnClick({2131230855, 2131230841})
+    @OnClick({R.id.btn_submit, R.id.btn_cancel})
     public void onClick(View paramView) {
         int i = paramView.getId();
-        if (i != 2131230841) {
-            if (i == 2131230855)
+        if (i != R.id.btn_cancel) {
+            if (i == R.id.btn_submit)
                 Toast.makeText((Context)this, "请输入问题描述", Toast.LENGTH_SHORT).show();
         } else {
             finish();

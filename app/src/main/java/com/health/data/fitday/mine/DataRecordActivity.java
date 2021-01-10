@@ -8,24 +8,26 @@ import android.widget.ListView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.health.data.fitday.main.BaseActivity;
+import com.sinophy.smartbracelet.R;
+
 import java.util.ArrayList;
 import java.util.List;
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class DataRecordActivity extends BaseActivity {
-    @BindView(2131231197)
+    @BindView(R.id.simple_action_bar)
     ActionBarCommon actionBarCommon;
 
     private DataRecordAdapter adapter;
 
-    @BindView(2131231064)
+    @BindView(R.id.lv_data_record)
     ListView listView;
 
     private List<DataRecordBean> mList = new ArrayList<>();
 
     protected int getLayoutId() {
-        return 2131427365;
+        return R.layout.activity_data_record;
     }
 
     protected void initData() {
@@ -109,7 +111,7 @@ public class DataRecordActivity extends BaseActivity {
     }
 
     protected void initView() {
-        ButterKnife.bind((Activity)this);
+        ButterKnife.bind(this);
         this.actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
             public void onClick(View param1View) {
                 System.out.println("点击事件");

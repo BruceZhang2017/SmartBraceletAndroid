@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.sinophy.smartbracelet.R;
+
 import de.halfbit.pinnedsection.PinnedSectionListView;
 import java.util.List;
 
@@ -23,60 +26,60 @@ class DataRecordAdapter extends BaseAdapter implements PinnedSectionListView.Pin
         this.mLayoutInflater = LayoutInflater.from(paramContext);
     }
 
+    @Override
     public int getCount() {
         return this.mList.size();
     }
 
+    @Override
     public Object getItem(int paramInt) {
         return this.mList.get(paramInt);
     }
 
+    @Override
     public long getItemId(int paramInt) {
         return paramInt;
     }
 
+    @Override
     public int getItemViewType(int paramInt) {
         return ((DataRecordBean)getItem(paramInt)).type;
     }
 
+    @Override
     public View getView(int paramInt, View paramView, ViewGroup paramViewGroup) {
         SectionViewHolder sectionViewHolder;
-        ViewHolder viewHolder1;
-        ViewHolder viewHolder2;
+        ViewHolder viewHolder;
         DataRecordBean dataRecordBean = (DataRecordBean)getItem(paramInt);
         if (dataRecordBean.type == 1) {
             SectionViewHolder sectionViewHolder1;
             if (paramView == null) {
                 sectionViewHolder = new SectionViewHolder();
-                View view = this.mLayoutInflater.inflate(2131427423, null);
-                sectionViewHolder.keyTextView = (TextView)view.findViewById(2131231321);
-                view.setTag(sectionViewHolder);
+                paramView = this.mLayoutInflater.inflate(R.layout.item_data_record_section, null);
+                sectionViewHolder.keyTextView = (TextView)paramView.findViewById(R.id.tv_key);
+                paramView.setTag(sectionViewHolder);
             } else {
-                SectionViewHolder sectionViewHolder2 = (SectionViewHolder)sectionViewHolder.getTag();
-                sectionViewHolder1 = sectionViewHolder;
-                sectionViewHolder = sectionViewHolder2;
+                sectionViewHolder = (SectionViewHolder)paramView.getTag();
             }
             sectionViewHolder.keyTextView.setText(dataRecordBean.getKey());
-            return (View)sectionViewHolder1;
+            return paramView;
         }
-        if (sectionViewHolder == null) {
-            viewHolder1 = new ViewHolder();
-            View view = this.mLayoutInflater.inflate(2131427422, null);
-            viewHolder1.iconImageView = (ImageView)view.findViewById(2131231026);
-            viewHolder1.keyTextView = (TextView)view.findViewById(2131231321);
-            viewHolder1.valueTextView = (TextView)view.findViewById(2131231348);
-            viewHolder1.unitTextView = (TextView)view.findViewById(2131231346);
-            view.setTag(viewHolder1);
+        if (paramView == null) {
+            viewHolder = new ViewHolder();
+            paramView = this.mLayoutInflater.inflate(R.layout.item_data_record, null);
+            viewHolder.iconImageView = (ImageView)paramView.findViewById(R.id.iv_icon);
+            viewHolder.keyTextView = (TextView)paramView.findViewById(R.id.tv_key);
+            viewHolder.valueTextView = (TextView)paramView.findViewById(R.id.tv_value);
+            viewHolder.unitTextView = (TextView)paramView.findViewById(R.id.tv_unit);
+            paramView.setTag(viewHolder);
         } else {
-            ViewHolder viewHolder = (ViewHolder)viewHolder1.getTag();
-            viewHolder2 = viewHolder1;
-            viewHolder1 = viewHolder;
+            viewHolder = (ViewHolder)paramView.getTag();
         }
-        viewHolder1.keyTextView.setText(dataRecordBean.getKey());
-        viewHolder1.valueTextView.setText(dataRecordBean.getValue());
-        viewHolder1.unitTextView.setText(dataRecordBean.getUnit());
-        viewHolder1.iconImageView.setImageResource(dataRecordBean.getIcon());
-        return (View)viewHolder2;
+        viewHolder.keyTextView.setText(dataRecordBean.getKey());
+        viewHolder.valueTextView.setText(dataRecordBean.getValue());
+        viewHolder.unitTextView.setText(dataRecordBean.getUnit());
+        viewHolder.iconImageView.setImageResource(dataRecordBean.getIcon());
+        return paramView;
     }
 
     public int getViewTypeCount() {
