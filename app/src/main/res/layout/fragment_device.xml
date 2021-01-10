@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff5f5f5"
+    >
+
+    <per.goweii.actionbarex.common.ActionBarCommon
+        android:id="@+id/simple_action_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff5f5f5"
+        app:ab_autoImmersion="false"
+        app:ab_bottomLineHeight="0.0dip"
+        app:ab_statusBarMode="light"
+        app:ab_statusBarVisible="false"
+        app:ab_titleBarHeight="48.0dip"
+        app:abc_leftIconRes="@mipmap/nav_icon_add_normal"
+        app:abc_leftText=""
+        app:abc_leftTextPaddingLeft="0.0dip"
+        app:abc_leftTextPaddingRight="0.0dip"
+        app:abc_rightText="设备"
+        app:abc_rightTextPaddingLeft="0.0dip"
+        app:abc_rightTextPaddingRight="10.0dip"
+        app:abc_titleText=""
+        app:abc_titleTextMaxWidth="180.0dip"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/simple_action_bar"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_device"
+                android:layout_width="0.0dip"
+                android:layout_height="0.0dip"
+                app:layout_constraintDimensionRatio="h,375:250"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                >
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@mipmap/equipment_image_bg"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <com.zhpan.bannerview.BannerViewPager
+                    android:id="@+id/banner_view"
+                    android:layout_width="fill_parent"
+                    android:layout_height="140.0dip"
+                    android:layout_margin="10.0dip"
+                    android:layout_marginTop="50.0dip"
+                    android:paddingTop="50.0dip"
+                    app:bvp_auto_play="false"
+                    app:bvp_can_loop="false"
+                    app:bvp_page_margin="15.0dip"
+                    app:bvp_reveal_width="50.0dip"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_dial"
+                android:layout_width="fill_parent"
+                android:layout_height="218.0dip"
+                android:layout_marginTop="15.0dip"
+                android:background="#ffffffff"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_device"
+                >
+
+                <TextView
+                    android:id="@+id/tv_dial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="25.0dip"
+                    android:layout_marginTop="20.0dip"
+                    android:text="表盘管理"
+                    android:textColor="#ff333333"
+                    android:textSize="15.0sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
+
+                <com.health.data.fitday.device.widget.HorizontalListView
+                    android:id="@+id/horizontal_listview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="155.0dip"
+                    android:layout_marginTop="20.0dip"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_dial"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageButton
+                android:id="@+id/ib_desc"
+                android:layout_width="fill_parent"
+                android:layout_height="66.0dip"
+                android:layout_marginLeft="15.0dip"
+                android:layout_marginTop="20.0dip"
+                android:layout_marginRight="15.0dip"
+                android:layout_marginBottom="20.0dip"
+                android:background="@mipmap/content_banner_illustration"
+                android:onClick="onDialIntroduction"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cl_dial"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

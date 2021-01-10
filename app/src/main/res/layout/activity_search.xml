@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ffffff"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffffff"
     android:orientation="vertical"
-    tools:context=".SearchActivity">
+    >
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
-        android:background="#5abfff"
-        android:padding="5dp" >
+        android:layout_width="fill_parent"
+        android:layout_height="40.0dip"
+        android:layout_marginTop="10.0dip"
+        android:background="#ff5abfff"
+        android:padding="5.0dip"
+        >
 
         <TextView
             android:id="@+id/tv_title_tt"
@@ -22,53 +22,54 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:text="搜索"
-            android:textColor="#000000"
-            android:textSize="15sp" />
+            android:textColor="#ff000000"
+            android:textSize="15.0sp"
+            />
 
         <ImageButton
             android:id="@+id/Ibtn_left"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
+            android:layout_width="50.0dip"
+            android:layout_height="fill_parent"
             android:layout_centerVertical="true"
             android:background="@null"
-            android:src="@drawable/personal_icon_return" />
-
-
+            android:src="@drawable/personal_icon_return"
+            />
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <!-- ============================================= -->
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
 
         <RelativeLayout
             android:id="@+id/rl_connectInfo"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#112B211F" >
+            android:layout_width="fill_parent"
+            android:layout_height="50.0dip"
+            android:background="#112b211f"
+            >
 
             <TextView
                 android:id="@+id/tv_BtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="20.0dip"
                 android:text="tjdsmart"
-                android:textColor="#000000"
-                android:textSize="12sp" />
+                android:textColor="#ff000000"
+                android:textSize="12.0sp"
+                />
 
             <TextView
                 android:id="@+id/tv_BtAddr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/tv_BtName"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="20.0dip"
+                android:layout_toRightOf="@id/tv_BtName"
                 android:text=" "
-                android:textColor="#000000"
-                android:textSize="12sp" />
-
+                android:textColor="#ff000000"
+                android:textSize="12.0sp"
+                />
 
             <TextView
                 android:id="@+id/tv_BtSt"
@@ -76,37 +77,39 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="20.0dip"
                 android:text="connected"
-                android:textColor="#000000"
-                android:textSize="12sp" />
+                android:textColor="#ff000000"
+                android:textSize="12.0sp"
+                />
 
             <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
+                android:layout_width="fill_parent"
+                android:layout_height="1.0dip"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="#353334" />
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginRight="10.0dip"
+                android:background="#ff353334"
+                />
         </RelativeLayout>
 
-
         <ListView
-            android:layout_below="@+id/rl_connectInfo"
-            android:layout_marginTop="10dp"
             android:id="@+id/lv_bt_dev"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:scrollbars="none" />
-
+            android:layout_width="fill_parent"
+            android:layout_height="400.0dip"
+            android:layout_below="@id/rl_connectInfo"
+            android:layout_marginTop="10.0dip"
+            android:scrollbars="none"
+            />
 
         <RelativeLayout
             android:id="@+id/rl_block_step_on"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp">
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="20.0dip"
+            >
 
             <Button
                 android:id="@+id/btn_search"
@@ -115,12 +118,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:text="Search"
-                android:textColor="#000000" />
-
+                android:textColor="#ff000000"
+                />
         </RelativeLayout>
-
-
     </RelativeLayout>
-
-
 </LinearLayout>

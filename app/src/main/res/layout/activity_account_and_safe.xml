@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff5f5f5"
+    >
+
+    <com.health.data.fitday.utils.statusbar.StatusBarHeightView
+        android:id="@+id/view_status_bar_height"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="#ffffffff"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:use_type="use_padding_top"
+        />
+
+    <per.goweii.actionbarex.common.ActionBarCommon
+        android:id="@+id/simple_action_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffffff"
+        app:ab_autoImmersion="false"
+        app:ab_bottomLineHeight="0.0dip"
+        app:ab_statusBarMode="light"
+        app:ab_statusBarVisible="false"
+        app:ab_titleBarHeight="48.0dip"
+        app:abc_leftIconRes="@mipmap/nav_icon_back_normal"
+        app:abc_leftText=""
+        app:abc_leftTextPaddingLeft="0.0dip"
+        app:abc_leftTextPaddingRight="0.0dip"
+        app:abc_rightText=""
+        app:abc_rightTextPaddingLeft="0.0dip"
+        app:abc_rightTextPaddingRight="10.0dip"
+        app:abc_titleText="账号与安全"
+        app:abc_titleTextMaxWidth="180.0dip"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_status_bar_height"
+        />
+
+    <ListView
+        android:id="@+id/lv_account_safe"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:layout_marginTop="15.0dip"
+        android:background="#ffffffff"
+        android:divider="@drawable/drawable_list_divider_bg"
+        android:dividerHeight="0.5dip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/simple_action_bar"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

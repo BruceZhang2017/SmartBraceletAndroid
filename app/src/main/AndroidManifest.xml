@@ -1,17 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.health.data.tjddemo">
-
+    package="com.sinophy.smartbracelet"
+    android:compileSdkVersion="28"
+    android:compileSdkVersionCodename="9">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-
-    <!-- BTNotifation -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
-
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -27,53 +25,100 @@
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
-
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-
-
-    <!-- 用于申请调用A-GPS模块 -->
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
-        android:name=".Applct"
+        android:name="com.health.data.fitday.MyApplication"
         android:allowBackup="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:supportsRtl="true"
+        android:testOnly="true"
         android:theme="@style/AppTheme">
+        <activity android:name="com.health.data.fitday.device.SearchDeviceActivity" />
+        <activity android:name="com.health.data.fitday.mine.EditContentActivity" />
+        <activity android:name="com.health.data.fitday.mine.LoginActivity" />
         <activity
-            android:name=".SearchActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:name="com.health.data.fitday.mine.EditHeadActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.health.data.fitday.mine.DataRecordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.health.data.fitday.mine.HelpCenterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.health.data.fitday.mine.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.health.data.fitday.mine.UserInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.health.data.fitday.mine.AccountAndSafeActivity"
+            android:label="@string/title_activity_account_and_safe"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" >
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        </activity>
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="7a0d9f6439671914761f0e9f1a61b1bd" />
+
         <activity
-            android:name=".MainActivity"
+            android:name="com.health.data.fitday.SearchActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" >
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.health.data.fitday.main.SplashActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.health.data.fitday.MainActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.health.data.fitday.main.WelcomeGuideActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.health.data.fitday.main.HomeActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.sahooz.library.PickActivity"
+            android:windowSoftInputMode="adjustPan" />
+
+        <service android:name="com.amap.api.location.APSService" />
 
     </application>
-
 </manifest>

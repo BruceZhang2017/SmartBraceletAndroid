@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#fff5f5f5"
+    >
+
+    <com.health.data.fitday.utils.statusbar.StatusBarHeightView
+        android:id="@+id/view_status_bar_height"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="#ffffffff"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:use_type="use_padding_top"
+        />
+
+    <ImageView
+        android:id="@+id/iv_gradient_bg"
+        android:layout_width="fill_parent"
+        android:layout_height="0.0dip"
+        android:background="@drawable/drawable_gradient_bg"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <per.goweii.actionbarex.common.ActionBarCommon
+        android:id="@+id/simple_action_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#00ffffff"
+        app:ab_autoImmersion="false"
+        app:ab_bottomLineHeight="0.0dip"
+        app:ab_statusBarMode="light"
+        app:ab_statusBarVisible="false"
+        app:ab_titleBarHeight="48.0dip"
+        app:abc_leftIconRes="@mipmap/nav_icon_back"
+        app:abc_leftText=""
+        app:abc_leftTextPaddingLeft="0.0dip"
+        app:abc_leftTextPaddingRight="0.0dip"
+        app:abc_rightText=""
+        app:abc_rightTextPaddingLeft="0.0dip"
+        app:abc_rightTextPaddingRight="10.0dip"
+        app:abc_titleText=" "
+        app:abc_titleTextMaxWidth="180.0dip"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_status_bar_height"
+        />
+
+    <ImageView
+        android:id="@+id/iv_user_head"
+        android:layout_width="125.0dip"
+        android:layout_height="125.0dip"
+        app:layout_constraintBottom_toBottomOf="@id/iv_gradient_bg"
+        app:layout_constraintLeft_toLeftOf="@id/iv_gradient_bg"
+        app:layout_constraintRight_toRightOf="@id/iv_gradient_bg"
+        app:layout_constraintTop_toTopOf="@id/iv_gradient_bg"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="fill_parent"
+        android:layout_height="200.0dip"
+        android:background="#fff5f5f5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/tv_photo"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:background="#ffffffff"
+            android:gravity="center"
+            android:text="拍照"
+            android:textColor="#ff333333"
+            android:textSize="15.0sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <ImageView
+            android:id="@+id/iv_line"
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dip"
+            android:background="#ffdddddd"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_photo"
+            />
+
+        <TextView
+            android:id="@+id/tv_pic"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:background="#ffffffff"
+            android:gravity="center"
+            android:text="选择图片"
+            android:textColor="#ff333333"
+            android:textSize="15.0sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_line"
+            />
+
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:background="#ffffffff"
+            android:gravity="center"
+            android:text="保存"
+            android:textColor="#ff333333"
+            android:textSize="15.0sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_pic"
+            />
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:background="#ffffffff"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="#ff333333"
+            android:textSize="15.0sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

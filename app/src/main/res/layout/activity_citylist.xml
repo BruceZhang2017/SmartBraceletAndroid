@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45.0dip"
+        android:background="#ff40c2fc"
+        >
+
+        <ImageView
+            android:id="@+id/img_left"
+            android:layout_width="9.0dip"
+            android:layout_height="15.0dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10.0dip"
+            android:background="@drawable/ic_citypicker_bar_back"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/cityname_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="选择省份"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            />
+    </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/city_recyclerview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/white"
+        android:dividerHeight="10.0dip"
+        />
+</LinearLayout>
