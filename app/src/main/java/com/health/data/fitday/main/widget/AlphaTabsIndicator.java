@@ -56,10 +56,10 @@ public class AlphaTabsIndicator extends LinearLayout {
                 if (this.mViewPager.getAdapter().getCount() == this.mChildCounts) {
                     this.mViewPager.addOnPageChangeListener((ViewPager.OnPageChangeListener)new MyOnPageChangeListener());
                 } else {
-                    throw new IllegalArgumentException(");
+                    throw new IllegalArgumentException("");
                 }
             } else {
-                throw new NullPointerException("viewpager);
+                throw new NullPointerException("viewpager");
             }
         byte b = 0;
         while (b < this.mChildCounts) {
@@ -70,7 +70,7 @@ public class AlphaTabsIndicator extends LinearLayout {
                 b++;
                 continue;
             }
-            throw new IllegalArgumentException("TabIndicator);
+            throw new IllegalArgumentException("TabIndicator");
         }
         ((AlphaTabView)this.mTabViews.get(this.mCurrentItem)).setIconAlpha(1.0F);
     }
