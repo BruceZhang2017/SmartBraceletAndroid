@@ -11,6 +11,7 @@ import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class SearchDeviceActivity extends BaseActivity {
+
     @BindView(R.id.simple_action_bar)
     ActionBarCommon actionBarCommon;
 
@@ -24,7 +25,7 @@ public class SearchDeviceActivity extends BaseActivity {
     protected void initData() {}
 
     protected void initView() {
-        ButterKnife.bind((Activity)this);
+        ButterKnife.bind(this);
         this.actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
             public void onClick(View param1View) {
                 SearchDeviceActivity.this.finish();

@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.tjdL4.tjdmain.Dev;
 import com.tjdL4.tjdmain.L4M;
-
+import com.sinophy.smartbracelet.R;
 
 import java.util.ArrayList;
 
@@ -215,10 +215,10 @@ public class SearchActivity extends Activity implements View.OnClickListener{
             // General ListView optimization code.
             if (view == null)
             {
-                view = LayoutInflater.from(mContext).inflate(R.layout.vw_search_ble_item, null);
+//                view = LayoutInflater.from(mContext).inflate(R.layout.vw_search_ble_item, null);
                 viewHolder = new ViewHolder();
                 viewHolder.tv_name =  view.findViewById(R.id.tv_name);
-                viewHolder.tv_address =  view.findViewById(R.id.tv_address);
+                //viewHolder.tv_address =  view.findViewById(R.id.tv_address);
                 view.setTag(viewHolder);
             }
             else

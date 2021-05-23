@@ -27,9 +27,9 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
     private DataSetObserver mDataObserver = new DataSetObserver() {
         public void onChanged() {
             synchronized (HorizontalListView.this) {
-                HorizontalListView.access$002(HorizontalListView.this, true);
-                HorizontalListView.this.invalidate();
-                HorizontalListView.this.requestLayout();
+                mDataChanged = true;
+                invalidate();
+                requestLayout();
                 return;
             }
         }
@@ -139,7 +139,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         if (layoutParams1 == null)
             layoutParams2 = new ViewGroup.LayoutParams(-1, -1);
         addViewInLayout(paramView, paramInt, layoutParams2, true);
-        paramView.measure(View.MeasureSpec.makeMeasureSpec(getWidth(), -2147483648), View.MeasureSpec.makeMeasureSpec(getHeight(), -2147483648));
+        paramView.measure(View.MeasureSpec.makeMeasureSpec(getWidth(), View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(getHeight(), View.MeasureSpec.UNSPECIFIED));
     }
 
     private void fillList(int paramInt) {
@@ -338,6 +338,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         //   from	to	target	type
         //   2	27	33	finally
         //   34	36	33	finally
+        return false;
     }
 
     public boolean onInterceptTouchEvent(MotionEvent paramMotionEvent) {

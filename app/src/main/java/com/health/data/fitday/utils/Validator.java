@@ -20,7 +20,7 @@ public class Validator {
     public static final String REGEX_USERNAME = "^[a-zA-Z]\\w{5,17}$";
 
     public static boolean isChinese(String paramString) {
-        return Pattern.matches("^[{1,9}$", paramString);
+        return Pattern.matches("^[\u4e00-\u9fa5],{0,}$", paramString);
     }
 
     public static boolean isEmail(String paramString) {

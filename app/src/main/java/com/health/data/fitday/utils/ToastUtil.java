@@ -10,12 +10,12 @@ public class ToastUtil {
     public static void showToast(String paramString) {
         ToastCompat toastCompat = mToast;
         if (toastCompat == null) {
-            mToast = ToastCompat.makeText((Context)MyApplication.getInstance(), paramString, 0);
+            mToast = ToastCompat.makeText((Context)MyApplication.getInstance(), paramString, ToastCompat.LENGTH_SHORT);
         } else {
             toastCompat.cancel();
-            mToast = ToastCompat.makeText((Context)MyApplication.getInstance(), paramString, 0);
+            mToast = ToastCompat.makeText((Context)MyApplication.getInstance(), paramString, ToastCompat.LENGTH_SHORT);
         }
-        mToast.setDuration(0);
+        mToast.setDuration(ToastCompat.LENGTH_SHORT);
         mToast.setText(paramString);
         mToast.show();
     }
@@ -23,12 +23,12 @@ public class ToastUtil {
     public static void showToastLong(String paramString) {
         ToastCompat toastCompat = mToast;
         if (toastCompat == null) {
-            mToast = ToastCompat.makeText((Context)MyApplication.getInstance(), paramString, 1);
+            mToast = ToastCompat.makeText((Context)MyApplication.getInstance(), paramString, ToastCompat.LENGTH_LONG);
         } else {
             toastCompat.cancel();
-            mToast = ToastCompat.makeText((Context)MyApplication.getInstance(), paramString, 1);
+            mToast = ToastCompat.makeText((Context)MyApplication.getInstance(), paramString, ToastCompat.LENGTH_LONG);
         }
-        mToast.setDuration(1);
+        mToast.setDuration(ToastCompat.LENGTH_LONG);
         mToast.setText(paramString);
         mToast.show();
     }

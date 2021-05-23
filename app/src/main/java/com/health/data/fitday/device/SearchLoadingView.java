@@ -33,10 +33,9 @@ public class SearchLoadingView extends View {
 
     private TimerTask task = new TimerTask() {
         public void run() {
-            SearchLoadingView.access$008(SearchLoadingView.this);
-            if (SearchLoadingView.this.start > SearchLoadingView.this.mPointCount)
-                SearchLoadingView.access$002(SearchLoadingView.this, 0);
-            SearchLoadingView.this.postInvalidate();
+            if (start > mPointCount)
+                start = 0;
+            postInvalidate();
         }
     };
 

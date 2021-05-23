@@ -9,9 +9,9 @@ import android.widget.EditText;
 public class EditTextUtils {
     public static void clearButtonListener(final EditText et, final View view) {
         if (TextUtils.isEmpty(et.getText().toString())) {
-            view.setVisibility(4);
+            view.setVisibility(View.INVISIBLE);
         } else {
-            view.setVisibility(0);
+            view.setVisibility(View.VISIBLE);
         }
         view.setOnClickListener(new View.OnClickListener() {
             public void onClick(View param1View) {
@@ -22,9 +22,9 @@ public class EditTextUtils {
         et.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable param1Editable) {
                 if (param1Editable.length() == 0) {
-                    view.setVisibility(4);
+                    view.setVisibility(View.INVISIBLE);
                 } else {
-                    view.setVisibility(0);
+                    view.setVisibility(View.VISIBLE);
                 }
             }
 
