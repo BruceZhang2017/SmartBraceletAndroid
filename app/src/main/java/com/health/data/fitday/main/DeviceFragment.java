@@ -13,20 +13,21 @@ import com.health.data.fitday.device.DeviceBean;
 import com.health.data.fitday.device.SimpleAdapter;
 import com.health.data.fitday.device.adapter.GiftPackageAdapter;
 import com.health.data.fitday.device.widget.HorizontalListView;
+import com.sinophy.smartbracelet.R;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.bannerview.BaseBannerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceFragment extends BaseFragment {
-    @BindView(2131230998)
+    @BindView(R.id.horizontal_listview)
     HorizontalListView horizontalListView;
 
     List<DeviceBean> list = new ArrayList<>();
 
     private View mContentView;
 
-    @BindView(2131230825)
+    @BindView(R.id.banner_view)
     BannerViewPager<DeviceBean> mViewPager;
 
     public static DeviceFragment newInstance(String paramString) {
@@ -47,7 +48,7 @@ public class DeviceFragment extends BaseFragment {
 
     public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle) {
         this.mContext = (Activity)getActivity();
-        View view = paramLayoutInflater.inflate(2131427402, paramViewGroup, false);
+        View view = paramLayoutInflater.inflate(R.layout.fragment_device, paramViewGroup, false);
         this.mContentView = view;
         ButterKnife.bind(this, view);
         initView();

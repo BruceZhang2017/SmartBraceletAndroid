@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import androidx.viewpager.widget.ViewPager;
 import com.health.data.fitday.utils.SpUtils;
+import com.sinophy.smartbracelet.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class WelcomeGuideActivity extends Activity implements View.OnClickListener {
-    private static final int[] pics = new int[] { 2131427410, 2131427411, 2131427412, 2131427413, 2131427414 };
+    private static final int[] pics = new int[] { R.layout.guid_view1, R.layout.guid_view2, R.layout.guid_view3, R.layout.guid_view4, R.layout.guid_view5 };
 
     private GuideViewPagerAdapter adapter;
 
@@ -47,7 +49,7 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
 
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
-        setContentView(2131427368);
+        setContentView(R.layout.activity_guide);
         this.views = new ArrayList<>();
         byte b = 0;
         while (true) {
@@ -60,7 +62,7 @@ public class WelcomeGuideActivity extends Activity implements View.OnClickListen
                 b++;
                 continue;
             }
-            this.vp = (ViewPager)findViewById(2131231368);
+            this.vp = (ViewPager)findViewById(R.id.vp_guide);
             GuideViewPagerAdapter guideViewPagerAdapter = new GuideViewPagerAdapter(this.views);
             this.adapter = guideViewPagerAdapter;
             this.vp.setAdapter(guideViewPagerAdapter);

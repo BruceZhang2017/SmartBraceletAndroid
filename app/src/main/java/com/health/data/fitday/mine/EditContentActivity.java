@@ -16,22 +16,24 @@ import butterknife.ButterKnife;
 import com.health.data.fitday.main.BaseActivity;
 import com.health.data.fitday.utils.EditTextUtils;
 import com.health.data.fitday.utils.Utils;
+import com.sinophy.smartbracelet.R;
+
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class EditContentActivity extends BaseActivity {
-    @BindView(2131231197)
+    @BindView(R.id.simple_action_bar)
     ActionBarCommon actionBarCommon;
 
-    @BindView(2131230954)
+    @BindView(R.id.et_content)
     EditText contentEditText;
 
-    @BindView(2131231000)
+    @BindView(R.id.ib_delete)
     ImageButton deleteButton;
 
-    @BindView(2131231308)
+    @BindView(R.id.tv_desc)
     TextView descTextView;
 
     private void checkName(Editable paramEditable, EditText paramEditText) {
@@ -58,7 +60,7 @@ public class EditContentActivity extends BaseActivity {
     }
 
     protected int getLayoutId() {
-        return 2131427366;
+        return R.layout.activity_edit_content;
     }
 
     protected void initData() {
@@ -87,7 +89,7 @@ public class EditContentActivity extends BaseActivity {
             public void onClick(View param1View) {
                 String str = EditContentActivity.this.contentEditText.getText().toString().trim();
                 if (str == null || str.length() == 0) {
-                    Toast.makeText((Context)EditContentActivity.this, "请输入内容", 0).show();
+                    Toast.makeText((Context)EditContentActivity.this, "请输入内容", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Intent intent = new Intent();

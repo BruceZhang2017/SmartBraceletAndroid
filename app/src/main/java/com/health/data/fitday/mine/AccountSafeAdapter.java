@@ -8,6 +8,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.sinophy.smartbracelet.R;
+
 import java.util.List;
 
 class AccountSafeAdapter extends BaseAdapter {
@@ -39,12 +41,12 @@ class AccountSafeAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (paramView == null) {
             viewHolder = new ViewHolder();
-            paramView = this.mLayoutInflater.inflate(2131427417, null);
-            viewHolder.arrowImageView = (ImageView)paramView.findViewById(2131231021);
-            viewHolder.keyTextView = (TextView)paramView.findViewById(2131231321);
-            viewHolder.keyDescTextView = (TextView)paramView.findViewById(2131231322);
-            viewHolder.valueTextView = (TextView)paramView.findViewById(2131231348);
-            viewHolder.mSwitch = (SwitchButton)paramView.findViewById(2131231236);
+            paramView = this.mLayoutInflater.inflate(R.layout.item_account_safe, null);
+            viewHolder.arrowImageView = (ImageView)paramView.findViewById(R.id.iv_arrow);
+            viewHolder.keyTextView = (TextView)paramView.findViewById(R.id.tv_key);
+            viewHolder.keyDescTextView = (TextView)paramView.findViewById(R.id.tv_key_desc);
+            viewHolder.valueTextView = (TextView)paramView.findViewById(R.id.tv_value);
+            viewHolder.mSwitch = (SwitchButton)paramView.findViewById(R.id.switchbutton);
             paramView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder)paramView.getTag();
@@ -54,13 +56,13 @@ class AccountSafeAdapter extends BaseAdapter {
         viewHolder.keyDescTextView.setText(accountSafeBean.getKeyDesc());
         viewHolder.valueTextView.setText(accountSafeBean.getValue());
         if (paramInt + 1 == this.mList.size()) {
-            viewHolder.mSwitch.setVisibility(0);
-            viewHolder.arrowImageView.setVisibility(4);
-            viewHolder.valueTextView.setVisibility(4);
+            viewHolder.mSwitch.setVisibility(View.VISIBLE);
+            viewHolder.arrowImageView.setVisibility(View.INVISIBLE);
+            viewHolder.valueTextView.setVisibility(View.INVISIBLE);
         } else {
-            viewHolder.mSwitch.setVisibility(4);
-            viewHolder.arrowImageView.setVisibility(0);
-            viewHolder.valueTextView.setVisibility(0);
+            viewHolder.mSwitch.setVisibility(View.INVISIBLE);
+            viewHolder.arrowImageView.setVisibility(View.VISIBLE);
+            viewHolder.valueTextView.setVisibility(View.VISIBLE);
         }
         return paramView;
     }

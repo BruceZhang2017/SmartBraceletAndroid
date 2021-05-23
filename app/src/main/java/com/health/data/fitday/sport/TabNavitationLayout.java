@@ -33,7 +33,7 @@ public class TabNavitationLayout extends RelativeLayout {
         this.titleLayout = new LinearLayout(paramContext);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(-1, -1);
         this.titleLayout.setLayoutParams((ViewGroup.LayoutParams)layoutParams);
-        this.titleLayout.setOrientation(0);
+        this.titleLayout.setOrientation(LinearLayout.HORIZONTAL);
         addView((View)this.titleLayout);
     }
 
@@ -117,7 +117,7 @@ public class TabNavitationLayout extends RelativeLayout {
 
     public void setViewPager(Context paramContext, String[] paramArrayOfString, int paramInt1, int paramInt2, int paramInt3, int paramInt4, int paramInt5, int paramInt6, int paramInt7, float paramFloat, boolean paramBoolean) {
         if (paramArrayOfString == null || paramArrayOfString.length == 1) {
-            Toast.makeText(paramContext, "至少两个标题才行", 0).show();
+            Toast.makeText(paramContext, "至少两个标题才行", Toast.LENGTH_SHORT).show();
             return;
         }
         setTitles(paramContext, paramArrayOfString, paramInt1, paramInt2, paramInt3, paramInt6, paramFloat, paramBoolean);

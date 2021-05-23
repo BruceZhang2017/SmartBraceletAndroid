@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -13,188 +14,287 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import com.health.data.fitday.R;
+
+import com.sinophy.smartbracelet.R;
 
 public class AlphaTabView extends View {
-    private boolean isShowPoint;
 
-    private boolean isShowRemove;
+    private Context mContext;                     //上下文
+    private Bitmap mIconNormal;                   //默认图标
+    private Bitmap mIconSelected;                 //选中的图标
+    private String mText;                         //描述文本
+    private int mTextColorNormal = 0xFF999999;    //描述文本的默认显示颜色
+    private int mTextColorSelected = 0xFF46C01B;  //述文本的默认选中显示颜色
+    private int mTextSize = 12;                   //描述文本的默认字体大小 12sp
+    private int mPadding = 5;                      //文字和图片之间的距离 5dp
 
-    private float mAlpha;
+    private float mAlpha;                         //当前的透明度
+    private Paint mSelectedPaint = new Paint();   //背景的画笔
+    private Rect mIconAvailableRect = new Rect(); //图标可用的绘制区域
+    private Rect mIconDrawRect = new Rect();      //图标真正的绘制区域
+    private Paint mTextPaint;                     //描述文本的画笔
+    private Rect mTextBound;                      //描述文本矩形测量大小
+    private Paint.FontMetricsInt mFmi;            //用于获取字体的各种属性
 
-    private int mBadgeBackgroundColor = -65536;
+    private boolean isShowRemove;                //是否移除当前角标
+    private boolean isShowPoint;                //是否显示圆点
+    private int mBadgeNumber;                       //角标数
+    private int mBadgeBackgroundColor = 0xFFFF0000;       //默认红颜色
 
-    private int mBadgeNumber;
-
-    private Context mContext;
-
-    private Paint.FontMetricsInt mFmi;
-
-    private Rect mIconAvailableRect = new Rect();
-
-    private Rect mIconDrawRect = new Rect();
-
-    private Bitmap mIconNormal;
-
-    private Bitmap mIconSelected;
-
-    private int mPadding = 5;
-
-    private Paint mSelectedPaint = new Paint();
-
-    private String mText;
-
-    private Rect mTextBound;
-
-    private int mTextColorNormal = -6710887;
-
-    private int mTextColorSelected = -12140517;
-
-    private Paint mTextPaint;
-
-    private int mTextSize = 12;
-
-    public AlphaTabView(Context paramContext) {
-        this(paramContext, (AttributeSet)null);
-        this.mContext = paramContext;
+    public AlphaTabView(Context context) {
+        this(context, null);
+        mContext = context;
     }
 
-    public AlphaTabView(Context paramContext, AttributeSet paramAttributeSet) {
-        this(paramContext, paramAttributeSet, 0);
-        this.mContext = paramContext;
+    public AlphaTabView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+        mContext = context;
     }
 
-    public AlphaTabView(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
-        super(paramContext, paramAttributeSet, paramInt);
-        this.mContext = paramContext;
-        this.mTextSize = (int)TypedValue.applyDimension(2, this.mTextSize, getResources().getDisplayMetrics());
-        this.mPadding = (int)TypedValue.applyDimension(1, this.mPadding, getResources().getDisplayMetrics());
-        TypedArray typedArray = paramContext.obtainStyledAttributes(paramAttributeSet, R.styleable.AlphaTabView);
-        BitmapDrawable bitmapDrawable = (BitmapDrawable)typedArray.getDrawable(2);
-        if (bitmapDrawable != null)
-            this.mIconNormal = bitmapDrawable.getBitmap();
-        bitmapDrawable = (BitmapDrawable)typedArray.getDrawable(3);
-        if (bitmapDrawable != null)
-            this.mIconSelected = bitmapDrawable.getBitmap();
-        Bitmap bitmap = this.mIconNormal;
-        if (bitmap != null) {
-            Bitmap bitmap1 = this.mIconSelected;
-            if (bitmap1 != null)
-                bitmap = bitmap1;
-            this.mIconSelected = bitmap;
-        } else {
-            Bitmap bitmap1 = this.mIconSelected;
-            if (bitmap1 != null)
-                bitmap = bitmap1;
-            this.mIconNormal = bitmap;
+    public AlphaTabView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        mContext = context;
+        mTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mTextSize, getResources().getDisplayMetrics());
+        mPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mPadding, getResources().getDisplayMetrics());
+        //获取所有的自定义属性
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.AlphaTabView);
+        BitmapDrawable iconNormal = (BitmapDrawable) a.getDrawable(R.styleable.AlphaTabView_tabIconNormal);
+        if (iconNormal != null) {
+            mIconNormal = iconNormal.getBitmap();
         }
-        this.mText = typedArray.getString(4);
-        this.mTextSize = typedArray.getDimensionPixelSize(5, this.mTextSize);
-        this.mTextColorNormal = typedArray.getColor(6, this.mTextColorNormal);
-        this.mTextColorSelected = typedArray.getColor(7, this.mTextColorSelected);
-        this.mBadgeBackgroundColor = typedArray.getColor(0, this.mBadgeBackgroundColor);
-        this.mPadding = (int)typedArray.getDimension(1, this.mPadding);
-        typedArray.recycle();
+        BitmapDrawable iconSelected = (BitmapDrawable) a.getDrawable(R.styleable.AlphaTabView_tabIconSelected);
+        if (iconSelected != null) {
+            mIconSelected = iconSelected.getBitmap();
+        }
+
+        if (null != mIconNormal) {
+            mIconSelected = null == mIconSelected ? mIconNormal : mIconSelected;
+        } else {
+            mIconNormal = null == mIconSelected ? mIconNormal : mIconSelected;
+        }
+
+        mText = a.getString(R.styleable.AlphaTabView_tabText);
+        mTextSize = a.getDimensionPixelSize(R.styleable.AlphaTabView_tabTextSize, mTextSize);
+        mTextColorNormal = a.getColor(R.styleable.AlphaTabView_textColorNormal, mTextColorNormal);
+        mTextColorSelected = a.getColor(R.styleable.AlphaTabView_textColorSelected, mTextColorSelected);
+        mBadgeBackgroundColor = a.getColor(R.styleable.AlphaTabView_badgeBackgroundColor, mBadgeBackgroundColor);
+        mPadding = (int) a.getDimension(R.styleable.AlphaTabView_paddingTexwithIcon, mPadding);
+        a.recycle();
         initText();
     }
 
-    private Rect availableToDrawRect(Rect paramRect, Bitmap paramBitmap) {
-        float f1 = 0.0F;
-        float f2 = 0.0F;
-        float f3 = paramRect.width() * 1.0F / paramBitmap.getWidth();
-        float f4 = paramRect.height() * 1.0F / paramBitmap.getHeight();
-        if (f3 > f4) {
-            f1 = (paramRect.width() - paramBitmap.getWidth() * f4) / 2.0F;
-        } else {
-            f2 = (paramRect.height() - paramBitmap.getHeight() * f3) / 2.0F;
+    /**
+     * 如果有设置文字就获取文字的区域大小
+     */
+    private void initText() {
+        if (mText != null) {
+            mTextBound = new Rect();
+            mTextPaint = new Paint();
+            mTextPaint.setTextSize(mTextSize);
+            mTextPaint.setAntiAlias(true);
+            mTextPaint.setDither(true);
+            mTextPaint.getTextBounds(mText, 0, mText.length(), mTextBound);
+            mFmi = mTextPaint.getFontMetricsInt();
         }
-        int i = (int)(paramRect.left + f1 + 0.5F);
-        int j = (int)(paramRect.top + f2 + 0.5F);
-        int k = (int)(paramRect.right - f1 + 0.5F);
-        int m = (int)(paramRect.bottom - f2 + 0.5F);
-        this.mIconDrawRect.set(i, j, k, m);
-        return this.mIconDrawRect;
     }
 
-    private float dp2px(Context paramContext, float paramFloat) {
-        return (int)(paramFloat * (paramContext.getResources().getDisplayMetrics()).density);
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (mText == null && (mIconNormal == null || mIconSelected == null)) {
+            throw new IllegalArgumentException("必须设置 tabText 或者 tabIconSelected、tabIconNormal 两个，或者全部设置");
+        }
+
+        int paddingLeft = getPaddingLeft();
+        int paddingTop = getPaddingTop();
+        int paddingRight = getPaddingRight();
+        int paddingBottom = getPaddingBottom();
+        int measuredWidth = getMeasuredWidth();
+        int measuredHeight = getMeasuredHeight();
+
+        //计算出可用绘图的区域
+        int availableWidth = measuredWidth - paddingLeft - paddingRight;
+        int availableHeight = measuredHeight - paddingTop - paddingBottom;
+        if (mText != null && mIconNormal != null) {
+            availableHeight -= (mTextBound.height() + mPadding);
+            //计算出图标可以绘制的画布大小
+            mIconAvailableRect.set(paddingLeft, paddingTop, paddingLeft + availableWidth, paddingTop + availableHeight);
+            //计算文字的绘图区域
+            int textLeft = paddingLeft + (availableWidth - mTextBound.width()) / 2;
+            int textTop = mIconAvailableRect.bottom + mPadding;
+            mTextBound.set(textLeft, textTop, textLeft + mTextBound.width(), textTop + mTextBound.height());
+        } else if (mText == null) {
+            //计算出图标可以绘制的画布大小
+            mIconAvailableRect.set(paddingLeft, paddingTop, paddingLeft + availableWidth, paddingTop + availableHeight);
+        } else if (mIconNormal == null) {
+            //计算文字的绘图区域
+            int textLeft = paddingLeft + (availableWidth - mTextBound.width()) / 2;
+            int textTop = paddingTop + (availableHeight - mTextBound.height()) / 2;
+            mTextBound.set(textLeft, textTop, textLeft + mTextBound.width(), textTop + mTextBound.height());
+        }
     }
 
-    private void drawBadge(Canvas paramCanvas) {
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        int alpha = (int) Math.ceil(mAlpha * 255);
+        if (mIconNormal != null && mIconSelected != null) {
+            Rect drawRect = availableToDrawRect(mIconAvailableRect, mIconNormal);
+            mSelectedPaint.reset();
+            mSelectedPaint.setAntiAlias(true);//设置抗锯齿
+            mSelectedPaint.setFilterBitmap(true);//抗锯齿
+            mSelectedPaint.setAlpha(255 - alpha);
+            canvas.drawBitmap(mIconNormal, null, drawRect, mSelectedPaint);
+            mSelectedPaint.reset();
+            mSelectedPaint.setAntiAlias(true);//设置抗锯齿
+            mSelectedPaint.setFilterBitmap(true);//抗锯齿
+            mSelectedPaint.setAlpha(alpha); //setAlpha必须放在paint的属性最后设置，否则不起作用
+            canvas.drawBitmap(mIconSelected, null, drawRect, mSelectedPaint);
+        }
+        if (mText != null) {
+            //绘制原始文字,setAlpha必须放在paint的属性最后设置，否则不起作用
+            mTextPaint.setColor(mTextColorNormal);
+            mTextPaint.setAlpha(255 - alpha);
+            //由于在该方法中，y轴坐标代表的是baseLine的值，经测试，mTextBound.height() + mFmi.bottom 就是字体的高
+            //所以在最后绘制前，修正偏移量，将文字向上修正 mFmi.bottom / 2 即可实现垂直居中
+            canvas.drawText(mText, mTextBound.left, mTextBound.bottom - mFmi.bottom / 2, mTextPaint);
+            //绘制变色文字，setAlpha必须放在paint的属性最后设置，否则不起作用
+            mTextPaint.setColor(mTextColorSelected);
+            mTextPaint.setAlpha(alpha);
+            canvas.drawText(mText, mTextBound.left, mTextBound.bottom - mFmi.bottom / 2, mTextPaint);
+        }
+
+        //绘制角标
+        if (!isShowRemove) {
+            drawBadge(canvas);
+        }
+    }
+
+    /**
+     * badge
+     */
+    private void drawBadge(Canvas canvas) {
         int i = getMeasuredWidth() / 14;
         int j = getMeasuredHeight() / 9;
-        if (i < j)
-            j = i;
-        i = this.mBadgeNumber;
-        if (i > 0) {
-            String str;
-            float f;
+        i = i >= j ? j : i;
+        if (mBadgeNumber > 0) {
+            Paint backgroundPaint = new Paint();
+            backgroundPaint.setColor(mBadgeBackgroundColor);
+            backgroundPaint.setAntiAlias(true);
+            String number = mBadgeNumber > 99 ? "99+" : String.valueOf(mBadgeNumber);
+            float textSize = i / 1.5f == 0 ? 5 : i / 1.5f;
+            int width;
+            int hight = (int) dp2px(mContext, i);
             Bitmap bitmap;
-            Paint paint = new Paint();
-            paint.setColor(this.mBadgeBackgroundColor);
-            paint.setAntiAlias(true);
-            i = this.mBadgeNumber;
-            if (i > 99) {
-                str = "99+";
+            if (number.length() == 1) {
+                width = (int) dp2px(mContext, i);
+                bitmap = Bitmap.createBitmap(width, hight, Bitmap.Config.ARGB_8888);
+            } else if (number.length() == 2) {
+                width = (int) dp2px(mContext, i + 5);
+                bitmap = Bitmap.createBitmap(width, hight, Bitmap.Config.ARGB_8888);
             } else {
-                str = String.valueOf(i);
+                width = (int) dp2px(mContext, i + 8);
+                bitmap = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
             }
-            if (j / 1.5F == 0.0F) {
-                f = 5.0F;
-            } else {
-                f = j / 1.5F;
-            }
-            i = (int)dp2px(this.mContext, j);
-            if (str.length() == 1) {
-                j = (int)dp2px(this.mContext, j);
-                bitmap = Bitmap.createBitmap(j, i, Bitmap.Config.ARGB_8888);
-            } else if (str.length() == 2) {
-                j = (int)dp2px(this.mContext, (j + 5));
-                bitmap = Bitmap.createBitmap(j, i, Bitmap.Config.ARGB_8888);
-            } else {
-                j = (int)dp2px(this.mContext, (j + 8));
-                bitmap = Bitmap.createBitmap(j, j, Bitmap.Config.ARGB_8888);
-            }
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawRoundRect(new RectF(0.0F, 0.0F, j, i), 50.0F, 50.0F, paint);
-            paint = new Paint();
-            paint.setColor(-1);
-            paint.setTextSize(dp2px(this.mContext, f));
-            paint.setAntiAlias(true);
-            paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTypeface(Typeface.DEFAULT_BOLD);
-            Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-            canvas.drawText(str, j / 2.0F, i / 2.0F - fontMetrics.descent + (fontMetrics.descent - fontMetrics.ascent) / 2.0F, paint);
-            paramCanvas.drawBitmap(bitmap, (getMeasuredWidth() / 10) * 6.0F, dp2px(this.mContext, 5.0F), null);
+            Canvas canvasMessages = new Canvas(bitmap);
+            RectF messageRectF = new RectF(0, 0, width, hight);
+            canvasMessages.drawRoundRect(messageRectF, 50, 50, backgroundPaint); //画椭圆
+            Paint numberPaint = new Paint();
+            numberPaint.setColor(Color.WHITE);
+            numberPaint.setTextSize(dp2px(mContext, textSize));
+            numberPaint.setAntiAlias(true);
+            numberPaint.setTextAlign(Paint.Align.CENTER);
+            numberPaint.setTypeface(Typeface.DEFAULT_BOLD);
+            Paint.FontMetrics fontMetrics = numberPaint.getFontMetrics();
+            float x = width / 2f;
+            float y = hight / 2f - fontMetrics.descent + (fontMetrics.descent - fontMetrics.ascent) / 2;
+            canvasMessages.drawText(number, x, y, numberPaint);
+            float left = getMeasuredWidth() / 10 * 6f;
+            float top = dp2px(mContext, 5);
+            canvas.drawBitmap(bitmap, left, top, null);
             bitmap.recycle();
-        } else if (i != 0 && this.isShowPoint) {
-            Paint paint = new Paint();
-            paint.setColor(this.mBadgeBackgroundColor);
-            paint.setAntiAlias(true);
-            float f2 = (getMeasuredWidth() / 10) * 6.0F;
-            float f1 = dp2px(getContext(), 5.0F);
-            if (j > 10)
-                j = 10;
-            float f3 = dp2px(getContext(), j);
-            paramCanvas.drawOval(new RectF(f2, f1, f2 + f3, f1 + f3), paint);
+        } else if (mBadgeNumber == 0) {
+
+        } else {
+            if (isShowPoint) {
+                Paint paint = new Paint();
+                paint.setColor(mBadgeBackgroundColor);
+                paint.setAntiAlias(true);
+                float left = getMeasuredWidth() / 10 * 6f;
+                float top = dp2px(getContext(), 5);
+                i = i > 10 ? 10 : i;
+                float width = dp2px(getContext(), i);
+                RectF messageRectF = new RectF(left, top, left + width, top + width);
+                canvas.drawOval(messageRectF, paint);
+            }
         }
     }
 
-    private void initText() {
-        if (this.mText != null) {
-            this.mTextBound = new Rect();
-            Paint paint = new Paint();
-            this.mTextPaint = paint;
-            paint.setTextSize(this.mTextSize);
-            this.mTextPaint.setAntiAlias(true);
-            this.mTextPaint.setDither(true);
-            paint = this.mTextPaint;
-            String str = this.mText;
-            paint.getTextBounds(str, 0, str.length(), this.mTextBound);
-            this.mFmi = this.mTextPaint.getFontMetricsInt();
+    public void showPoint() {
+        isShowRemove = false;
+        mBadgeNumber = -1;
+        isShowPoint = true;
+        invalidate();
+    }
+
+    public void showNumber(int badgeNum) {
+        isShowRemove = false;
+        isShowPoint = false;
+        mBadgeNumber = badgeNum;
+        if (badgeNum > 0) {
+            invalidate();
+        } else {
+            isShowRemove = true;
+            invalidate();
         }
     }
 
+    public void removeShow() {
+        mBadgeNumber = 0;
+        isShowPoint = false;
+        isShowRemove = true;
+        invalidate();
+    }
+
+    public int getBadgeNumber() {
+        return mBadgeNumber;
+    }
+
+    public boolean isShowPoint() {
+        return isShowPoint;
+    }
+
+    private Rect availableToDrawRect(Rect availableRect, Bitmap bitmap) {
+        float dx = 0, dy = 0;
+        float wRatio = availableRect.width() * 1.0f / bitmap.getWidth();
+        float hRatio = availableRect.height() * 1.0f / bitmap.getHeight();
+        if (wRatio > hRatio) {
+            dx = (availableRect.width() - hRatio * bitmap.getWidth()) / 2;
+        } else {
+            dy = (availableRect.height() - wRatio * bitmap.getHeight()) / 2;
+        }
+        int left = (int) (availableRect.left + dx + 0.5f);
+        int top = (int) (availableRect.top + dy + 0.5f);
+        int right = (int) (availableRect.right - dx + 0.5f);
+        int bottom = (int) (availableRect.bottom - dy + 0.5f);
+        mIconDrawRect.set(left, top, right, bottom);
+        return mIconDrawRect;
+    }
+
+    /**
+     * @param alpha 对外提供的设置透明度的方法，取值 0.0 ~ 1.0
+     */
+    public void setIconAlpha(float alpha) {
+        if (alpha < 0 || alpha > 1) {
+            throw new IllegalArgumentException("透明度必须是 0.0 - 1.0");
+        }
+        mAlpha = alpha;
+        invalidateView();
+    }
+
+    /**
+     * 根据当前所在线程更新界面
+     */
     private void invalidateView() {
         if (Looper.getMainLooper() == Looper.myLooper()) {
             invalidate();
@@ -203,109 +303,8 @@ public class AlphaTabView extends View {
         }
     }
 
-    public int getBadgeNumber() {
-        return this.mBadgeNumber;
-    }
-
-    public boolean isShowPoint() {
-        return this.isShowPoint;
-    }
-
-    protected void onDraw(Canvas paramCanvas) {
-        super.onDraw(paramCanvas);
-        int i = (int)Math.ceil((this.mAlpha * 255.0F));
-        Bitmap bitmap = this.mIconNormal;
-        if (bitmap != null && this.mIconSelected != null) {
-            Rect rect = availableToDrawRect(this.mIconAvailableRect, bitmap);
-            this.mSelectedPaint.reset();
-            this.mSelectedPaint.setAntiAlias(true);
-            this.mSelectedPaint.setFilterBitmap(true);
-            this.mSelectedPaint.setAlpha(255 - i);
-            paramCanvas.drawBitmap(this.mIconNormal, null, rect, this.mSelectedPaint);
-            this.mSelectedPaint.reset();
-            this.mSelectedPaint.setAntiAlias(true);
-            this.mSelectedPaint.setFilterBitmap(true);
-            this.mSelectedPaint.setAlpha(i);
-            paramCanvas.drawBitmap(this.mIconSelected, null, rect, this.mSelectedPaint);
-        }
-        if (this.mText != null) {
-            this.mTextPaint.setColor(this.mTextColorNormal);
-            this.mTextPaint.setAlpha(255 - i);
-            paramCanvas.drawText(this.mText, this.mTextBound.left, (this.mTextBound.bottom - this.mFmi.bottom / 2), this.mTextPaint);
-            this.mTextPaint.setColor(this.mTextColorSelected);
-            this.mTextPaint.setAlpha(i);
-            paramCanvas.drawText(this.mText, this.mTextBound.left, (this.mTextBound.bottom - this.mFmi.bottom / 2), this.mTextPaint);
-        }
-        if (!this.isShowRemove)
-            drawBadge(paramCanvas);
-    }
-
-    protected void onMeasure(int paramInt1, int paramInt2) {
-        super.onMeasure(paramInt1, paramInt2);
-        if (this.mText != null || (this.mIconNormal != null && this.mIconSelected != null)) {
-            Rect rect;
-            paramInt2 = getPaddingLeft();
-            paramInt1 = getPaddingTop();
-            int i = getPaddingRight();
-            int j = getPaddingBottom();
-            int k = getMeasuredWidth();
-            int m = getMeasuredHeight();
-            k = k - paramInt2 - i;
-            j = m - paramInt1 - j;
-            String str = this.mText;
-            if (str != null && this.mIconNormal != null) {
-                i = this.mTextBound.height();
-                m = this.mPadding;
-                this.mIconAvailableRect.set(paramInt2, paramInt1, paramInt2 + k, paramInt1 + j - i + m);
-                paramInt2 = (k - this.mTextBound.width()) / 2 + paramInt2;
-                paramInt1 = this.mIconAvailableRect.bottom + this.mPadding;
-                rect = this.mTextBound;
-                rect.set(paramInt2, paramInt1, rect.width() + paramInt2, this.mTextBound.height() + paramInt1);
-            } else if (rect == null) {
-                this.mIconAvailableRect.set(paramInt2, paramInt1, paramInt2 + k, paramInt1 + j);
-            } else if (this.mIconNormal == null) {
-                paramInt2 = (k - this.mTextBound.width()) / 2 + paramInt2;
-                paramInt1 = (j - this.mTextBound.height()) / 2 + paramInt1;
-                rect = this.mTextBound;
-                rect.set(paramInt2, paramInt1, rect.width() + paramInt2, this.mTextBound.height() + paramInt1);
-            }
-            return;
-        }
-        throw new IllegalArgumentException("tabText tabIconSelected);
-    }
-
-    public void removeShow() {
-        this.mBadgeNumber = 0;
-        this.isShowPoint = false;
-        this.isShowRemove = true;
-        invalidate();
-    }
-
-    public void setIconAlpha(float paramFloat) {
-        if (paramFloat >= 0.0F && paramFloat <= 1.0F) {
-            this.mAlpha = paramFloat;
-            invalidateView();
-            return;
-        }
-        throw new IllegalArgumentException("0.0 - 1.0");
-    }
-
-    public void showNumber(int paramInt) {
-        this.isShowRemove = false;
-        this.isShowPoint = false;
-        this.mBadgeNumber = paramInt;
-        if (paramInt > 0) {
-            invalidate();
-        } else {
-            this.isShowRemove = true;
-            invalidate();
-        }
-    }
-
-    public void showPoint() {
-        this.isShowRemove = false;
-        this.mBadgeNumber = -1;
-        this.isShowPoint = true;
-        invalidate();
+    private float dp2px(Context context, float dipValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale);
     }
 }

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
     defaultConfig {
-        applicationId "com.health.data.tjddemo"
+        applicationId "com.health.data.fitday"
         minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
@@ -29,6 +29,11 @@ dependencies {
     api files('libs/tjd-wristBand.jar')
     implementation project(':countrypicker')
     implementation 'com.jakewharton:butterknife:10.2.0'
+    androidTestCompile(
+            'com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
 
     // 完全引入
@@ -73,4 +78,6 @@ dependencies {
 
     implementation 'com.jph.takephoto:takephoto_library:latest.integration'
     implementation 'com.github.zhpanvip:BannerViewPager:latest.integration'
+
+    implementation 'com.clj.fastble:FastBleLib:2.3.4'
 }

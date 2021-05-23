@@ -16,7 +16,7 @@ import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 import com.tjdL4.tjdmain.contr.L4Command;
 import com.tjdL4.tjdmain.contr.TimeUnitSet;
 import java.util.List;
-
+import com.sinophy.smartbracelet.R;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 

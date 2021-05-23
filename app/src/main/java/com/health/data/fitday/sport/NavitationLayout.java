@@ -48,7 +48,7 @@ public class NavitationLayout extends RelativeLayout {
         this.titleLayout = new LinearLayout(paramContext);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(-1, -1);
         this.titleLayout.setLayoutParams((ViewGroup.LayoutParams)layoutParams);
-        this.titleLayout.setOrientation(0);
+        this.titleLayout.setOrientation(LinearLayout.HORIZONTAL);
         addView((View)this.titleLayout);
     }
 

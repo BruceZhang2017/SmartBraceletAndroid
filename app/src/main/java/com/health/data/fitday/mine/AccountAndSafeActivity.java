@@ -8,24 +8,26 @@ import android.widget.ListView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.health.data.fitday.main.BaseActivity;
+import com.sinophy.smartbracelet.R;
+
 import java.util.ArrayList;
 import java.util.List;
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class AccountAndSafeActivity extends BaseActivity {
-    @BindView(2131231197)
+    @BindView(R.id.simple_action_bar)
     ActionBarCommon actionBarCommon;
 
     private AccountSafeAdapter adapter;
 
-    @BindView(2131231061)
+    @BindView(R.id.lv_account_safe)
     ListView listView;
 
     private List<AccountSafeBean> mList = new ArrayList<>();
 
     protected int getLayoutId() {
-        return 2131427361;
+        return R.layout.activity_account_and_safe;
     }
 
     protected void initData() {

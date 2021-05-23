@@ -12,6 +12,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.health.data.fitday.MyApplication;
 import com.health.data.fitday.main.widget.AlphaTabsIndicator;
 import com.health.data.fitday.utils.ToastUtil;
+import com.sinophy.smartbracelet.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class HomeActivity extends BaseActivity {
     private long exitTime = 0L;
 
     protected int getLayoutId() {
-        return 2131427370;
+        return R.layout.activity_home_layout;
     }
 
     protected void initData() {
@@ -35,11 +37,11 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void initView() {
-        ViewPager viewPager = (ViewPager)findViewById(2131231066);
+        ViewPager viewPager = (ViewPager)findViewById(R.id.mViewPager);
         HomeAdapter homeAdapter = new HomeAdapter(getSupportFragmentManager());
         viewPager.setAdapter((PagerAdapter)homeAdapter);
         viewPager.addOnPageChangeListener(homeAdapter);
-        AlphaTabsIndicator alphaTabsIndicator = (AlphaTabsIndicator)findViewById(2131230803);
+        AlphaTabsIndicator alphaTabsIndicator = (AlphaTabsIndicator)findViewById(R.id.alphaIndicator);
         this.alphaTabsIndicator = alphaTabsIndicator;
         alphaTabsIndicator.setViewPager(viewPager);
     }
@@ -55,7 +57,7 @@ public class HomeActivity extends BaseActivity {
     public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent) {
         if (paramInt == 4 && paramKeyEvent.getAction() == 0) {
             if (System.currentTimeMillis() - this.exitTime > 2000L) {
-                ToastUtil.showToast(");
+                ToastUtil.showToast("双击退出应用");
                 this.exitTime = System.currentTimeMillis();
             } else {
                 finish();

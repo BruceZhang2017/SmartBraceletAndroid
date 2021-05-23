@@ -18,13 +18,15 @@ import com.scwang.smart.refresh.layout.api.RefreshHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
+import com.sinophy.smartbracelet.R;
+
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class HealthFragment extends BaseFragment {
     public static final String BUNDLE_TITLE = "title";
 
-    @BindView(2131231197)
+    @BindView(R.id.simple_action_bar)
     ActionBarCommon actionBarCommon;
 
     private View mContentView;
@@ -41,7 +43,7 @@ public class HealthFragment extends BaseFragment {
 
     private void initView() {
         ButterKnife.bind(this, this.mContentView);
-        RefreshLayout refreshLayout = (RefreshLayout)this.mContentView.findViewById(2131231150);
+        RefreshLayout refreshLayout = (RefreshLayout)this.mContentView.findViewById(R.id.refreshLayout);
         refreshLayout.setRefreshHeader((RefreshHeader)new ClassicsHeader(this.mContentView.getContext()));
         refreshLayout.setRefreshFooter((RefreshFooter)new ClassicsFooter(this.mContentView.getContext()));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -75,7 +77,7 @@ public class HealthFragment extends BaseFragment {
 
     public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle) {
         this.mContext = (Activity)getActivity();
-        this.mContentView = paramLayoutInflater.inflate(2131427404, paramViewGroup, false);
+        this.mContentView = paramLayoutInflater.inflate(R.layout.fragment_health, paramViewGroup, false);
         initView();
         initData();
         return this.mContentView;

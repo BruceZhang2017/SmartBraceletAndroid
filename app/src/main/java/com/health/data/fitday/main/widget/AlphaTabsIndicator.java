@@ -3,182 +3,210 @@ package com.health.data.fitday.main.widget;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+
 import androidx.viewpager.widget.ViewPager;
-import com.health.data.fitday.main.OnTabChangedListner;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class AlphaTabsIndicator extends LinearLayout {
-    private static final String STATE_INSTANCE = "instance_state";
-
-    private static final String STATE_ITEM = "state_item";
-
-    private boolean ISINIT;
-
-    private int mChildCounts;
-
-    private int mCurrentItem = 0;
-
-    private OnTabChangedListner mListner;
-
-    private List<AlphaTabView> mTabViews;
 
     private ViewPager mViewPager;
+    private OnTabChangedListner mListner;
+    private List<AlphaTabView> mTabViews;
+    private boolean ISINIT;
+    /**
+     * 子View的数量
+     */
+    private int mChildCounts;
+    /**
+     * 当前的条目索引
+     */
+    private int mCurrentItem = 0;
 
-    public AlphaTabsIndicator(Context paramContext) {
-        this(paramContext, (AttributeSet)null);
+    public AlphaTabsIndicator(Context context) {
+        this(context, null);
     }
 
-    public AlphaTabsIndicator(Context paramContext, AttributeSet paramAttributeSet) {
-        this(paramContext, paramAttributeSet, 0);
+    public AlphaTabsIndicator(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
-    public AlphaTabsIndicator(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
-        super(paramContext, paramAttributeSet, paramInt);
+    public AlphaTabsIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         post(new Runnable() {
+            @Override
             public void run() {
-                AlphaTabsIndicator.this.isInit();
+                isInit();
             }
         });
     }
 
-    private void init() {
-        this.ISINIT = true;
-        this.mTabViews = new ArrayList<>();
-        this.mChildCounts = getChildCount();
-        ViewPager viewPager = this.mViewPager;
-        if (viewPager != null)
-            if (viewPager.getAdapter() != null) {
-                if (this.mViewPager.getAdapter().getCount() == this.mChildCounts) {
-                    this.mViewPager.addOnPageChangeListener((ViewPager.OnPageChangeListener)new MyOnPageChangeListener());
-                } else {
-                    throw new IllegalArgumentException("");
-                }
-            } else {
-                throw new NullPointerException("viewpager");
-            }
-        byte b = 0;
-        while (b < this.mChildCounts) {
-            if (getChildAt(b) instanceof AlphaTabView) {
-                AlphaTabView alphaTabView = (AlphaTabView)getChildAt(b);
-                this.mTabViews.add(alphaTabView);
-                alphaTabView.setOnClickListener(new MyOnClickListener(b));
-                b++;
-                continue;
-            }
-            throw new IllegalArgumentException("TabIndicator");
-        }
-        ((AlphaTabView)this.mTabViews.get(this.mCurrentItem)).setIconAlpha(1.0F);
+    public void setViewPager(ViewPager mViewPager) {
+        this.mViewPager = mViewPager;
+        init();
     }
 
-    private void isInit() {
-        if (!this.ISINIT)
-            init();
-    }
-
-    private void resetState() {
-        for (byte b = 0; b < this.mChildCounts; b++)
-            ((AlphaTabView)this.mTabViews.get(b)).setIconAlpha(0.0F);
+    public void setOnTabChangedListner(OnTabChangedListner listner) {
+        this.mListner = listner;
+        isInit();
     }
 
     public AlphaTabView getCurrentItemView() {
         isInit();
-        return this.mTabViews.get(this.mCurrentItem);
+        return mTabViews.get(mCurrentItem);
     }
 
-    public AlphaTabView getTabView(int paramInt) {
+    public AlphaTabView getTabView(int tabIndex) {
         isInit();
-        return this.mTabViews.get(paramInt);
-    }
-
-    protected void onRestoreInstanceState(Parcelable paramParcelable) {
-        List<AlphaTabView> list;
-        if (paramParcelable instanceof Bundle) {
-            Bundle bundle = (Bundle)paramParcelable;
-            this.mCurrentItem = bundle.getInt("state_item");
-            list = this.mTabViews;
-            if (list == null || list.isEmpty()) {
-                super.onRestoreInstanceState(bundle.getParcelable("instance_state"));
-                return;
-            }
-            resetState();
-            ((AlphaTabView)this.mTabViews.get(this.mCurrentItem)).setIconAlpha(1.0F);
-            super.onRestoreInstanceState(bundle.getParcelable("instance_state"));
-        } else {
-            super.onRestoreInstanceState((Parcelable)list);
-        }
-    }
-
-    protected Parcelable onSaveInstanceState() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("instance_state", super.onSaveInstanceState());
-        bundle.putInt("state_item", this.mCurrentItem);
-        return (Parcelable)bundle;
+        return mTabViews.get(tabIndex);
     }
 
     public void removeAllBadge() {
         isInit();
-        Iterator<AlphaTabView> iterator = this.mTabViews.iterator();
-        while (iterator.hasNext())
-            ((AlphaTabView)iterator.next()).removeShow();
-    }
-
-    public void setOnTabChangedListner(OnTabChangedListner paramOnTabChangedListner) {
-        this.mListner = paramOnTabChangedListner;
-        isInit();
-    }
-
-    public void setTabCurrenItem(int paramInt) {
-        if (paramInt < this.mChildCounts && paramInt > -1) {
-            ((AlphaTabView)this.mTabViews.get(paramInt)).performClick();
-            return;
+        for (AlphaTabView alphaTabView : mTabViews) {
+            alphaTabView.removeShow();
         }
-        throw new IllegalArgumentException("IndexOutOfBoundsException");
     }
 
-    public void setViewPager(ViewPager paramViewPager) {
-        this.mViewPager = paramViewPager;
-        init();
-    }
-
-    private class MyOnClickListener implements View.OnClickListener {
-        private int currentIndex;
-
-        public MyOnClickListener(int param1Int) {
-            this.currentIndex = param1Int;
+    public void setTabCurrenItem(int tabIndex) {
+        if (tabIndex < mChildCounts && tabIndex > -1) {
+            mTabViews.get(tabIndex).performClick();
+        } else {
+            throw new IllegalArgumentException("IndexOutOfBoundsException");
         }
 
-        public void onClick(View param1View) {
-            AlphaTabsIndicator.this.resetState();
-            ((AlphaTabView)AlphaTabsIndicator.this.mTabViews.get(this.currentIndex)).setIconAlpha(1.0F);
-            if (AlphaTabsIndicator.this.mListner != null)
-                AlphaTabsIndicator.this.mListner.onTabSelected(this.currentIndex);
-            if (AlphaTabsIndicator.this.mViewPager != null)
-                AlphaTabsIndicator.this.mViewPager.setCurrentItem(this.currentIndex, false);
-            AlphaTabsIndicator.access$302(AlphaTabsIndicator.this, this.currentIndex);
+    }
+
+    private void isInit() {
+        if (!ISINIT) {
+            init();
         }
+    }
+
+    private void init() {
+        ISINIT = true;
+        mTabViews = new ArrayList<>();
+        mChildCounts = getChildCount();
+
+        if (null != mViewPager) {
+            if (null == mViewPager.getAdapter()) {
+                throw new NullPointerException("viewpager的adapter为null");
+            }
+            if (mViewPager.getAdapter().getCount() != mChildCounts) {
+                throw new IllegalArgumentException("子View数量必须和ViewPager条目数量一致");
+            }
+            //对ViewPager添加监听
+            mViewPager.addOnPageChangeListener(new MyOnPageChangeListener());
+        }
+
+        for (int i = 0; i < mChildCounts; i++) {
+            if (getChildAt(i) instanceof AlphaTabView) {
+                AlphaTabView tabView = (AlphaTabView) getChildAt(i);
+                mTabViews.add(tabView);
+                //设置点击监听
+                tabView.setOnClickListener(new MyOnClickListener(i));
+            } else {
+                throw new IllegalArgumentException("TabIndicator的子View必须是TabView");
+            }
+        }
+
+        mTabViews.get(mCurrentItem).setIconAlpha(1.0f);
     }
 
     private class MyOnPageChangeListener extends ViewPager.SimpleOnPageChangeListener {
-        private MyOnPageChangeListener() {}
-
-        public void onPageScrolled(int param1Int1, float param1Float, int param1Int2) {
-            if (param1Float > 0.0F) {
-                ((AlphaTabView)AlphaTabsIndicator.this.mTabViews.get(param1Int1)).setIconAlpha(1.0F - param1Float);
-                ((AlphaTabView)AlphaTabsIndicator.this.mTabViews.get(param1Int1 + 1)).setIconAlpha(param1Float);
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            //滑动时的透明度动画
+            if (positionOffset > 0) {
+                mTabViews.get(position).setIconAlpha(1 - positionOffset);
+                mTabViews.get(position + 1).setIconAlpha(positionOffset);
             }
-            AlphaTabsIndicator.access$302(AlphaTabsIndicator.this, param1Int1);
+            //滑动时保存当前按钮索引
+            mCurrentItem = position;
         }
 
-        public void onPageSelected(int param1Int) {
-            super.onPageSelected(param1Int);
-            AlphaTabsIndicator.this.resetState();
-            ((AlphaTabView)AlphaTabsIndicator.this.mTabViews.get(param1Int)).setIconAlpha(1.0F);
-            AlphaTabsIndicator.access$302(AlphaTabsIndicator.this, param1Int);
+        @Override
+        public void onPageSelected(int position) {
+            super.onPageSelected(position);
+            resetState();
+            mTabViews.get(position).setIconAlpha(1.0f);
+            mCurrentItem = position;
+        }
+    }
+
+    private class MyOnClickListener implements OnClickListener {
+
+        private int currentIndex;
+
+        public MyOnClickListener(int i) {
+            this.currentIndex = i;
+        }
+
+        @Override
+        public void onClick(View v) {
+            //点击前先重置所有按钮的状态
+            resetState();
+            mTabViews.get(currentIndex).setIconAlpha(1.0f);
+            if (null != mListner) {
+                mListner.onTabSelected(currentIndex);
+            }
+            if (null != mViewPager) {
+                //不能使用平滑滚动，否者颜色改变会乱
+                mViewPager.setCurrentItem(currentIndex, false);
+            }
+            //点击是保存当前按钮索引
+            mCurrentItem = currentIndex;
+        }
+    }
+
+    /**
+     * 重置所有按钮的状态
+     */
+    private void resetState() {
+        for (int i = 0; i < mChildCounts; i++) {
+            mTabViews.get(i).setIconAlpha(0);
+        }
+    }
+
+    private static final String STATE_INSTANCE = "instance_state";
+    private static final String STATE_ITEM = "state_item";
+
+    /**
+     * @return 当View被销毁的时候，保存数据
+     */
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(STATE_INSTANCE, super.onSaveInstanceState());
+        bundle.putInt(STATE_ITEM, mCurrentItem);
+        return bundle;
+    }
+
+    /**
+     * @param state 用于恢复数据使用
+     */
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
+            mCurrentItem = bundle.getInt(STATE_ITEM);
+            if (null == mTabViews || mTabViews.isEmpty()) {
+                super.onRestoreInstanceState(bundle.getParcelable(STATE_INSTANCE));
+                return;
+            }
+            //重置所有按钮状态
+            resetState();
+            //恢复点击的条目颜色
+            mTabViews.get(mCurrentItem).setIconAlpha(1.0f);
+            super.onRestoreInstanceState(bundle.getParcelable(STATE_INSTANCE));
+        } else {
+            super.onRestoreInstanceState(state);
         }
     }
 }

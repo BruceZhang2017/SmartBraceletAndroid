@@ -8,28 +8,28 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnItemClickListener;
 import com.health.data.fitday.mine.AboutActivity;
 import com.health.data.fitday.mine.AccountAndSafeActivity;
 import com.health.data.fitday.mine.DataRecordActivity;
 import com.health.data.fitday.mine.HelpCenterActivity;
 import com.health.data.fitday.mine.UserInfoActivity;
 import com.health.data.fitday.utils.SpUtils;
+import com.sinophy.smartbracelet.R;
 
 public class MineFragment extends BaseFragment {
     public static final String BUNDLE_TITLE = "title";
 
-    @BindView(2131230844)
+    @BindView(R.id.btn_exit)
     Button btnExit;
 
-    @BindView(2131231032)
+    @BindView(R.id.iv_user_head)
     ImageView ivHead;
 
     private View mContentView;
@@ -46,35 +46,40 @@ public class MineFragment extends BaseFragment {
         return mineFragment;
     }
 
-    @OnClick({2131230844, 2131230840, 2131230859, 2131230839, 2131230845, 2131230849, 2131230858})
+    @OnClick({R.id.btn_exit, R.id.btn_account_safe, R.id.btn_user_info, R.id.btn_about, R.id.btn_help, R.id.btn_record, R.id.btn_update})
     public void onClick(View paramView) {
-        System.out.println(");
+        Intent intent;
         switch (paramView.getId()) {
-            default:
-                return;
-            case 2131230859:
+            case R.id.btn_user_info:
                 intent = new Intent((Context)this.mContext, UserInfoActivity.class);
                 this.mContext.startActivity(intent);
-            case 2131230858:
-                Toast.makeText((Context)this.mContext, "已经是最新固件", 0).show();
-            case 2131230849:
+                break;
+            case R.id.btn_update:
+                Toast.makeText((Context)this.mContext, "已经是最新固件", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_record:
                 intent = new Intent((Context)this.mContext, DataRecordActivity.class);
                 this.mContext.startActivity(intent);
-            case 2131230845:
+                break;
+            case R.id.btn_help:
                 intent = new Intent((Context)this.mContext, HelpCenterActivity.class);
                 this.mContext.startActivity(intent);
-            case 2131230844:
-                (new AlertView.Builder()).setContext((Context)this.mContext).setStyle(AlertView.Style.Alert).setTitle(").setCancelText(").setDestructive(new String[] { "}).setOnItemClickListener(new OnItemClickListener() {
-                public void onItemClick(Object param1Object, int param1Int) {}
-            }).build().show();
-            case 2131230840:
+                break;
+            case R.id.btn_exit:
+
+                break;
+            case R.id.btn_account_safe:
                 intent = new Intent((Context)this.mContext, AccountAndSafeActivity.class);
                 this.mContext.startActivity(intent);
-            case 2131230839:
+                break;
+            case R.id.btn_about:
+                intent = new Intent((Context)this.mContext, AboutActivity.class);
+                this.mContext.startActivity(intent);
+                break;
+            default:
                 break;
         }
-        Intent intent = new Intent((Context)this.mContext, AboutActivity.class);
-        this.mContext.startActivity(intent);
+
     }
 
     public void onCreate(Bundle paramBundle) {
@@ -83,7 +88,7 @@ public class MineFragment extends BaseFragment {
 
     public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle) {
         this.mContext = (Activity)getActivity();
-        this.mContentView = paramLayoutInflater.inflate(2131427405, paramViewGroup, false);
+        this.mContentView = paramLayoutInflater.inflate(R.layout.fragment_mine, paramViewGroup, false);
         initView();
         return this.mContentView;
     }
@@ -95,7 +100,7 @@ public class MineFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         System.out.println("我的页面");
-                String str = SpUtils.getString((Context)this.mContext, "UserHead");
+        String str = SpUtils.getString((Context)this.mContext, "UserHead");
         if (str != null && str.length() > 0)
             this.ivHead.setImageURI(Uri.parse(str));
     }

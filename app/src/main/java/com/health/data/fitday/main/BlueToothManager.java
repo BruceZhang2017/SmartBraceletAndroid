@@ -19,6 +19,8 @@ import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
+import com.sinophy.smartbracelet.R;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +42,14 @@ public class BlueToothManager {
     }
 
     public boolean checkGPSIsOpen() {
-        LocationManager locationManager = (LocationManager)this.mContext.getSystemService("location");
+        LocationManager locationManager = (LocationManager)this.mContext.getSystemService(Context.LOCATION_SERVICE);
         return (locationManager == null) ? false : locationManager.isProviderEnabled("gps");
     }
 
     public void checkPermissions() {
         if (!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
             Context context = this.mContext;
-            Toast.makeText(context, context.getString(2131755143), 1).show();
+            Toast.makeText(context, context.getString(R.string.please_open_blue), Toast.LENGTH_SHORT).show();
             return;
         }
         String[] arrayOfString = new String[1];
@@ -73,7 +75,7 @@ public class BlueToothManager {
             public void onConnectFail(BleDevice param1BleDevice, BleException param1BleException) {}
 
             public void onConnectSuccess(BleDevice param1BleDevice, BluetoothGatt param1BluetoothGatt, int param1Int) {
-                System.out.println("+ param1BleDevice.getName());
+                System.out.println(""+ param1BleDevice.getName());
             }
 
             public void onDisConnected(boolean param1Boolean, BleDevice param1BleDevice, BluetoothGatt param1BluetoothGatt, int param1Int) {}
@@ -84,18 +86,18 @@ public class BlueToothManager {
 
     public void onPermissionGranted(String paramString) {
         byte b;
-        if (paramString.hashCode() == -1888586689 && paramString.equals("android.permission.ACCESS_FINE_LOCATION")) {
+        if (paramString.equals("android.permission.ACCESS_FINE_LOCATION")) {
             b = 0;
         } else {
             b = -1;
         }
         if (b == 0)
             if (Build.VERSION.SDK_INT >= 23 && !checkGPSIsOpen()) {
-                (new AlertDialog.Builder(this.mContext)).setTitle(2131755125).setMessage(2131755072).setNegativeButton(2131755041, new DialogInterface.OnClickListener() {
+                (new AlertDialog.Builder(this.mContext)).setTitle(R.string.notifyTitle).setMessage(R.string.gpsNotifyMsg).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface param1DialogInterface, int param1Int) {
                         ((Activity)BlueToothManager.this.mContext).finish();
                     }
-                }).setPositiveButton(2131755155, new DialogInterface.OnClickListener() {
+                }).setPositiveButton(R.string.setting, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface param1DialogInterface, int param1Int) {
                         Intent intent = new Intent("android.settings.LOCATION_SOURCE_SETTINGS");
                         ((Activity)BlueToothManager.this.mContext).startActivityForResult(intent, 1);
@@ -108,21 +110,9 @@ public class BlueToothManager {
     }
 
     public void setScanRule() {
-        String[] arrayOfString = new String[1];
-        arrayOfString[0] = "0000FEE7;
-        if (arrayOfString.length > 0) {
-            UUID[] arrayOfUUID = new UUID[arrayOfString.length];
-            for (byte b = 0; b < arrayOfString.length; b++) {
-                if ((arrayOfString[b].split("-")).length != 5) {
-                    arrayOfUUID[b] = null;
-                } else {
-                    arrayOfUUID[b] = UUID.fromString(arrayOfString[b]);
-                }
-            }
-        }
         BleScanRuleConfig bleScanRuleConfig = (new BleScanRuleConfig.Builder()).setScanTimeOut(10000L).build();
         BleManager.getInstance().initScanRule(bleScanRuleConfig);
-        System.out.println(");
+        System.out.println("");
     }
 
     public void startScan() {
@@ -132,13 +122,13 @@ public class BlueToothManager {
             }
 
             public void onScanFinished(List<BleDevice> param1List) {
-                System.out.println("+ param1List.size());
+                System.out.println(""+ param1List.size());
             }
 
             public void onScanStarted(boolean param1Boolean) {
                 String str;
                 PrintStream printStream = System.out;
-                StringBuilder stringBuilder = (new StringBuilder()).append(");
+                StringBuilder stringBuilder = (new StringBuilder()).append("");
                 if (param1Boolean) {
                     str = "YES";
                 } else {
@@ -150,7 +140,7 @@ public class BlueToothManager {
             public void onScanning(BleDevice param1BleDevice) {
                 if (param1BleDevice.getName() == null || param1BleDevice.getName().length() == 0)
                     return;
-                System.out.println("+ param1BleDevice.getName() + " MAC" + param1BleDevice.getMac());
+                System.out.println("设备名称："+ param1BleDevice.getName() + " MAC" + param1BleDevice.getMac());
                 if (!param1BleDevice.getName().equals("PFm5"))
                     return;
                 BlueToothManager.this.stopScan();

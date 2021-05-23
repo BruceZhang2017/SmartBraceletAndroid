@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.sinophy.smartbracelet.R;
+
 import java.util.List;
 
 class HelpCenterAdapter extends BaseAdapter {
@@ -37,8 +40,8 @@ class HelpCenterAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (paramView == null) {
             viewHolder = new ViewHolder();
-            paramView = this.mLayoutInflater.inflate(2131427425, null);
-            viewHolder.titleTextView = (TextView)paramView.findViewById(2131231330);
+            paramView = this.mLayoutInflater.inflate(R.layout.item_help_center, null);
+            viewHolder.titleTextView = (TextView)paramView.findViewById(R.id.tv_question);
             paramView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder)paramView.getTag();

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import com.health.data.fitday.mine.LoginActivity;
 import com.health.data.fitday.utils.SpUtils;
+import com.sinophy.smartbracelet.R;
 
 public class SplashActivity extends Activity {
     private void enterHomeActivity() {
@@ -26,7 +27,7 @@ public class SplashActivity extends Activity {
             finish();
             return;
         }
-        setContentView(2131427377);
+        setContentView(R.layout.activity_splash);
         (new Handler()).postDelayed(new Runnable() {
             public void run() {
                 SplashActivity.this.enterHomeActivity();

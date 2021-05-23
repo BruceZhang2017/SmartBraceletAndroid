@@ -11,16 +11,17 @@ import butterknife.OnClick;
 import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.MapView;
 import com.health.data.fitday.sport.NavitationLayout;
+import com.sinophy.smartbracelet.R;
 
 public class SportFragment extends BaseFragment {
     public static final String BUNDLE_TITLE = "title";
 
     private View mContentView;
 
-    @BindView(2131231210)
+    @BindView(R.id.sport_map)
     MapView mapView;
 
-    @BindView(2131231211)
+    @BindView(R.id.sport_type_all)
     NavitationLayout navitationLayout;
 
     private String[] types = new String[] { "跑步", "登山", "骑车", "步行"};
@@ -57,7 +58,7 @@ public class SportFragment extends BaseFragment {
 
     public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle) {
         this.mContext = (Activity)getActivity();
-        View view = paramLayoutInflater.inflate(2131427407, paramViewGroup, false);
+        View view = paramLayoutInflater.inflate(R.layout.fragment_sport, paramViewGroup, false);
         this.mContentView = view;
         ButterKnife.bind(this, view);
         initView(paramBundle);
