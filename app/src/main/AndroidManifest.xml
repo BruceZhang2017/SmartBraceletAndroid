@@ -82,11 +82,6 @@
             android:value="7a0d9f6439671914761f0e9f1a61b1bd" />
 
         <activity
-            android:name="com.health.data.fitday.SearchActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name="com.health.data.fitday.main.SplashActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
@@ -113,9 +108,6 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name="com.sahooz.library.PickActivity"
-            android:windowSoftInputMode="adjustPan" />
 
         <service android:name="com.amap.api.location.APSService" />
 

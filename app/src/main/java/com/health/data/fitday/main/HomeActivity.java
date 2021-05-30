@@ -19,12 +19,11 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity {
     private static final int REQUEST_CODE_OPEN_GPS = 1;
-
     private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
 
     private AlphaTabsIndicator alphaTabsIndicator;
 
-    public BlueToothManager bleManager;
+    //public BlueToothManager bleManager;
 
     private long exitTime = 0L;
 
@@ -33,7 +32,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void initData() {
-        this.bleManager = new BlueToothManager((Application)MyApplication.getInstance(), (Context)this);
+        //bleManager = new BlueToothManager((Application)MyApplication.getInstance(), (Context)this);
     }
 
     protected void initView() {
@@ -48,10 +47,10 @@ public class HomeActivity extends BaseActivity {
 
     protected void onActivityResult(int paramInt1, int paramInt2, Intent paramIntent) {
         super.onActivityResult(paramInt1, paramInt2, paramIntent);
-        if (paramInt1 == 1 && this.bleManager.checkGPSIsOpen()) {
-            this.bleManager.setScanRule();
-            this.bleManager.startScan();
-        }
+        //if (paramInt1 == 1 && bleManager.checkGPSIsOpen()) {
+            //bleManager.setScanRule();
+            //bleManager.startScan();
+       // }
     }
 
     public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent) {
@@ -71,13 +70,14 @@ public class HomeActivity extends BaseActivity {
         super.onRequestPermissionsResult(paramInt, paramArrayOfString, paramArrayOfint);
         if (paramInt == 2 && paramArrayOfint.length > 0)
             for (paramInt = 0; paramInt < paramArrayOfint.length; paramInt++) {
-                if (paramArrayOfint[paramInt] == 0)
-                    this.bleManager.onPermissionGranted(paramArrayOfString[paramInt]);
+                if (paramArrayOfint[paramInt] == 0) {
+                    //bleManager.onPermissionGranted(paramArrayOfString[paramInt]);
+                }
             }
     }
 
     public void startSearchingDevice() {
-        this.bleManager.checkPermissions();
+        //bleManager.checkPermissions();
     }
 
     private class HomeAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {

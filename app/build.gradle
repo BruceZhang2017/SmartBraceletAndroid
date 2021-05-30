@@ -27,7 +27,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:30.+'
     api files('libs/tjd-wristBand-lefun.jar')
-    implementation project(':countrypicker')
+
     implementation 'com.jakewharton:butterknife:10.2.0'
     androidTestCompile(
             'com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -80,4 +80,5 @@ dependencies {
     implementation 'com.github.zhpanvip:BannerViewPager:latest.integration'
 
     implementation 'com.clj.fastble:FastBleLib:2.3.4'
+    implementation 'com.hbb20:ccp:2.5.1'
 }

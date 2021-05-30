@@ -173,9 +173,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.btn_search:
-                startActivity(new Intent(mMainActivity,SearchActivity.class));
-                break;
             case R.id.btn_step:
                 pedoData(tv_date.getText().toString(), true);
                 break;

@@ -36,6 +36,7 @@ public class SearchLoadingView extends View {
             if (start > mPointCount)
                 start = 0;
             postInvalidate();
+            start += 1;
         }
     };
 
@@ -93,7 +94,7 @@ public class SearchLoadingView extends View {
     }
 
     public void startAnimation() {
-        this.timer.schedule(this.task, 1000L, 50L);
+        this.timer.schedule(this.task, 1000L, 200L);
     }
 
     public void stopAnimation() {

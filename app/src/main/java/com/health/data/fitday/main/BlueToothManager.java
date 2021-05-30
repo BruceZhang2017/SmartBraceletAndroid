@@ -37,8 +37,8 @@ public class BlueToothManager {
         this.mContext = paramContext;
         BleManager.getInstance().init(paramApplication);
         BleManager.getInstance().enableLog(true).setReConnectCount(1, 5000L).setConnectOverTime(20000L).setOperateTimeout(5000);
-        System.out.println("" + BleManager.getInstance().isSupportBle());
-        System.out.println("" + BleManager.getInstance().isBlueEnable());
+        System.out.println("是否支持蓝牙：" + BleManager.getInstance().isSupportBle());
+        System.out.println("蓝牙是否开启：" + BleManager.getInstance().isBlueEnable());
     }
 
     public boolean checkGPSIsOpen() {
@@ -112,7 +112,6 @@ public class BlueToothManager {
     public void setScanRule() {
         BleScanRuleConfig bleScanRuleConfig = (new BleScanRuleConfig.Builder()).setScanTimeOut(10000L).build();
         BleManager.getInstance().initScanRule(bleScanRuleConfig);
-        System.out.println("");
     }
 
     public void startScan() {
@@ -141,8 +140,6 @@ public class BlueToothManager {
                 if (param1BleDevice.getName() == null || param1BleDevice.getName().length() == 0)
                     return;
                 System.out.println("设备名称："+ param1BleDevice.getName() + " MAC" + param1BleDevice.getMac());
-                if (!param1BleDevice.getName().equals("PFm5"))
-                    return;
                 BlueToothManager.this.stopScan();
                 BlueToothManager.this.connect(param1BleDevice);
             }

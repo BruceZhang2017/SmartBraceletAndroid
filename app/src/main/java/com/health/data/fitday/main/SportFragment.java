@@ -27,9 +27,9 @@ public class SportFragment extends BaseFragment {
     private String[] types = new String[] { "跑步", "登山", "骑车", "步行"};
 
     private void initData() {
-        this.navitationLayout.setViewPager(getContext(), this.types, 2131034178, 2131034176, 16, 16, 0, 0, true);
-        this.navitationLayout.setBgLine(getContext(), 1, 2131034171);
-        this.navitationLayout.setNavLine((Activity)getActivity(), 3, 2131034172, 0);
+        this.navitationLayout.setViewPager(getContext(), this.types, R.color.color_333333, R.color.color_2581ff, 16, 16, 0, 0, true);
+        this.navitationLayout.setBgLine(getContext(), 1, R.color.colorAccent);
+        this.navitationLayout.setNavLine((Activity)getActivity(), 3, R.color.colorPrimary, 0);
     }
 
     private void initView(Bundle paramBundle) {
