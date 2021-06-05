@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +49,7 @@ public class SearchDeviceActivity extends BaseActivity {
 
     protected void initView() {
         ButterKnife.bind(this);
+        mContext = this;
         this.actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
             public void onClick(View param1View) {
                 finish();
@@ -62,8 +64,7 @@ public class SearchDeviceActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Log.w(TAG, "onItemClick on:"+position+" "+mLVdapter.getDevice(position).getAddress());
-                //Dev.Try_Connect(mLVdapter.getDevice(position),new Dev.ConnectReslutCB(){
-                Dev.Try_Connect(mLVdapter.getDevice(position),/*"DC123456789a"*/mLVdapter.getDeviceInfo(position),new Dev.ConnectReslutCB(){
+                Dev.Try_Connect(mLVdapter.getDevice(position),mLVdapter.getDeviceInfo(position),new Dev.ConnectReslutCB(){
                     @Override
                     public void OnConnectReslut(boolean CntExists, BluetoothDevice inBluetoothDevice) {
 
@@ -71,11 +72,10 @@ public class SearchDeviceActivity extends BaseActivity {
 
                         if(CntExists) {
                             ScanLeDevice(false);
-                            //UpdateUi_BtConInfo();
                             Dev.RemoteDev_CloseManual();
-                            Dev.Cache_Connect(mLVdapter.getDevice(position),/*"DC123456789a"*/mLVdapter.getDeviceInfo(position));//lh new InfoCode
-
+                            Dev.Cache_Connect(mLVdapter.getDevice(position),mLVdapter.getDeviceInfo(position));//lh new InfoCode
                         }
+                        finish();
                     }
                     @Override
                     public void OnNewDev(String Event, String ConnectInfo) {
@@ -110,9 +110,11 @@ public class SearchDeviceActivity extends BaseActivity {
     }
 
     @SuppressLint("NewApi")
-    @SuppressWarnings("deprecation")
     private void ScanLeDevice(final boolean enable) {
         if (enable) {
+            String []FilterNamas=new String[]{"Lefun","F1","W3"};
+            Dev.SetScanFilterLi(0,FilterNamas);
+            Dev.SetScanFilter(1,"TJDR");
             Dev.StartScan(mContext, mLeBTModScanCBs,10000);
             Log.i(TAG,"Bt_scanLeDevice On ");
         } else {

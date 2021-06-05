@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -19,6 +21,8 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.sinophy.smartbracelet.R;
+import com.tjdL4.tjdmain.contr.Health_HeartBldPrs;
+import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
@@ -29,14 +33,28 @@ public class HealthFragment extends BaseFragment {
     @BindView(R.id.simple_action_bar)
     ActionBarCommon actionBarCommon;
 
+    @BindView(R.id.tv_step_value)
+    TextView tvStepValue;
+    @BindView(R.id.tv_km)
+    TextView tvKM;
+    @BindView(R.id.tv_cal_value)
+    TextView tvCalValue;
+    @BindView(R.id.tv_heart_value)
+    TextView tvHeartValue;
+    @BindView(R.id.tv_sleep_value)
+    TextView tvSleepH;
+    @BindView(R.id.tv_sleep_m_value)
+    TextView tvSleepM;
+    @BindView(R.id.tv_blood_value)
+    TextView tvBloodValue;
+
     private View mContentView;
 
     private void initData() {
         this.actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
             public void onClick(View param1View) {
-                Intent intent = new Intent((Context)HealthFragment.this.mContext, SearchDeviceActivity.class);
-                HealthFragment.this.mContext.startActivity(intent);
-                ((HomeActivity)HealthFragment.this.mContext).startSearchingDevice();
+                Intent intent = new Intent((Context)mContext, SearchDeviceActivity.class);
+                mContext.startActivity(intent);
             }
         });
     }
@@ -85,5 +103,24 @@ public class HealthFragment extends BaseFragment {
 
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    public void refreshUI(Health_TodayPedo.TodayStepPageData stepData) {
+        tvStepValue.setText(stepData.step);
+        tvKM.setText(String.format("%.2f", Float.parseFloat(stepData.distance) / 1000) + "公里");
+        tvCalValue.setText(stepData.energy);
+    }
+
+    public  void refreshUI(String mHeartData) {
+        tvHeartValue.setText(mHeartData);
+    }
+
+    public void refreshUI(int sleep) {
+        tvSleepH.setText(sleep / 60 + "");
+        tvSleepM.setText(sleep % 60 + "");
+    }
+
+    public void refreshUIBlood(String value) {
+        tvBloodValue.setText(value);
     }
 }

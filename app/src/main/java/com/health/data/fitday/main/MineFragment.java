@@ -15,10 +15,17 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import com.tjdL4.tjdmain.Dev;
+import com.tjdL4.tjdmain.L4M;
+
+import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.health.data.fitday.mine.AboutActivity;
 import com.health.data.fitday.mine.AccountAndSafeActivity;
 import com.health.data.fitday.mine.DataRecordActivity;
 import com.health.data.fitday.mine.HelpCenterActivity;
+import com.health.data.fitday.mine.LoginActivity;
 import com.health.data.fitday.mine.UserInfoActivity;
 import com.health.data.fitday.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
@@ -66,7 +73,19 @@ public class MineFragment extends BaseFragment {
                 this.mContext.startActivity(intent);
                 break;
             case R.id.btn_exit:
-
+                new AlertView("提示", "您确定退出该账号", "取消", new String[]{"确定"}, null, this.mContext,
+                        AlertView.Style.Alert, new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(Object o, int position) {
+                        if (position == 0) {
+                            if (L4M.Get_Connect_flag() == 2) {
+                                Dev.RemoteDev_CloseManual(); // 手动断开
+                            }
+                            Intent intent = new Intent(MineFragment.this.mContext, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    }
+                }).show();
                 break;
             case R.id.btn_account_safe:
                 intent = new Intent((Context)this.mContext, AccountAndSafeActivity.class);

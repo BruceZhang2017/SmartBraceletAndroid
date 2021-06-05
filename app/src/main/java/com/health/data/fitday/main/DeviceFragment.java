@@ -1,18 +1,24 @@
 package com.health.data.fitday.main;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import com.health.data.fitday.device.CustomPopup;
 import com.health.data.fitday.device.DeviceBean;
+import com.health.data.fitday.device.DialBean;
 import com.health.data.fitday.device.SimpleAdapter;
 import com.health.data.fitday.device.adapter.GiftPackageAdapter;
 import com.health.data.fitday.device.widget.HorizontalListView;
+import com.lxj.xpopup.XPopup;
 import com.sinophy.smartbracelet.R;
 import com.zhpan.bannerview.BannerViewPager;
 import com.zhpan.bannerview.BaseBannerAdapter;
@@ -24,6 +30,8 @@ public class DeviceFragment extends BaseFragment {
     HorizontalListView horizontalListView;
 
     List<DeviceBean> list = new ArrayList<>();
+    GiftPackageAdapter dailAdapter;
+    BaseBannerAdapter deviceAdapter;
 
     private View mContentView;
 
@@ -40,15 +48,37 @@ public class DeviceFragment extends BaseFragment {
 
     void initData() {
         this.list.add(new DeviceBean());
-        this.mViewPager.setLifecycleRegistry(getLifecycle()).setAdapter((BaseBannerAdapter)new SimpleAdapter()).create(this.list);
-        this.horizontalListView.setAdapter((ListAdapter)new GiftPackageAdapter());
+        deviceAdapter = (BaseBannerAdapter)new SimpleAdapter();
+        mViewPager.setLifecycleRegistry(getLifecycle()).setAdapter(deviceAdapter).create(this.list);
+        dailAdapter = new GiftPackageAdapter();
+        List<DialBean> list = new ArrayList<>();
+        DialBean dialA = new DialBean();
+        dialA.setDialName("ITIME-1");
+        dialA.setImage(R.mipmap.preview_watch1);
+        DialBean dialB = new DialBean();
+        dialB.setDialName("ITIME-2");
+        dialB.setImage(R.mipmap.preview_watch2);
+        DialBean dialC = new DialBean();
+        dialC.setDialName("ITIME-3");
+        dialC.setImage(R.mipmap.preview_watch3);
+        list.add(dialA);
+        list.add(dialB);
+        list.add(dialC);
+        dailAdapter.list = list;
+        horizontalListView.setAdapter(dailAdapter);
+//        dailAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//            }
+//        });
     }
 
     void initView() {}
 
-    public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle) {
+    public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup viewGroup, Bundle bundle) {
         this.mContext = (Activity)getActivity();
-        View view = paramLayoutInflater.inflate(R.layout.fragment_device, paramViewGroup, false);
+        View view = paramLayoutInflater.inflate(R.layout.fragment_device, viewGroup, false);
         this.mContentView = view;
         ButterKnife.bind(this, view);
         initView();
@@ -56,10 +86,15 @@ public class DeviceFragment extends BaseFragment {
         return this.mContentView;
     }
 
-    @OnClick
-    public void onDialIntroduction(View paramView) {}
+    @OnClick(R.id.ib_desc)
+    public void onDialIntroduction(View view) {
+        Context context = (Context)mContext;
+        new XPopup.Builder(context)
+                .asCustom(new CustomPopup(context))
+                .show();
+    }
 
-    public void onViewCreated(View paramView, Bundle paramBundle) {
-        super.onViewCreated(paramView, paramBundle);
+    public void onViewCreated(View view, Bundle bundle) {
+        super.onViewCreated(view, bundle);
     }
 }

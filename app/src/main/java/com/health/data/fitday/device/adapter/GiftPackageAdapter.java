@@ -4,30 +4,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.health.data.fitday.device.DialBean;
+import com.shehuan.niv.NiceImageView;
 import com.sinophy.smartbracelet.R;
 
+import java.util.List;
+
 public class GiftPackageAdapter extends BaseAdapter {
+    public List<DialBean> list;
+
     public int getCount() {
-        return 3;
+        return list.size();
     }
 
-    public Object getItem(int paramInt) {
-        return null;
+    public Object getItem(int position) {
+        return list.get(position);
     }
 
-    public long getItemId(int paramInt) {
-        return 0L;
+    public long getItemId(int position) {
+        return position;
     }
 
-    public View getView(int paramInt, View paramView, ViewGroup paramViewGroup) {
-        if (paramView == null) {
-            DialBean dialBean = new DialBean();
-            paramView = LayoutInflater.from(paramViewGroup.getContext()).inflate(R.layout.item_gift_package, null);
-            paramView.setTag(dialBean);
-        } else {
-            DialBean dialBean = (DialBean)paramView.getTag();
+    public View getView(int position, View view, ViewGroup viewGroup) {
+        if (view == null) {
+            view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_gift_package, null);
         }
-        return paramView;
+        TextView tvName = view.findViewById(R.id.tv_dial_name);
+        tvName.setText(list.get(position).getDialName());
+        NiceImageView ivDial = view.findViewById(R.id.iv_dial);
+        ivDial.setImageResource(list.get(position).getImage());
+        return view;
     }
 }
