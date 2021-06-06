@@ -67,4 +67,5 @@ CONTENT"</string>
     <string name="title_activity_account_and_safe">AccountAndSafeActivity</string>
     <string name="type">服务类型(主服务)</string>
     <string name="write">写</string>
+    <string name="title_activity_dial_market_acitivity">DialMarketAcitivity</string>
 </resources>

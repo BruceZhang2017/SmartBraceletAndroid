@@ -1,4 +1,4 @@
-package com.health.data.fitday.device;
+package com.health.data.fitday.device.model;
 
 public class DialBean {
     String dialName = "";

@@ -2,20 +2,21 @@ package com.health.data.fitday.main;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import com.health.data.fitday.device.CustomPopup;
-import com.health.data.fitday.device.DeviceBean;
-import com.health.data.fitday.device.DialBean;
-import com.health.data.fitday.device.SimpleAdapter;
+import com.health.data.fitday.device.DialMarketAcitivity;
+import com.health.data.fitday.device.model.DeviceBean;
+import com.health.data.fitday.device.model.DialBean;
+import com.health.data.fitday.device.adapter.SimpleAdapter;
 import com.health.data.fitday.device.adapter.GiftPackageAdapter;
 import com.health.data.fitday.device.widget.HorizontalListView;
 import com.lxj.xpopup.XPopup;
@@ -66,12 +67,13 @@ public class DeviceFragment extends BaseFragment {
         list.add(dialC);
         dailAdapter.list = list;
         horizontalListView.setAdapter(dailAdapter);
-//        dailAdapter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//            }
-//        });
+        dailAdapter.setmOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, DialMarketAcitivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     void initView() {}

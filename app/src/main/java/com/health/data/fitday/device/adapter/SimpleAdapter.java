@@ -1,6 +1,7 @@
-package com.health.data.fitday.device;
+package com.health.data.fitday.device.adapter;
 
 
+import com.health.data.fitday.device.model.DeviceBean;
 import com.sinophy.smartbracelet.R;
 import com.zhpan.bannerview.BaseBannerAdapter;
 import com.zhpan.bannerview.BaseViewHolder;

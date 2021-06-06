@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.viewpager.widget.ViewPager;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,17 +27,26 @@ public class SportFragment extends BaseFragment {
     @BindView(R.id.sport_type_all)
     NavitationLayout navitationLayout;
 
-    private String[] types = new String[] { "跑步", "登山", "骑车", "步行"};
+    @BindView(R.id.vp_sport)
+    ViewPager vpSport;
+
+    private String[] types = new String[] { "跑步", "骑车", "步行"};
 
     private void initData() {
-        this.navitationLayout.setViewPager(getContext(), this.types, R.color.color_333333, R.color.color_2581ff, 16, 16, 0, 0, true);
-        this.navitationLayout.setBgLine(getContext(), 1, R.color.colorAccent);
-        this.navitationLayout.setNavLine((Activity)getActivity(), 3, R.color.colorPrimary, 0);
+        navitationLayout.setViewPager(getActivity(), types, vpSport, R.color.color_333333, R.color.color_2581ff, 16, 16, 0, 0, true);
+        navitationLayout.setBgLine(getActivity(), 1, R.color.colorAccent);
+        navitationLayout.setNavLine(getActivity(), 3, R.color.colorPrimary, 0);
+        navitationLayout.setOnTitleClickListener(new NavitationLayout.OnTitleClickListener() {
+            @Override
+            public void onTitleClick(View param1View) {
+                System.out.println("你为什么点击这里");
+            }
+        });
     }
 
     private void initView(Bundle paramBundle) {
-        this.mapView.onCreate(paramBundle);
-        AMap aMap = this.mapView.getMap();
+        mapView.onCreate(paramBundle);
+        AMap aMap = mapView.getMap();
         aMap.setTrafficEnabled(true);
         aMap.setMapType(1);
     }
@@ -45,11 +57,6 @@ public class SportFragment extends BaseFragment {
         SportFragment sportFragment = new SportFragment();
         sportFragment.setArguments(bundle);
         return sportFragment;
-    }
-
-    @OnClick({})
-    public void onClick(View paramView) {
-        paramView.getId();
     }
 
     public void onCreate(Bundle paramBundle) {

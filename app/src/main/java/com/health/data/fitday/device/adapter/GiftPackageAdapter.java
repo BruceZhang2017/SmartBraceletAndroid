@@ -4,16 +4,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.health.data.fitday.device.DialBean;
+import com.health.data.fitday.device.model.DialBean;
 import com.shehuan.niv.NiceImageView;
 import com.sinophy.smartbracelet.R;
 
 import java.util.List;
 
 public class GiftPackageAdapter extends BaseAdapter {
+    View.OnClickListener mOnClickListener;
     public List<DialBean> list;
 
     public int getCount() {
@@ -36,6 +36,15 @@ public class GiftPackageAdapter extends BaseAdapter {
         tvName.setText(list.get(position).getDialName());
         NiceImageView ivDial = view.findViewById(R.id.iv_dial);
         ivDial.setImageResource(list.get(position).getImage());
+        view.setOnClickListener(mOnClickListener);
         return view;
+    }
+
+    public View.OnClickListener getmOnClickListener() {
+        return mOnClickListener;
+    }
+
+    public void setmOnClickListener(View.OnClickListener mOnClickListener) {
+        this.mOnClickListener = mOnClickListener;
     }
 }

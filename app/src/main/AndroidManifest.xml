@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sinophy.smartbracelet"
     android:compileSdkVersion="28"
@@ -54,6 +54,11 @@
         android:supportsRtl="true"
         android:testOnly="true"
         android:theme="@style/AppTheme">
+        <activity android:name="com.health.data.fitday.device.DialUploadActivity"></activity>
+        <activity
+            android:name="com.health.data.fitday.device.DialMarketAcitivity"
+            android:label="@string/title_activity_dial_market_acitivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name="com.health.data.fitday.device.SearchDeviceActivity" />
         <activity android:name="com.health.data.fitday.mine.EditContentActivity" />
         <activity android:name="com.health.data.fitday.mine.LoginActivity" />
@@ -89,6 +94,7 @@
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -110,6 +116,6 @@
             android:windowSoftInputMode="stateHidden" />
 
         <service android:name="com.amap.api.location.APSService" />
-
     </application>
+
 </manifest>

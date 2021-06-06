@@ -26,7 +26,7 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.google.gson.Gson;
-import com.health.data.fitday.device.UserBean;
+import com.health.data.fitday.device.model.UserBean;
 import com.health.data.fitday.main.BaseActivity;
 import com.health.data.fitday.utils.SpUtils;
 import com.lljjcoder.style.citylist.CityListSelectActivity;

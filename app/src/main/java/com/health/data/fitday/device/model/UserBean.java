@@ -1,30 +1,18 @@
-package com.health.data.fitday.device;
+package com.health.data.fitday.device.model;
 
 public class UserBean {
     String area;
-
     String birthday;
-
     String country;
-
     String email;
-
     String headUrl;
-
     int height = 0;
-
     int id = 0;
-
     String mobile;
-
     String nickname;
-
     int sex = 0;
-
     String token;
-
     String username;
-
     int weight = 0;
 
     public String getArea() {

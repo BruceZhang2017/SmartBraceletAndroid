@@ -5,32 +5,46 @@
     android:layout_height="fill_parent"
     >
 
+    <com.health.data.fitday.utils.statusbar.StatusBarHeightView
+        android:id="@+id/view_status_bar_height"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:background="#ffffffff"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:use_type="use_padding_top"
+        />
+
     <per.goweii.actionbarex.common.ActionBarCommon
         android:id="@+id/simple_action_bar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#fff5f5f5"
+        android:background="#ffffffff"
         app:ab_autoImmersion="false"
         app:ab_bottomLineHeight="0.0dip"
         app:ab_statusBarMode="light"
         app:ab_statusBarVisible="false"
         app:ab_titleBarHeight="48.0dip"
-        app:abc_leftIconRes="@mipmap/nav_icon_add_normal"
+        app:abc_leftIconRes="@mipmap/nav_icon_back_normal"
         app:abc_leftText=""
         app:abc_leftTextPaddingLeft="0.0dip"
         app:abc_leftTextPaddingRight="0.0dip"
-        app:abc_rightText="运动"
+        app:abc_rightText=""
         app:abc_rightTextPaddingLeft="0.0dip"
         app:abc_rightTextPaddingRight="10.0dip"
-        app:abc_titleText=""
+        app:abc_titleText="表盘管理"
         app:abc_titleTextMaxWidth="180.0dip"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_status_bar_height"
         />
 
     <com.health.data.fitday.sport.NavitationLayout
-        android:id="@+id/sport_type_all"
+        android:id="@+id/dial_type_all"
         android:layout_width="fill_parent"
         android:layout_height="50.0dip"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -39,23 +53,14 @@
         />
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/vp_sport"
+        android:id="@+id/vp_dial"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sport_type_all"
+        app:layout_constraintTop_toBottomOf="@id/dial_type_all"
         />
 
-    <com.amap.api.maps2d.MapView
-        android:id="@+id/sport_map"
-        android:layout_width="fill_parent"
-        android:layout_height="0.0dip"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sport_type_all"
-        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
