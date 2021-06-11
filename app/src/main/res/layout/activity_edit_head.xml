@@ -6,20 +6,6 @@
     android:background="#fff5f5f5"
     >
 
-    <com.health.data.fitday.utils.statusbar.StatusBarHeightView
-        android:id="@+id/view_status_bar_height"
-        android:layout_width="0.0dip"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:background="#ffffffff"
-        android:orientation="vertical"
-        android:visibility="visible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:use_type="use_padding_top"
-        />
-
     <ImageView
         android:id="@+id/iv_gradient_bg"
         android:layout_width="fill_parent"
@@ -52,7 +38,7 @@
         app:abc_titleTextMaxWidth="180.0dip"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_status_bar_height"
+        app:layout_constraintTop_toTopOf="parent"
         />
 
     <ImageView
