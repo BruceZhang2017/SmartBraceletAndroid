@@ -84,7 +84,6 @@ public class HealthFragment extends BaseFragment {
         return healthFragment;
     }
 
-    @OnClick({})
     public void onClick(View paramView) {
         paramView.getId();
     }

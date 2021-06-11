@@ -52,9 +52,12 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:testOnly="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.health.data.fitday.device.DialUploadActivity"></activity>
+        <activity android:name="com.health.data.fitday.device.DeviceFoundActivity"></activity>
+        <activity android:name="com.health.data.fitday.device.DeviceInfoActivity" />
+        <activity android:name="com.health.data.fitday.device.DeviceDetailPushActivity" />
+        <activity android:name="com.health.data.fitday.device.DeviceDetailActivity" />
+        <activity android:name="com.health.data.fitday.device.DialUploadActivity" />
         <activity
             android:name="com.health.data.fitday.device.DialMarketAcitivity"
             android:label="@string/title_activity_dial_market_acitivity"

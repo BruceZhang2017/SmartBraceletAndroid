@@ -16,6 +16,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import com.health.data.fitday.device.model.DeviceBean;
 import com.health.data.fitday.main.BaseActivity;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.Dev;
@@ -23,6 +24,7 @@ import com.tjdL4.tjdmain.L4M;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 

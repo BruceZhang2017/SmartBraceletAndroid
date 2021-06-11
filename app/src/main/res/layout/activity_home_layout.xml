@@ -43,18 +43,18 @@
             app:textColorSelected="@color/colorTabSelected"
             />
 
-        <com.health.data.fitday.main.widget.AlphaTabView
-            android:layout_width="0.0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1.0"
-            android:padding="5.0dip"
-            app:tabIconNormal="@mipmap/tab_icon_sport_default"
-            app:tabIconSelected="@mipmap/tab_icon_sport_highlight"
-            app:tabText="运动"
-            app:tabTextSize="13.0sp"
-            app:textColorNormal="@color/colorTabNormal"
-            app:textColorSelected="@color/colorTabSelected"
-            />
+<!--        <com.health.data.fitday.main.widget.AlphaTabView-->
+<!--            android:layout_width="0.0dip"-->
+<!--            android:layout_height="fill_parent"-->
+<!--            android:layout_weight="1.0"-->
+<!--            android:padding="5.0dip"-->
+<!--            app:tabIconNormal="@mipmap/tab_icon_sport_default"-->
+<!--            app:tabIconSelected="@mipmap/tab_icon_sport_highlight"-->
+<!--            app:tabText="运动"-->
+<!--            app:tabTextSize="13.0sp"-->
+<!--            app:textColorNormal="@color/colorTabNormal"-->
+<!--            app:textColorSelected="@color/colorTabSelected"-->
+<!--            />-->
 
         <com.health.data.fitday.main.widget.AlphaTabView
             android:layout_width="0.0dip"

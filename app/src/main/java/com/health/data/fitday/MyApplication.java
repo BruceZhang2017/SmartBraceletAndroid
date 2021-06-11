@@ -7,6 +7,9 @@ import androidx.multidex.MultiDex;
 
 import com.tjdL4.tjdmain.L4M;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 
 public class MyApplication extends Application {
 	private static final String TAG = "MyApplication";
@@ -22,7 +25,9 @@ public class MyApplication extends Application {
 		context = getApplicationContext();
 		MultiDex.install(this);
 		Init_data();
-
+		Realm.init(context);
+		RealmConfiguration config = new RealmConfiguration.Builder().name("bracelet").build();
+		Realm.setDefaultConfiguration(config);
     }
 
 

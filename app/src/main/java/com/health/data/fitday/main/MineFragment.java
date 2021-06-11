@@ -3,6 +3,7 @@ package com.health.data.fitday.main;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +37,10 @@ public class MineFragment extends BaseFragment {
 
     @BindView(R.id.btn_exit)
     Button btnExit;
-
+    @BindView(R.id.tv_watch_battery)
+    TextView tvBattery;
+    @BindView(R.id.tv_watch_ble)
+    TextView tvBLE;
     @BindView(R.id.iv_user_head)
     ImageView ivHead;
 
@@ -43,6 +48,16 @@ public class MineFragment extends BaseFragment {
 
     private void initView() {
         ButterKnife.bind(this, this.mContentView);
+        if (L4M.Get_Connect_flag() == 2) {
+            tvBLE.setText("设备已连接");
+            setDrawableLeft(tvBLE, R.mipmap.content_blueteeth_link);
+        }
+    }
+
+    private void setDrawableLeft(TextView attention, int drawableId) {
+        Drawable drawable = getResources().getDrawable(drawableId);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        attention.setCompoundDrawables(drawable, null, null, null);
     }
 
     public static MineFragment newInstance(String paramString) {

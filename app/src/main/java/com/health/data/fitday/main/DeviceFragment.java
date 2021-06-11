@@ -13,6 +13,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import com.health.data.fitday.device.CustomPopup;
+import com.health.data.fitday.device.DeviceDetailActivity;
 import com.health.data.fitday.device.DialMarketAcitivity;
 import com.health.data.fitday.device.model.DeviceBean;
 import com.health.data.fitday.device.model.DialBean;
@@ -32,7 +33,7 @@ public class DeviceFragment extends BaseFragment {
 
     List<DeviceBean> list = new ArrayList<>();
     GiftPackageAdapter dailAdapter;
-    BaseBannerAdapter deviceAdapter;
+    SimpleAdapter deviceAdapter;
 
     private View mContentView;
 
@@ -48,9 +49,9 @@ public class DeviceFragment extends BaseFragment {
     }
 
     void initData() {
-        this.list.add(new DeviceBean());
-        deviceAdapter = (BaseBannerAdapter)new SimpleAdapter();
-        mViewPager.setLifecycleRegistry(getLifecycle()).setAdapter(deviceAdapter).create(this.list);
+        list.add(new DeviceBean());
+        deviceAdapter = new SimpleAdapter();
+        mViewPager.setLifecycleRegistry(getLifecycle()).setAdapter(deviceAdapter).create(list);
         dailAdapter = new GiftPackageAdapter();
         List<DialBean> list = new ArrayList<>();
         DialBean dialA = new DialBean();
@@ -71,6 +72,14 @@ public class DeviceFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, DialMarketAcitivity.class);
+                startActivity(intent);
+            }
+        });
+
+        deviceAdapter.setmOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, DeviceDetailActivity.class);
                 startActivity(intent);
             }
         });

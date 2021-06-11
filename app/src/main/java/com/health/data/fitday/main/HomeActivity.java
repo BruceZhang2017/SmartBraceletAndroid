@@ -18,6 +18,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.health.data.fitday.MyApplication;
 import com.health.data.fitday.PermissionUtil;
 import com.health.data.fitday.device.SearchDeviceActivity;
+import com.health.data.fitday.device.model.DeviceBean;
+import com.health.data.fitday.global.RealmOperationHelper;
 import com.health.data.fitday.main.widget.AlphaTabsIndicator;
 import com.health.data.fitday.utils.ToastUtil;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -33,6 +35,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import io.realm.Realm;
 
 import static com.tjdL4.tjdmain.Dev.getRemoteBTDev;
 
@@ -90,7 +94,7 @@ public class HomeActivity extends BaseActivity {
                 Dev.Connect(L4M.GetConnectedMAC(), L4M.GetConnecteddName());
 
             }
-
+            insertDeviceToDB(); // 将设备保存到数据库中
         }
     }
 
@@ -140,16 +144,16 @@ public class HomeActivity extends BaseActivity {
             super(param1FragmentManager);
             arrayList = new ArrayList();
             this.fragments = arrayList;
-            String[] arrayOfString = new String[4];
+            String[] arrayOfString = new String[3];
             arrayOfString[0] = "健康";
-            arrayOfString[1] = "运动";
-            arrayOfString[2] = "设备";
-            arrayOfString[3] = "我的";
+            //arrayOfString[1] = "运动";
+            arrayOfString[1] = "设备";
+            arrayOfString[2] = "我的";
             this.titles = arrayOfString;
             arrayList.add(HealthFragment.newInstance(this.titles[0]));
-            arrayList.add(SportFragment.newInstance(this.titles[1]));
-            arrayList.add(DeviceFragment.newInstance(this.titles[2]));
-            arrayList.add(MineFragment.newInstance(this.titles[3]));
+            //arrayList.add(SportFragment.newInstance(this.titles[1]));
+            arrayList.add(DeviceFragment.newInstance(this.titles[1]));
+            arrayList.add(MineFragment.newInstance(this.titles[2]));
         }
 
         public int getCount() {
@@ -165,7 +169,7 @@ public class HomeActivity extends BaseActivity {
         public void onPageScrolled(int param1Int1, float param1Float, int param1Int2) {}
 
         public void onPageSelected(int param1Int) {
-            if (param1Int != 0 && 2 == param1Int);
+
         }
     }
 
@@ -339,5 +343,10 @@ public class HomeActivity extends BaseActivity {
         return minutes;
     }
 
-
+    private void insertDeviceToDB() {
+        DeviceBean bean = new DeviceBean();
+        bean.setMac(L4M.GetConnectedMAC());
+        bean.setName(L4M.GetConnecteddName());
+        RealmOperationHelper.getInstance(Realm.getDefaultInstance()).add(bean);
+    }
 }

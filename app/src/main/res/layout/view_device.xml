@@ -2,5 +2,56 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shape_corner_10"
-    />
+    >
+    <com.shehuan.niv.NiceImageView
+        android:id="@+id/iv_device"
+        android:layout_width="82dp"
+        android:layout_height="82dp"
+        android:background="@mipmap/produce_image_no"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:is_circle="true"
+        />
+    <TextView
+        android:id="@+id/tv_device_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ff333333"
+        android:textSize="16sp"
+        android:text="ITIME"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toRightOf="@id/iv_device"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="19dp"/>
+    <TextView
+        android:id="@+id/tv_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ff999999"
+        android:textSize="11sp"
+        android:text="蓝牙未连接"
+        android:layout_marginLeft="8dp"
+        android:drawableLeft="@mipmap/content_blueteeth_unlink"
+        android:drawablePadding="8dp"
+        app:layout_constraintLeft_toRightOf="@id/iv_device"
+        app:layout_constraintTop_toBottomOf="@id/tv_device_name"
+        android:layout_marginTop="10dp"/>
+    <TextView
+        android:id="@+id/tv_battery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ff999999"
+        android:textSize="11sp"
+        android:text="剩余电量未知"
+        android:layout_marginLeft="8dp"
+        android:drawableLeft="@mipmap/conten_battery_null"
+        android:drawablePadding="8dp"
+        app:layout_constraintLeft_toRightOf="@id/iv_device"
+        app:layout_constraintTop_toBottomOf="@id/tv_bt"
+        android:layout_marginTop="3dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
