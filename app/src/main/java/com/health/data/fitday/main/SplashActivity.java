@@ -11,16 +11,15 @@ import com.sinophy.smartbracelet.R;
 
 public class SplashActivity extends Activity {
     private void enterHomeActivity() {
-        if (SpUtils.getString((Context)this, "User").length() > 0) {
+        //if (SpUtils.getString((Context)this, "User").length() > 0) {
             startActivity(new Intent((Context)this, HomeActivity.class));
-        } else {
-            startActivity(new Intent((Context)this, LoginActivity.class));
-        }
+//        } else {
+//            startActivity(new Intent((Context)this, LoginActivity.class));
+//        }
         finish();
     }
 
     protected void onCreate(Bundle paramBundle) {
-        getWindow().setFlags(1024, 1024);
         super.onCreate(paramBundle);
         if (!SpUtils.getBoolean((Context)this, "first_open").booleanValue()) {
             startActivity(new Intent((Context)this, WelcomeGuideActivity.class));

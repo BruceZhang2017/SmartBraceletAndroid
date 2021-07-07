@@ -114,9 +114,6 @@ public class SearchDeviceActivity extends BaseActivity {
     @SuppressLint("NewApi")
     private void ScanLeDevice(final boolean enable) {
         if (enable) {
-            String []FilterNamas=new String[]{"Lefun","F1","W3"};
-            Dev.SetScanFilterLi(0,FilterNamas);
-            Dev.SetScanFilter(1,"TJDR");
             Dev.StartScan(mContext, mLeBTModScanCBs,10000);
             Log.i(TAG,"Bt_scanLeDevice On ");
         } else {

@@ -6,7 +6,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
+
+import androidx.core.view.ViewCompat;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -81,15 +84,22 @@ public class StatusBarUtil {
                 if(OSUtil.isMIUI()) {
                     //小米MIUI系统
                     setMIUIStatusBarTextMode(activity, isTextDark);
+                    System.out.println("当前系统在该范围内 miui");
                 } else if(OSUtil.isFlyme()) {
                     //魅族flyme系统
                     setFlymeStatusBarTextMode(activity, isTextDark);
+                    System.out.println("当前系统在该范围内 flyme");
                 } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    System.out.println("当前系统在该范围内");
                     //6.0以上，调用系统方法
                     Window window = activity.getWindow();
                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                     window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                     window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    System.out.println("当前系统在该范围内2");
+                    Window window = activity.getWindow();
+                    window.setStatusBarColor(Color.BLACK);
                 } else {
                     //4.4以上6.0以下的其他系统，暂时没有修改状态栏的文字图标颜色的方法，有可以加上
                 }
@@ -144,6 +154,7 @@ public class StatusBarUtil {
         if (window != null) {
             Class clazz = window.getClass();
             try {
+                System.out.println("私有方法执行");
                 int darkModeFlag = 0;
                 Class layoutParams = Class.forName("android.view.MiuiWindowManager$LayoutParams");
                 Field field = layoutParams.getField("EXTRA_FLAG_STATUS_BAR_DARK_MODE");
@@ -159,10 +170,12 @@ public class StatusBarUtil {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     //开发版 7.7.13 及以后版本采用了系统API，旧方法无效但不会报错，所以两个方式都要加上
                     if (isDark) {
+                        System.out.println("执行系统方法");
                         activity.getWindow().getDecorView().setSystemUiVisibility(View
-                                .SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View
+                                .SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View
                                 .SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                     } else {
+                        System.out.println("执行系统方法2");
                         activity.getWindow().getDecorView().setSystemUiVisibility(View
                                 .SYSTEM_UI_FLAG_VISIBLE);
                     }

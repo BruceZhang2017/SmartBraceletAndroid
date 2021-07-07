@@ -68,7 +68,7 @@ public class DeviceFoundActivity extends BaseActivity {
         }
         //查找
         L4Command.FindDev();
-//监听
+        //监听
         L4M.SetResultListener(new L4M.BTResultListenr() {
             @Override
             public void On_Result(String TypeInfo, String StrData, Object DataObj) {

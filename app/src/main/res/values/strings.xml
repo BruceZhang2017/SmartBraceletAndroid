@@ -14,8 +14,7 @@
     <string name="disconnect">断开连接</string>
     <string name="disconnected">连接断开</string>
     <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">"DUMMY
-CONTENT"</string>
+    <string name="dummy_content">"DUMMY CONTENT"</string>
     <string name="enter">进入操作</string>
     <string name="expand_search_settings">展开搜索设置</string>
     <string name="first_fragment_label">First Fragment</string>
@@ -68,4 +67,11 @@ CONTENT"</string>
     <string name="type">服务类型(主服务)</string>
     <string name="write">写</string>
     <string name="title_activity_dial_market_acitivity">DialMarketAcitivity</string>
+    <string name="weather_demo">天气查询</string>
+    <string name="weather_description">天气预报功能</string>
+    <string name="subpoi_demo">POI父子关系</string>
+    <string name="subpoi_description">介绍POI的父子关系功能</string>
+    <string name="weather_live">实时</string>
+    <string name="weather_forecast">预报</string>
+    <string name="report_time">发布时间</string>
 </resources>

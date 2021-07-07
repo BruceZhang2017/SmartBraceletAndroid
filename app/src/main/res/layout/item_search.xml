@@ -13,7 +13,7 @@
         android:layout_marginLeft="20.0dip"
         android:textColor="#ff000000"
         android:textSize="14.0sp"
-        android:text="Lefun"
+        android:text="NO NAME"
         app:layout_constraintLeft_toRightOf="@id/iv_ble"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="20dp"

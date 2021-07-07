@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.multidex.MultiDex;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tjdL4.tjdmain.L4M;
 
 import io.realm.Realm;
@@ -28,7 +29,8 @@ public class MyApplication extends Application {
 		Realm.init(context);
 		RealmConfiguration config = new RealmConfiguration.Builder().name("bracelet").build();
 		Realm.setDefaultConfiguration(config);
-    }
+		CrashReport.initCrashReport(getApplicationContext(), "7680174387", false);
+	}
 
 
 	public Context getContext()

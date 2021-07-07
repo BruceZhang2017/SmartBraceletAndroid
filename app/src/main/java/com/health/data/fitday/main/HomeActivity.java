@@ -1,21 +1,20 @@
 package com.health.data.fitday.main;
 
-import android.app.Application;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import com.health.data.fitday.MyApplication;
+
 import com.health.data.fitday.PermissionUtil;
 import com.health.data.fitday.device.SearchDeviceActivity;
 import com.health.data.fitday.device.model.DeviceBean;
@@ -26,19 +25,15 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.Dev;
 import com.tjdL4.tjdmain.L4M;
-import com.tjdL4.tjdmain.contr.Health_HeartBldPrs;
 import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 import com.tjdL4.tjdmain.contr.L4Command;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import io.realm.Realm;
-
-import static com.tjdL4.tjdmain.Dev.getRemoteBTDev;
 
 public class HomeActivity extends BaseActivity {
     private static final int REQUEST_CODE_OPEN_GPS = 1;
@@ -51,12 +46,14 @@ public class HomeActivity extends BaseActivity {
     private long exitTime = 0L;
     private int step = 0, getup = 0, deep = 0, shellow = 0;
     private String preDate = "";
-    private String preValue = "";
+    private String preValue = "";    KProgressHUD hud;
+    boolean bShowHUD = false;
+    private ViewPager viewPager;
+    private TextView tvTitle;
+
     protected int getLayoutId() {
         return R.layout.activity_home_layout;
     }
-    KProgressHUD hud;
-    boolean bShowHUD = false;
 
     @Override
     protected void onCreate(Bundle paramBundle) {
@@ -71,7 +68,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     protected void initView() {
-        ViewPager viewPager = (ViewPager)findViewById(R.id.mViewPager);
+        viewPager = (ViewPager)findViewById(R.id.mViewPager);
         HomeAdapter homeAdapter = new HomeAdapter(getSupportFragmentManager());
         viewPager.setAdapter((PagerAdapter)homeAdapter);
         viewPager.addOnPageChangeListener(homeAdapter);
@@ -83,6 +80,15 @@ public class HomeActivity extends BaseActivity {
 
 
         }
+        ImageButton ibSearch = (ImageButton)findViewById(R.id.ib_search);
+        ibSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, SearchDeviceActivity.class);
+                startActivity(intent);
+            }
+        });
+        tvTitle = (TextView)findViewById(R.id.tv_title);
     }
 
     @Override
@@ -164,12 +170,22 @@ public class HomeActivity extends BaseActivity {
             return this.fragments.get(param1Int);
         }
 
-        public void onPageScrollStateChanged(int param1Int) {}
+        public void onPageScrollStateChanged(int param1Int) {
 
-        public void onPageScrolled(int param1Int1, float param1Float, int param1Int2) {}
+        }
+
+        public void onPageScrolled(int param1Int1, float param1Float, int param1Int2) {
+
+        }
 
         public void onPageSelected(int param1Int) {
-
+            if (param1Int == 0) {
+                tvTitle.setText("健康");
+            } else if (param1Int == 1) {
+                tvTitle.setText("设备");
+            } else if (param1Int == 2) {
+                tvTitle.setText("我的");
+            }
         }
     }
 
@@ -192,8 +208,9 @@ public class HomeActivity extends BaseActivity {
                 //返回数据
                 Log.w(TAG," TypeInfo:"+TypeInfo+"  Tatal:"+datTotal+"  index:"+datIdx+"  StrData:"+StrData);
                 bShowHUD = false;
+                final String[] split = StrData.replace("[", "").replace("]", "").split(",");
                 if (TypeInfo.equals("PEDO_TIME_HISTORY")) {
-                    String[] arr = StrData.replace("[", "").replace("]", "").split(",");
+                    String[] arr = split;
                     int value = Integer.parseInt(arr[2]);
                     if (datIdx == 1) {
                         step = value;
@@ -215,7 +232,7 @@ public class HomeActivity extends BaseActivity {
 
                 } else if (TypeInfo.equals("HEART_HISTORY")) {
                     if (datTotal == datIdx) {
-                        String[] arr = StrData.replace("[", "").replace("]", "").split(",");
+                        String[] arr = split;
                         HealthFragment fragment = (HealthFragment)(arrayList.get(0));
                         if (fragment != null) {
                             fragment.refreshUI(arr[2]);
@@ -227,7 +244,7 @@ public class HomeActivity extends BaseActivity {
                         }, 1000);
                     }
                 } else if (TypeInfo.equals("SLEEP_TIME_HISTORY")) {
-                    String[] arr = StrData.replace("[", "").replace("]", "").split(",");
+                    String[] arr = split;
                     if (datTotal == 1) {
                         return;
                     }
@@ -255,7 +272,7 @@ public class HomeActivity extends BaseActivity {
                     preDate = arr[1];
                     preValue = arr[2];
                 } else if (TypeInfo.equals("BLDPRESS_HISTORY")) {
-                    String[] arr = StrData.replace("[", "").replace("]", "").split(",");
+                    String[] arr = split;
                     if (datIdx == datTotal) {
                         HealthFragment fragment = (HealthFragment)(arrayList.get(0));
                         if (fragment != null) {

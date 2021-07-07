@@ -2,9 +2,6 @@ package com.health.data.fitday.device.adapter;
 
 
 import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
 
 import com.health.data.fitday.device.model.DeviceBean;
 import com.sinophy.smartbracelet.R;

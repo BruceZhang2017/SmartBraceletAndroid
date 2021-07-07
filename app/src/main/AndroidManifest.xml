@@ -53,7 +53,8 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.health.data.fitday.device.DeviceFoundActivity"></activity>
+        <activity android:name="com.health.data.fitday.main.HealthDetailActivity"></activity>
+        <activity android:name="com.health.data.fitday.device.DeviceFoundActivity" />
         <activity android:name="com.health.data.fitday.device.DeviceInfoActivity" />
         <activity android:name="com.health.data.fitday.device.DeviceDetailPushActivity" />
         <activity android:name="com.health.data.fitday.device.DeviceDetailActivity" />
@@ -62,6 +63,7 @@
             android:name="com.health.data.fitday.device.DialMarketAcitivity"
             android:label="@string/title_activity_dial_market_acitivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name="com.health.data.fitday.device.WeatherSearchActivity" />
         <activity android:name="com.health.data.fitday.device.SearchDeviceActivity" />
         <activity android:name="com.health.data.fitday.mine.EditContentActivity" />
         <activity android:name="com.health.data.fitday.mine.LoginActivity" />

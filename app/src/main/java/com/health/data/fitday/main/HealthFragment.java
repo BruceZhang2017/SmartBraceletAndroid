@@ -30,9 +30,6 @@ import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 public class HealthFragment extends BaseFragment {
     public static final String BUNDLE_TITLE = "title";
 
-    @BindView(R.id.simple_action_bar)
-    ActionBarCommon actionBarCommon;
-
     @BindView(R.id.tv_step_value)
     TextView tvStepValue;
     @BindView(R.id.tv_km)
@@ -51,12 +48,6 @@ public class HealthFragment extends BaseFragment {
     private View mContentView;
 
     private void initData() {
-        this.actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
-            public void onClick(View param1View) {
-                Intent intent = new Intent((Context)mContext, SearchDeviceActivity.class);
-                mContext.startActivity(intent);
-            }
-        });
     }
 
     private void initView() {
@@ -82,10 +73,6 @@ public class HealthFragment extends BaseFragment {
         HealthFragment healthFragment = new HealthFragment();
         healthFragment.setArguments(bundle);
         return healthFragment;
-    }
-
-    public void onClick(View paramView) {
-        paramView.getId();
     }
 
     public void onCreate(Bundle paramBundle) {
@@ -121,5 +108,11 @@ public class HealthFragment extends BaseFragment {
 
     public void refreshUIBlood(String value) {
         tvBloodValue.setText(value);
+    }
+
+    @OnClick({R.id.health_foot})
+    void onClick(View view) {
+        Intent intent = new Intent(mContext, HealthDetailActivity.class);
+        mContext.startActivity(intent);
     }
 }

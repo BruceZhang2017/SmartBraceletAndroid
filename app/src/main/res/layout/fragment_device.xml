@@ -6,30 +6,6 @@
     android:background="#fff5f5f5"
     >
 
-    <per.goweii.actionbarex.common.ActionBarCommon
-        android:id="@+id/simple_action_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#fff5f5f5"
-        app:ab_autoImmersion="false"
-        app:ab_bottomLineHeight="0.0dip"
-        app:ab_statusBarMode="light"
-        app:ab_statusBarVisible="false"
-        app:ab_titleBarHeight="48.0dip"
-        app:abc_leftIconRes="@mipmap/nav_icon_add_normal"
-        app:abc_leftText=""
-        app:abc_leftTextPaddingLeft="0.0dip"
-        app:abc_leftTextPaddingRight="0.0dip"
-        app:abc_rightText="设备"
-        app:abc_rightTextPaddingLeft="0.0dip"
-        app:abc_rightTextPaddingRight="10.0dip"
-        app:abc_titleText=""
-        app:abc_titleTextMaxWidth="180.0dip"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
     <ScrollView
         android:id="@+id/scrollview"
         android:layout_width="fill_parent"
@@ -37,7 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/simple_action_bar"
+        app:layout_constraintTop_toTopOf="parent"
         >
 
         <androidx.constraintlayout.widget.ConstraintLayout
