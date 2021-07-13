@@ -8,37 +8,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import com.health.data.fitday.device.CustomPopup;
 import com.health.data.fitday.device.DeviceDetailActivity;
 import com.health.data.fitday.device.DialMarketAcitivity;
-import com.health.data.fitday.device.model.DeviceBean;
-import com.health.data.fitday.device.model.DialBean;
-import com.health.data.fitday.device.adapter.SimpleAdapter;
 import com.health.data.fitday.device.adapter.GiftPackageAdapter;
+import com.health.data.fitday.device.adapter.SimpleAdapter;
+import com.health.data.fitday.device.model.BLEModel;
+import com.health.data.fitday.device.model.DeviceManager;
+import com.health.data.fitday.device.model.DialBean;
 import com.health.data.fitday.device.widget.HorizontalListView;
 import com.lxj.xpopup.XPopup;
 import com.sinophy.smartbracelet.R;
 import com.zhpan.bannerview.BannerViewPager;
-import com.zhpan.bannerview.BaseBannerAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DeviceFragment extends BaseFragment {
     @BindView(R.id.horizontal_listview)
     HorizontalListView horizontalListView;
 
-    List<DeviceBean> list = new ArrayList<>();
+    List<BLEModel> list = new ArrayList<>();
     GiftPackageAdapter dailAdapter;
     SimpleAdapter deviceAdapter;
 
     private View mContentView;
 
     @BindView(R.id.banner_view)
-    BannerViewPager<DeviceBean> mViewPager;
+    BannerViewPager<BLEModel> mViewPager;
 
     public static DeviceFragment newInstance(String paramString) {
         Bundle bundle = new Bundle();
@@ -49,8 +50,9 @@ public class DeviceFragment extends BaseFragment {
     }
 
     void initData() {
-        list.add(new DeviceBean());
+        list = DeviceManager.getInstance().models;
         deviceAdapter = new SimpleAdapter();
+        deviceAdapter.context = getContext();
         mViewPager.setLifecycleRegistry(getLifecycle()).setAdapter(deviceAdapter).create(list);
         dailAdapter = new GiftPackageAdapter();
         List<DialBean> list = new ArrayList<>();
@@ -76,6 +78,10 @@ public class DeviceFragment extends BaseFragment {
             }
         });
 
+        mViewPager.setOnPageClickListener((view, position) -> {
+            Intent intent = new Intent(mContext, DeviceDetailActivity.class);
+            startActivity(intent);
+        });
         deviceAdapter.setmOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,6 +92,12 @@ public class DeviceFragment extends BaseFragment {
     }
 
     void initView() {}
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        deviceAdapter.notifyDataSetChanged();
+    }
 
     public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup viewGroup, Bundle bundle) {
         this.mContext = (Activity)getActivity();

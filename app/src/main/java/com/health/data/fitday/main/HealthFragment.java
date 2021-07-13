@@ -92,6 +92,9 @@ public class HealthFragment extends BaseFragment {
     }
 
     public void refreshUI(Health_TodayPedo.TodayStepPageData stepData) {
+        if (tvStepValue == null) {
+            return;
+        }
         tvStepValue.setText(stepData.step);
         tvKM.setText(String.format("%.2f", Float.parseFloat(stepData.distance) / 1000) + "公里");
         tvCalValue.setText(stepData.energy);

@@ -41,14 +41,15 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <ImageView
+    <com.shehuan.niv.NiceImageView
         android:id="@+id/iv_user_head"
-        android:layout_width="125.0dip"
-        android:layout_height="125.0dip"
+        android:layout_width="124.0dip"
+        android:layout_height="124.0dip"
         app:layout_constraintBottom_toBottomOf="@id/iv_gradient_bg"
         app:layout_constraintLeft_toLeftOf="@id/iv_gradient_bg"
         app:layout_constraintRight_toRightOf="@id/iv_gradient_bg"
         app:layout_constraintTop_toTopOf="@id/iv_gradient_bg"
+        app:is_circle="true"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout

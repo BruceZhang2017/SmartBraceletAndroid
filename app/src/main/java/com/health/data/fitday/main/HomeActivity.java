@@ -1,5 +1,6 @@
 package com.health.data.fitday.main;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,9 +16,13 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.health.data.fitday.MyApplication;
 import com.health.data.fitday.PermissionUtil;
+import com.health.data.fitday.device.DeviceSwitchActivity;
 import com.health.data.fitday.device.SearchDeviceActivity;
-import com.health.data.fitday.device.model.DeviceBean;
+import com.health.data.fitday.device.model.BLEModel;
+import com.health.data.fitday.device.model.DeviceManager;
+import com.health.data.fitday.device.model.UserBean;
 import com.health.data.fitday.global.RealmOperationHelper;
 import com.health.data.fitday.main.widget.AlphaTabsIndicator;
 import com.health.data.fitday.utils.ToastUtil;
@@ -25,6 +30,8 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.Dev;
 import com.tjdL4.tjdmain.L4M;
+import com.tjdL4.tjdmain.contr.BracltBatLevel;
+import com.tjdL4.tjdmain.contr.BrltUserParaSet;
 import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 import com.tjdL4.tjdmain.contr.L4Command;
 
@@ -42,11 +49,12 @@ public class HomeActivity extends BaseActivity {
     private AlphaTabsIndicator alphaTabsIndicator;
     ArrayList<Fragment> arrayList;
     //public BlueToothManager bleManager;
-
+    private boolean bReadUserinfoOnlyOnce = false; // 只读取用户信息一次
     private long exitTime = 0L;
     private int step = 0, getup = 0, deep = 0, shellow = 0;
     private String preDate = "";
-    private String preValue = "";    KProgressHUD hud;
+    private String preValue = "";
+    KProgressHUD hud;
     boolean bShowHUD = false;
     private ViewPager viewPager;
     private TextView tvTitle;
@@ -78,14 +86,20 @@ public class HomeActivity extends BaseActivity {
 
         if (L4M.GetConnectedMAC() != null && L4M.GetConnectedMAC().length() > 0) {
 
-
         }
         ImageButton ibSearch = (ImageButton)findViewById(R.id.ib_search);
         ibSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, SearchDeviceActivity.class);
-                startActivity(intent);
+                List<BLEModel> list = DeviceManager.getInstance().models;
+                if (list.size() > 0) {
+                    Intent intent = new Intent(HomeActivity.this, DeviceSwitchActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(HomeActivity.this, SearchDeviceActivity.class);
+                    startActivity(intent);
+                }
+
             }
         });
         tvTitle = (TextView)findViewById(R.id.tv_title);
@@ -100,7 +114,6 @@ public class HomeActivity extends BaseActivity {
                 Dev.Connect(L4M.GetConnectedMAC(), L4M.GetConnecteddName());
 
             }
-            insertDeviceToDB(); // 将设备保存到数据库中
         }
     }
 
@@ -193,14 +206,21 @@ public class HomeActivity extends BaseActivity {
         L4M.SetResultListener(new L4M.BTResultListenr() {
             @Override
             public void On_Result(String TypeInfo, String StrData, Object DataObj) {
-
+                Log.e(TAG, "【SetResultListener】 TypeInfo:" + TypeInfo + " StrData: " + StrData);
+                if(TypeInfo.equals(L4M.SetLanguage) && StrData.equals(L4M.OK)) {
+                    Log.e(TAG, "Language:" + StrData);
+                    if (bReadUserinfoOnlyOnce == false) {
+                        bReadUserinfoOnlyOnce = true;
+                        getUserInfo();
+                    }
+                }
             }
         });
 
         L4M.SetResultToDBListener(new L4M.BTResultToDBListenr(){
             @Override
             public void On_Result(String TypeInfo, String StrData, Object DataObj) {
-
+                Log.e(TAG, "【SetResultToDBListener】TypeInfo:" + TypeInfo + " StrData: " + StrData);
             }
 
             @Override
@@ -244,6 +264,10 @@ public class HomeActivity extends BaseActivity {
                         }, 1000);
                     }
                 } else if (TypeInfo.equals("SLEEP_TIME_HISTORY")) {
+                    if (hud != null && hud.isShowing()) {
+                        hud.dismiss();
+                        hud = null;
+                    }
                     String[] arr = split;
                     if (datTotal == 1) {
                         return;
@@ -285,15 +309,10 @@ public class HomeActivity extends BaseActivity {
                                     L4Command.GetBldOxyGen();
                                 }
                             }, 1000);
-                            if (hud != null && hud.isShowing()) {
-                                hud.dismiss();
-                                hud = null;
-                            }
-                        } else {
-                            if (hud != null && hud.isShowing()) {
-                                hud.dismiss();
-                                hud = null;
-                            }
+                        }
+                        if (hud != null && hud.isShowing()) {
+                            hud.dismiss();
+                            hud = null;
                         }
                     }
                 }
@@ -305,8 +324,6 @@ public class HomeActivity extends BaseActivity {
         @Override
         public void  OnRec(String InfType ,String Info) {
             if (Info.contains("Connecting")) {
-
-            } else if (Info.contains("BT_BLE_Connected")) {
                 if (hud == null) {
                     hud = KProgressHUD.create(HomeActivity.this)
                             .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -316,24 +333,13 @@ public class HomeActivity extends BaseActivity {
                     hud.show();
                 }
                 bShowHUD = true;
+            } else if (Info.contains("BT_BLE_Connected")) {
                 new Handler().postDelayed(new Runnable() {
                     public void run() { //要执行的任务
-                        L4Command.CommPedoTime(0,3000);
+                        L4Command.LanguageZH();
                     }
-                }, 2000);
-
-                new Handler().postDelayed(new Runnable() {
-                    public void run() { //要执行的任务
-                        if (bShowHUD) {
-                            bShowHUD = false;
-                            if (hud != null && hud.isShowing()) {
-                                hud.dismiss();
-                                hud = null;
-                            }
-                        }
-                    }
-                }, 5000);
-
+                }, 3000);
+                addDeviceToDB(); // 连接成功后，将设备保持至数据库。
             } else if (Info.contains("close")) {
 
             }
@@ -360,10 +366,95 @@ public class HomeActivity extends BaseActivity {
         return minutes;
     }
 
-    private void insertDeviceToDB() {
-        DeviceBean bean = new DeviceBean();
-        bean.setMac(L4M.GetConnectedMAC());
-        bean.setName(L4M.GetConnecteddName());
-        RealmOperationHelper.getInstance(Realm.getDefaultInstance()).add(bean);
+    private void getUserInfo() {
+        L4Command.Brlt_UserParaGet(new L4M.BTResultListenr() {
+            @Override
+            public void On_Result(String TypeInfo, String StrData, Object DataObj)
+            {
+                final String tTypeInfo=TypeInfo;
+                final String TempStr=StrData;
+                final Object TempObj=DataObj;
+
+                Log.e(TAG, "inTempStr:"+TempStr);
+                if(TypeInfo.equals(L4M.ERROR) && StrData.equals(L4M.TIMEOUT)) {
+                    return;
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        if (tTypeInfo.equals(L4M.GetUserPara) && TempStr.equals(L4M.Data)) {
+                            BrltUserParaSet.UserParaSetData my = (BrltUserParaSet.UserParaSetData) TempObj;
+                            Log.e(TAG," 年龄 "+my.mAge
+                                    +" 体重 "+my.mWeight
+                                    +" 身高 "+my.mHeight
+                                    +" 性别 "+my.mGender);
+                            readBattery();
+                            L4Command.CommPedoTime(0,5000);
+                            saveUserInfo(my); // 将用户信息保存到数据中
+                        }
+
+                    }
+                });
+            }
+
+        });
+    }
+
+    // 保存或更新用户信息
+    private void saveUserInfo(BrltUserParaSet.UserParaSetData my) {
+        UserBean userBean = new UserBean();
+        userBean.setWeight(my.mWeight);
+        userBean.setHeight(my.mHeight);
+        userBean.setSex(my.mGender);
+        userBean.setMobile("13888888888");
+        userBean.setBirthday(L4M.GetUser_Birthday());
+        userBean.setNickname(L4M.GetUserName());
+        RealmOperationHelper.getInstance(Realm.getDefaultInstance()).add(userBean);
+        Log.i(TAG, "将用户信息保存至数据库中");
+    }
+
+    private void readBattery() {
+        L4Command.BatLevel(new L4M.BTResultListenr() {
+            @Override
+            public void On_Result(String TypeInfo, String StrData, Object DataObj) {
+                final String tTypeInfo = TypeInfo;
+                final String TempStr = StrData;
+                final Object TempObj = DataObj;
+
+                if (TypeInfo.equals(L4M.ERROR) && StrData.equals(L4M.TIMEOUT)) {
+                    return;
+                }
+
+                HomeActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (tTypeInfo.equals(L4M.GetBatLevel) && TempStr.equals(L4M.Data)) {
+                            BracltBatLevel.BatLevel myBatLevel= (BracltBatLevel.BatLevel)TempObj;
+                            int batlevel=myBatLevel.batlevel;
+                            System.out.println("当前设备的电量为" + batlevel);
+                            MyApplication.getInstance().map.put(L4M.GetConnectedMAC(), batlevel + "");
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    // 添加连接成功的设备至数据库
+    private void addDeviceToDB() {
+        BLEModel bleModel = new BLEModel();
+        BluetoothDevice device = Dev.getRemoteBTDev();
+        bleModel.setMac(L4M.GetConnectedMAC());
+        bleModel.setBond(true);
+        bleModel.setName(device.getName());
+        bleModel.setImageName("produce_image_no.2");
+        bleModel.setFirmwareVersion(Dev.get_SWVerCode());
+        bleModel.setHardwareVersion(Dev.get_HWVerCode());
+        RealmOperationHelper.getInstance(Realm.getDefaultInstance()).add(bleModel);
+        Log.e(TAG, "将连接成功的设备保存至数据");
+        DeviceManager.getInstance().initializeDevices();
+        DeviceManager.getInstance().currentModel = bleModel;
     }
 }

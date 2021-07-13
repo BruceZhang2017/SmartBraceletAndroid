@@ -18,6 +18,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import com.health.data.fitday.MyApplication;
+import com.health.data.fitday.device.model.BLEModel;
+import com.health.data.fitday.device.model.DeviceManager;
 import com.tjdL4.tjdmain.Dev;
 import com.tjdL4.tjdmain.L4M;
 
@@ -39,18 +42,51 @@ public class MineFragment extends BaseFragment {
     Button btnExit;
     @BindView(R.id.tv_watch_battery)
     TextView tvBattery;
+    @BindView(R.id.tv_watch_type)
+    TextView tvName;
     @BindView(R.id.tv_watch_ble)
-    TextView tvBLE;
+    TextView tvBT;
     @BindView(R.id.iv_user_head)
     ImageView ivHead;
+    @BindView(R.id.tv_user_name)
+    TextView tvUserName;
 
     private View mContentView;
 
     private void initView() {
         ButterKnife.bind(this, this.mContentView);
-        if (L4M.Get_Connect_flag() == 2) {
-            tvBLE.setText("设备已连接");
-            setDrawableLeft(tvBLE, R.mipmap.content_blueteeth_link);
+        BLEModel model = DeviceManager.getInstance().currentModel;
+        if (model == null) {
+            return;
+        }
+        tvName.setText(model.getName());
+        String mac = model.getMac();
+        System.out.println("当前连接成功的mac:" + L4M.GetConnectedMAC() + "当前设备的mac:" + mac);
+        if (L4M.GetConnectedMAC().equals(mac)) {
+            tvBT.setText("蓝牙已连接");
+            String battery = MyApplication.getInstance().map.get(mac);
+            if (battery == null || battery.length() == 0) {
+                battery = "0";
+            }
+            tvBattery.setText("剩余电量" + battery + "%");
+            tvBT.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.content_blueteeth_link, null), null, null, null);
+            int draw = 0;
+            int b = Integer.parseInt(battery);
+            if (b < 20) {
+                draw = R.mipmap.dianliang1;
+            } else if (b < 40) {
+                draw = R.mipmap.dianliang2;
+            } else if (b < 60) {
+                draw = R.mipmap.dianliang3;
+            } else {
+                draw = R.mipmap.dianliang4;
+            }
+            tvBattery.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(draw, null), null, null, null);
+        } else {
+            tvBT.setText("蓝牙未连接");
+            tvBattery.setText("剩余电量未知");
+            tvBT.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.content_blueteeth_unlink, null), null, null, null);
+            tvBattery.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.mipmap.conten_battery_null, null), null, null, null);
         }
     }
 
@@ -137,5 +173,6 @@ public class MineFragment extends BaseFragment {
         String str = SpUtils.getString((Context)this.mContext, "UserHead");
         if (str != null && str.length() > 0)
             this.ivHead.setImageURI(Uri.parse(str));
+        tvUserName.setText(L4M.GetUserName());
     }
 }

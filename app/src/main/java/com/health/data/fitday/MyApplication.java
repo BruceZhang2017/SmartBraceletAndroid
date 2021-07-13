@@ -8,13 +8,16 @@ import androidx.multidex.MultiDex;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tjdL4.tjdmain.L4M;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 
 public class MyApplication extends Application {
 	private static final String TAG = "MyApplication";
-	
+	public Map<String, String> map = new HashMap<String, String>();
 	private static MyApplication meInstance = null;
 	private Context context;
 

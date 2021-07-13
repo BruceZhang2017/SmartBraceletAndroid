@@ -1,7 +1,10 @@
 package com.health.data.fitday.mine;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.health.data.fitday.global.CacheUtils;
+import com.health.data.fitday.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
 
 import java.util.List;
@@ -61,6 +66,12 @@ class UserInfoAdapter extends BaseAdapter {
             }
             viewHolder1.headImageView.setVisibility(View.VISIBLE);
             viewHolder1.valueTextView.setVisibility(View.INVISIBLE);
+            String imagePath = SpUtils.getString(mContext, "UserHead");
+            if(imagePath!=null) {
+                Uri uri = Uri.parse(imagePath);
+                Bitmap bm = getBitmapFromUri(mContext, uri);
+                viewHolder1.headImageView.setImageBitmap(bm);
+            }
         } else {
             viewHolder1.headImageView.setVisibility(View.INVISIBLE);
             viewHolder1.valueTextView.setVisibility(View.VISIBLE);
@@ -76,5 +87,18 @@ class UserInfoAdapter extends BaseAdapter {
         public TextView valueTextView;
 
         private ViewHolder() {}
+    }
+
+    private Bitmap getBitmapFromUri(Context context, Uri uri) {
+        Bitmap bitmap = null;
+        try {
+            // 读取uri所在的图片
+            bitmap = MediaStore.Images.Media.getBitmap(
+                    context.getContentResolver(), uri);
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 }

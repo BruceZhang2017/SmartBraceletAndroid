@@ -2,11 +2,13 @@ package com.health.data.fitday.mine;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -22,6 +24,7 @@ import com.jph.takephoto.compress.CompressConfig;
 import com.jph.takephoto.model.CropOptions;
 import com.jph.takephoto.model.TImage;
 import com.jph.takephoto.model.TResult;
+import com.shehuan.niv.NiceImageView;
 import com.sinophy.smartbracelet.R;
 
 import java.io.File;
@@ -38,8 +41,8 @@ public class EditHeadActivity extends TakePhotoActivity {
 
     private Uri imageUri;
 
-    @BindView(R.id.iv_head)
-    ImageView ivHead;
+    @BindView(R.id.iv_user_head)
+    NiceImageView ivHead;
 
     private TakePhoto takePhoto;
 
@@ -63,12 +66,18 @@ public class EditHeadActivity extends TakePhotoActivity {
     }
 
     protected void initView() {
+        ButterKnife.bind(this);
         this.actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
             public void onClick(View param1View) {
-                System.out.println("点击事件");
-                        EditHeadActivity.this.finish();
+                EditHeadActivity.this.finish();
             }
         });
+        String imagePath = SpUtils.getString(this, "UserHead");
+        if(imagePath!=null) {
+            Uri uri = Uri.parse(imagePath);
+            Bitmap bm = getBitmapFromUri(this, uri);
+            ivHead.setImageBitmap(bm);
+        }
     }
 
     @OnClick({R.id.tv_save, R.id.tv_photo, R.id.tv_pic, R.id.tv_cancel})
@@ -80,46 +89,30 @@ public class EditHeadActivity extends TakePhotoActivity {
                 if (uri != null) {
                     SpUtils.putString((Context) this, "UserHead", uri.toString());
                 }
+                finish();
                 break;
             case R.id.tv_photo:
                 uri = getImageCropUri();
                 this.imageUri = uri;
-                this.takePhoto.onPickFromGalleryWithCrop(uri, this.cropOptions);
+                this.takePhoto.onPickFromCaptureWithCrop(uri, this.cropOptions);
                 break;
             case R.id.tv_pic:
                 uri = getImageCropUri();
                 this.imageUri = uri;
-                this.takePhoto.onPickFromCaptureWithCrop(uri, this.cropOptions);
+                this.takePhoto.onPickFromGalleryWithCrop(uri, this.cropOptions);
                 break;
             case R.id.tv_cancel:
-
+                finish();
                 break;
         }
-        finish();
+
     }
 
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         setContentView(getLayoutId());
-        setTransparentStatusBar((Activity)this);
-        ButterKnife.bind((Activity)this);
         initView();
         initData();
-    }
-
-    public void setTransparentStatusBar(Activity activity) {
-        //5.0及以上
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            View decorView = activity.getWindow().getDecorView();
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            decorView.setSystemUiVisibility(option);
-            activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
-            //4.4到5.0
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            WindowManager.LayoutParams localLayoutParams = activity.getWindow().getAttributes();
-            localLayoutParams.flags = (WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | localLayoutParams.flags);
-        }
     }
 
     public void takeCancel() {
@@ -131,9 +124,23 @@ public class EditHeadActivity extends TakePhotoActivity {
         Toast.makeText((Context)this, "Error:" + paramString, Toast.LENGTH_SHORT).show();
     }
 
-    public void takeSuccess(TResult paramTResult) {
-        super.takeSuccess(paramTResult);
-        TImage tImage = paramTResult.getImage();
-        Glide.with((Activity)this).load(new File(tImage.getCompressPath())).into(this.ivHead);
+    public void takeSuccess(TResult data) {
+        super.takeSuccess(data);
+        System.out.println("获取图片成功");
+        TImage tImage = data.getImage();
+        Glide.with(this).load(new File(tImage.getCompressPath())).into(this.ivHead);
+    }
+
+    private Bitmap getBitmapFromUri(Context context, Uri uri) {
+        Bitmap bitmap = null;
+        try {
+            // 读取uri所在的图片
+            bitmap = MediaStore.Images.Media.getBitmap(
+                    context.getContentResolver(), uri);
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 }

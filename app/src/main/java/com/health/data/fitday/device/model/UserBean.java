@@ -1,6 +1,9 @@
 package com.health.data.fitday.device.model;
 
-public class UserBean {
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class UserBean extends RealmObject {
     String area;
     String birthday;
     String country;
@@ -8,9 +11,10 @@ public class UserBean {
     String headUrl;
     int height = 0;
     int id = 0;
+    @PrimaryKey
     String mobile;
     String nickname;
-    int sex = 0;
+    int sex = 0; // 0 男 1 女
     String token;
     String username;
     int weight = 0;

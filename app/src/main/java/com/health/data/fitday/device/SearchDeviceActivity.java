@@ -11,12 +11,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import com.health.data.fitday.device.model.DeviceBean;
 import com.health.data.fitday.main.BaseActivity;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.Dev;
@@ -24,7 +19,8 @@ import com.tjdL4.tjdmain.L4M;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
@@ -46,7 +42,7 @@ public class SearchDeviceActivity extends BaseActivity {
     }
 
     protected void initData() {
-        initReceiver();
+
     }
 
     protected void initView() {
@@ -75,7 +71,7 @@ public class SearchDeviceActivity extends BaseActivity {
                         if(CntExists) {
                             ScanLeDevice(false);
                             Dev.RemoteDev_CloseManual();
-                            Dev.Cache_Connect(mLVdapter.getDevice(position),mLVdapter.getDeviceInfo(position));//lh new InfoCode
+                            Dev.Cache_Connect(mLVdapter.getDevice(position),mLVdapter.getDeviceInfo(position));
                         }
                         finish();
                     }
@@ -108,7 +104,6 @@ public class SearchDeviceActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         this.searchLoadingView.stopAnimation();
-        unReceiver();
     }
 
     @SuppressLint("NewApi")
@@ -253,8 +248,11 @@ public class SearchDeviceActivity extends BaseActivity {
 
             BluetoothDevice device = mLeDevices.get(i);
             final String deviceName = device.getName();
-            if (deviceName != null && deviceName.length() > 0)
+            if (deviceName != null && deviceName.length() > 0) {
                 viewHolder.tv_name.setText(deviceName);
+            } else {
+                viewHolder.tv_name.setText("No Name");
+            }
             viewHolder.tv_address.setText(device.getAddress());
 
             return view;
@@ -264,43 +262,4 @@ public class SearchDeviceActivity extends BaseActivity {
     static class ViewHolder {
         TextView tv_name, tv_address;
     }
-
-    private void initReceiver() // 放在 onCreate
-    {
-        L4M.registerBTStReceiver(this,DataReceiver);
-    }
-
-    private void unReceiver() // 放在 onDestroy
-    {
-        L4M.unregisterBTStReceiver(this,DataReceiver);
-    }
-
-    private L4M.BTStReceiver DataReceiver = new L4M.BTStReceiver() {
-        @Override
-        public void  OnRec(String InfType ,String Info)
-        {
-
-            try {
-                if(Info==null)
-                    return;
-
-                if (Info.contains("Connecting")) {
-                    //UpdateUi_BtConInfo();
-                }
-                else if (Info.contains("BT_BLE_Connected"))
-                {
-                    //UpdateUi_BtConInfo();
-                }
-                else if (Info.contains("close"))
-                {
-                    //UpdateUi_BtConInfo();
-                }
-
-            } catch (ArrayIndexOutOfBoundsException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 }

@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <ImageView
+    <com.shehuan.niv.NiceImageView
         android:id="@+id/iv_head"
         android:layout_width="40.0dip"
         android:layout_height="40.0dip"
@@ -50,5 +50,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="@id/tv_value"
         app:layout_constraintTop_toTopOf="parent"
+        app:is_circle="true"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
