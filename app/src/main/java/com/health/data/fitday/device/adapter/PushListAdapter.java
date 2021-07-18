@@ -43,7 +43,7 @@ public class PushListAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0 || position == 7) {
+        if (position == 0 || position == 6) {
             return TYPE_NULL;
         } else {
             return TYPE_SWITCH;

@@ -24,14 +24,14 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import com.bigkoo.pickerview.builder.OptionsPickerBuilder;
-import com.bigkoo.pickerview.builder.TimePickerBuilder;
-import com.bigkoo.pickerview.listener.OnOptionsSelectChangeListener;
-import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
-import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
-import com.bigkoo.pickerview.listener.OnTimeSelectListener;
-import com.bigkoo.pickerview.view.OptionsPickerView;
-import com.bigkoo.pickerview.view.TimePickerView;
+import com.bigkoo.pickerview2.builder.OptionsPickerBuilder;
+import com.bigkoo.pickerview2.builder.TimePickerBuilder;
+import com.bigkoo.pickerview2.listener.OnOptionsSelectChangeListener;
+import com.bigkoo.pickerview2.listener.OnOptionsSelectListener;
+import com.bigkoo.pickerview2.listener.OnTimeSelectChangeListener;
+import com.bigkoo.pickerview2.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview2.view.OptionsPickerView;
+import com.bigkoo.pickerview2.view.TimePickerView;
 import com.google.gson.Gson;
 import com.health.data.fitday.device.model.UserBean;
 import com.health.data.fitday.global.CacheUtils;
@@ -166,7 +166,7 @@ public class UserInfoActivity extends BaseActivity {
             this.pvTime.getDialogContainerLayout().setLayoutParams((ViewGroup.LayoutParams) layoutParams);
             Window window = dialog.getWindow();
             if (window != null) {
-                window.setWindowAnimations(com.bigkoo.pickerview.R.style.picker_view_slide_anim);
+                window.setWindowAnimations(com.bigkoo.pickerview2.R.style.picker_view_slide_anim);
                 window.setGravity(Gravity.BOTTOM);
                 window.setDimAmount(0.3F);
             }

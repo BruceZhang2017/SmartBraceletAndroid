@@ -2,6 +2,8 @@ package com.health.data.fitday.device;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.amap.api.services.core.AMapException;
@@ -32,7 +34,8 @@ public class WeatherSearchActivity extends Activity implements WeatherSearch.OnW
     private LocalWeatherLive weatherlive;
     private LocalWeatherForecast weatherforecast;
     private List<LocalDayWeatherForecast> forecastlist = null;
-    private String cityname = "北京市";//天气搜索的城市，可以写名称或adcode；
+    private String cityname = "深圳市";//天气搜索的城市，可以写名称或adcode；
+    private ImageButton ibBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,13 @@ public class WeatherSearchActivity extends Activity implements WeatherSearch.OnW
         Temperature = (TextView) findViewById(R.id.temp);
         wind = (TextView) findViewById(R.id.wind);
         humidity = (TextView) findViewById(R.id.humidity);
+        ibBack = (ImageButton) findViewById(R.id.ib_back);
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     /**

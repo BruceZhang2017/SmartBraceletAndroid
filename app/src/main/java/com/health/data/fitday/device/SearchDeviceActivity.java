@@ -83,15 +83,20 @@ public class SearchDeviceActivity extends BaseActivity {
 
             }
         });
+
+        actionBarCommon.setOnRightTextClickListener(new OnActionBarChildClickListener() {
+            @Override
+            public void onClick(View v) {
+                ScanLeDevice(true);
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(L4M.Get_Connect_flag()!=2) {
-            Dev.BTCheckOn_AskResult(this);
-            ScanLeDevice(true);
-        }
+        Dev.BTCheckOn_AskResult(this);
+        ScanLeDevice(true);
     }
 
     @Override
@@ -150,12 +155,14 @@ public class SearchDeviceActivity extends BaseActivity {
         public void onStartedScan() {
             mLVdapter.clear();
             mLVdapter.notifyDataSetChanged();
+            actionBarCommon.getRightTextView().setText(" ");
         }
 
         @Override
         public void onStoppedScan() {
             Log.i(TAG,"ModCB StoppedScan ");
             ScanLeDevice(false);
+            actionBarCommon.getRightTextView().setText("重新扫描");
         }
 
     };

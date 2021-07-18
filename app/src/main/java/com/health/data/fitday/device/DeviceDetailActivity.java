@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.text.style.IconMarginSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -15,6 +16,13 @@ import com.health.data.fitday.device.model.DeviceManager;
 import com.health.data.fitday.main.BaseActivity;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.L4M;
+import com.tjdL4.tjdmain.contr.AlarmClock;
+import com.tjdL4.tjdmain.contr.BractletFuncSet;
+import com.tjdL4.tjdmain.contr.BractletSedentarySet;
+import com.tjdL4.tjdmain.contr.L4Command;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,12 +30,14 @@ import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class DeviceDetailActivity extends BaseActivity {
+    private static String TAG = "DeviceDetailActivity";
     @BindView(R.id.lv_detail) ListView listView;
     @BindView(R.id.simple_action_bar) ActionBarCommon actionBarCommon;
     @BindView(R.id.tv_device_name) TextView tvName;
     @BindView(R.id.tv_bt) TextView tvBT;
     @BindView(R.id.tv_battery) TextView tvBattery;
     ComListAdapter adapter;
+    BractletFuncSet.FuncSetData funcSetData;
 
     @Override
     protected int getLayoutId() {
@@ -36,10 +46,12 @@ public class DeviceDetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        String[] titles = new String[]{"", "推送设置", "来电提醒", "抬手亮屏", "久坐提醒", "天气推送", "", "闹钟设置", "查找设置", "设置信息"};
-        boolean[] values = new boolean[]{false, false, false};
-        adapter = new ComListAdapter(this, titles, values);
+        String[] titles = new String[]{"", "推送设置", "抬手亮屏", "久坐提醒", "天气推送", "", "闹钟设置", "查找设置", "设置信息"};
+        adapter = new ComListAdapter(this, titles);
         listView.setAdapter(adapter);
+
+        L4Command.Brlt_FuncGet(listener);
+        //L4Command.SedentaryGet(listener);
     }
 
     @Override
@@ -86,4 +98,41 @@ public class DeviceDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
+    L4M.BTResultListenr listener = new L4M.BTResultListenr() {
+        @Override
+        public void On_Result(String TypeInfo, String StrData, Object DataObj) {
+            final String tTypeInfo=TypeInfo;
+            final String TempStr=StrData;
+            final Object TempObj=DataObj;
+            Log.e(TAG, "tTypeInfo:" + tTypeInfo + " inTempStr:"+TempStr);
+
+            if(TypeInfo.equals(L4M.ERROR) && StrData.equals(L4M.TIMEOUT)) {
+                return;
+            }
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(tTypeInfo.equals(L4M.SetSedentary) && TempStr.equals(L4M.OK)) {
+                        L4Command.SedentaryGet(null);
+                    }
+                    if(tTypeInfo.equals(L4M.GetSedentary) && TempStr.equals(L4M.Data)) {
+                        BractletSedentarySet.SedentarySetData myDrinkSetData=(BractletSedentarySet.SedentarySetData)TempObj;
+                        //获取时分
+                        System.out.println("久坐的时间：" + myDrinkSetData.hour + " 分钟：" + myDrinkSetData.minute);
+                    }
+                    if(tTypeInfo.equals(L4M.SetFunc) && TempStr.equals(L4M.OK)) {
+                        L4Command.Brlt_FuncGet(null);
+                        System.out.println("取消监听");
+                    } else if(tTypeInfo.equals(L4M.GetFunc) && TempStr.equals(L4M.Data)) {
+                        funcSetData = (BractletFuncSet.FuncSetData)TempObj;
+                        adapter.funcSetData = funcSetData;
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            });
+
+        }
+    };
 }

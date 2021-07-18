@@ -26,18 +26,24 @@ android {
     buildFeatures {
         viewBinding true
     }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:30.+'
     api files('libs/tjd-wristBand-lefun.jar')
-
+    api project(':pickerview')
     implementation 'com.jakewharton:butterknife:10.2.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    androidTestCompile(
+    androidTestImplementation(
             'com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -100,4 +106,5 @@ dependencies {
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     implementation 'com.tencent.bugly:crashreport:latest.release'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
 }

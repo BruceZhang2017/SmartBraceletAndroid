@@ -169,7 +169,6 @@ public class MineFragment extends BaseFragment {
 
     public void onResume() {
         super.onResume();
-        System.out.println("我的页面");
         String str = SpUtils.getString((Context)this.mContext, "UserHead");
         if (str != null && str.length() > 0)
             this.ivHead.setImageURI(Uri.parse(str));

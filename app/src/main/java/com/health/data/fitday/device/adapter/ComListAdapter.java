@@ -13,8 +13,12 @@ import android.widget.Toast;
 import com.health.data.fitday.device.DeviceDetailPushActivity;
 import com.health.data.fitday.device.DeviceFoundActivity;
 import com.health.data.fitday.device.DeviceInfoActivity;
+import com.health.data.fitday.device.WeatherSearchActivity;
+import com.health.data.fitday.device.alarm.AlarmListActivity;
 import com.sinophy.smartbracelet.R;
 import com.suke.widget.SwitchButton;
+import com.tjdL4.tjdmain.contr.BractletFuncSet;
+import com.tjdL4.tjdmain.contr.L4Command;
 
 public class ComListAdapter extends BaseAdapter {
     public static final int TYPE_ARROW = 0;
@@ -22,13 +26,13 @@ public class ComListAdapter extends BaseAdapter {
     public static final int TYPE_NULL = 2;
     private Context context;
     private String[] comNames;
-    private boolean[] values;
+    public BractletFuncSet.FuncSetData funcSetData;
 
-    public ComListAdapter(Context context, String[] comNames, boolean[] values) {
+    public ComListAdapter(Context context, String[] comNames) {
         super();
         this.context = context;
         this.comNames = comNames;
-        this.values = values;
+        funcSetData = new BractletFuncSet.FuncSetData();
     }
 
     @Override
@@ -48,9 +52,9 @@ public class ComListAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0 || position == 6) {
+        if (position == 0 || position == 5) {
             return TYPE_NULL;
-        } else if (position == 2 || position == 3 || position == 4) {
+        } else if (position == 2 || position == 3) {
             return TYPE_SWITCH;
         } else {
             return TYPE_ARROW;
@@ -84,14 +88,18 @@ public class ComListAdapter extends BaseAdapter {
                         if (position == 1) {
                             Intent intent = new Intent(context, DeviceDetailPushActivity.class);
                             context.startActivity(intent);
-                        } else if (position == 7) {
-                            Toast.makeText(context, "敬请期待", Toast.LENGTH_SHORT).show();
+                        } else if (position == 6) {
+                            Intent intent = new Intent(context, AlarmListActivity.class);
+                            context.startActivity(intent);
                             return;
-                        } else if (position == 8) {
+                        } else if (position == 7) {
                             Intent intent = new Intent(context, DeviceFoundActivity.class);
                             context.startActivity(intent);
-                        } else if (position == 9) {
+                        } else if (position == 8) {
                             Intent intent = new Intent(context, DeviceInfoActivity.class);
+                            context.startActivity(intent);
+                        } else if (position == 4) {
+                            Intent intent = new Intent(context, WeatherSearchActivity.class);
                             context.startActivity(intent);
                         }
                     }
@@ -108,7 +116,22 @@ public class ComListAdapter extends BaseAdapter {
                     comHolder = (ComViewHolder) convertView.getTag();
                 }
                 comHolder.com.setText(comNames[position]);
-                comHolder.icon.setChecked(values[position - 2]);
+                if (position == 2) {
+                    comHolder.icon.setChecked(funcSetData.mSW_manage);
+                } else if (position == 3) {
+                    comHolder.icon.setChecked(funcSetData.mSW_sed);
+                }
+                comHolder.icon.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                        if (position == 2) {
+                            funcSetData.mSW_manage = isChecked;
+                        } else if (position == 3) {
+                            funcSetData.mSW_sed = isChecked;
+                        }
+                        String ret= L4Command.Brlt_FuncSet(funcSetData);/*ret  返回值类型在文档最下面*/
+                    }
+                });
                 break;
             case TYPE_NULL:
                 if (convertView == null) {

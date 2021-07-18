@@ -20,7 +20,7 @@
         app:abc_leftText=""
         app:abc_leftTextPaddingLeft="0.0dip"
         app:abc_leftTextPaddingRight="0.0dip"
-        app:abc_rightText=""
+        app:abc_rightText="重新扫描"
         app:abc_rightTextPaddingLeft="0.0dip"
         app:abc_rightTextPaddingRight="10.0dip"
         app:abc_titleText="添加设备"

@@ -10,6 +10,8 @@ import com.health.data.fitday.device.adapter.DeviceInfoAdapter;
 import com.health.data.fitday.device.adapter.PushListAdapter;
 import com.health.data.fitday.main.BaseActivity;
 import com.sinophy.smartbracelet.R;
+import com.tjdL4.tjdmain.Dev;
+import com.tjdL4.tjdmain.L4M;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,8 +30,8 @@ public class DeviceInfoActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        String[] titles = new String[]{"设备型号", "MAC地址", "软件版本", "设备序列号"};
-        String[] values = new String[]{"", "", "", ""};
+        String[] titles = new String[]{"设备型号", "MAC地址", "软件版本", "硬件版本"};
+        String[] values = new String[]{Dev.get_TypeCode() ,L4M.GetConnectedMAC(), Dev.get_SWVerCode(), Dev.get_HWVerCode()};
         adapter = new DeviceInfoAdapter(this, titles, values);
         listView.setAdapter(adapter);
     }

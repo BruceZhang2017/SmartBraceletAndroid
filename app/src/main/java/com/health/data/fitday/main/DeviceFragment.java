@@ -96,6 +96,9 @@ public class DeviceFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    public void refreshUI() {
         deviceAdapter.notifyDataSetChanged();
     }
 

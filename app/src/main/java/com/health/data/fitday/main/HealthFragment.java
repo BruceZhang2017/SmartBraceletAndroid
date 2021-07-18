@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.health.data.fitday.device.SearchDeviceActivity;
+import com.health.data.fitday.global.RunUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
@@ -44,6 +46,8 @@ public class HealthFragment extends BaseFragment {
     TextView tvSleepM;
     @BindView(R.id.tv_blood_value)
     TextView tvBloodValue;
+    @BindView(R.id.tv_blood_ox_value)
+    TextView tvOXValue;
 
     private View mContentView;
 
@@ -91,22 +95,27 @@ public class HealthFragment extends BaseFragment {
         super.onDestroyView();
     }
 
-    public void refreshUI(Health_TodayPedo.TodayStepPageData stepData) {
-        if (tvStepValue == null) {
+    public void refreshUIForSport(Health_TodayPedo.TodayStepPageData todayData) {
+        if (todayData == null || tvStepValue == null) {
             return;
         }
-        tvStepValue.setText(stepData.step);
-        tvKM.setText(String.format("%.2f", Float.parseFloat(stepData.distance) / 1000) + "公里");
-        tvCalValue.setText(stepData.energy);
+        tvStepValue.setText(todayData.step + "");
+        tvKM.setText(todayData.distance + "公里");
+        tvCalValue.setText(todayData.energy);
     }
 
-    public  void refreshUI(String mHeartData) {
+    public  void refreshUIForHeart(String mHeartData) {
         tvHeartValue.setText(mHeartData);
     }
 
-    public void refreshUI(int sleep) {
-        tvSleepH.setText(sleep / 60 + "");
-        tvSleepM.setText(sleep % 60 + "");
+    public void refreshUIForSleep(String sleep) {
+        String[] array = sleep.split(":");
+        tvSleepH.setText(array[0]);
+        tvSleepM.setText(array[1]);
+    }
+
+    public void refreshUIForOxy(String value) {
+        tvOXValue.setText(value);
     }
 
     public void refreshUIBlood(String value) {
