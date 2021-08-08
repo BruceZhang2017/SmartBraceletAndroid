@@ -21,11 +21,9 @@
             android:layout_width="74.0dip"
             android:layout_height="74.0dip"
             android:layout_marginTop="8.0dip"
-            android:background="@mipmap/image_watchbg"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:is_circle="true"
             />
 
         <TextView

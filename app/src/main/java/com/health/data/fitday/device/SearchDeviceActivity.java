@@ -139,7 +139,12 @@ public class SearchDeviceActivity extends BaseActivity {
                         mLVdapter.addDevice(device);
                     }
                     if (deviceConnect > 0) {
-                        lv_bt_dev.setVisibility(View.VISIBLE);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lv_bt_dev.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
                     mLVdapter.notifyDataSetChanged();
                 }

@@ -136,7 +136,7 @@
                             android:layout_height="20.0dip"
                             android:layout_marginTop="30.0dip"
                             android:gravity="center"
-                            android:text="目标 ｜ 0步"
+                            android:text="目标 ｜ 8000步"
                             android:textColor="#ffffffff"
                             android:textSize="10.0sp"
                             app:layout_constraintLeft_toLeftOf="parent"

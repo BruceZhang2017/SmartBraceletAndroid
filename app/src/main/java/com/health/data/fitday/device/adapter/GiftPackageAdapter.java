@@ -33,9 +33,15 @@ public class GiftPackageAdapter extends BaseAdapter {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_gift_package, null);
         }
         TextView tvName = view.findViewById(R.id.tv_dial_name);
-        tvName.setText(list.get(position).getDialName());
         NiceImageView ivDial = view.findViewById(R.id.iv_dial);
-        ivDial.setImageResource(list.get(position).getImage());
+        if (list.get(position).getDialName().length() == 0) {
+            tvName.setText("更多表盘");
+            ivDial.setImageResource(R.mipmap.jiahao);
+        } else {
+            tvName.setText(list.get(position).getDialName());
+            ivDial.setImageResource(list.get(position).getImage());
+        }
+
         view.setOnClickListener(mOnClickListener);
         return view;
     }

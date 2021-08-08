@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:30.+'
     api files('libs/tjd-wristBand-lefun.jar')
     api project(':pickerview')
+    api project(':datepicker')
     implementation 'com.jakewharton:butterknife:10.2.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'

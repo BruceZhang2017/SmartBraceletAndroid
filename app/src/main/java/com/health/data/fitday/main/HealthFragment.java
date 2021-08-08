@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.health.data.fitday.device.SearchDeviceActivity;
 import com.health.data.fitday.global.RunUtils;
+import com.health.data.fitday.utils.SpUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshFooter;
@@ -25,6 +26,8 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.contr.Health_HeartBldPrs;
 import com.tjdL4.tjdmain.contr.Health_TodayPedo;
+
+import java.text.DecimalFormat;
 
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
@@ -48,6 +51,8 @@ public class HealthFragment extends BaseFragment {
     TextView tvBloodValue;
     @BindView(R.id.tv_blood_ox_value)
     TextView tvOXValue;
+    @BindView(R.id.tv_goal)
+    TextView tvGoal;
 
     private View mContentView;
 
@@ -61,14 +66,24 @@ public class HealthFragment extends BaseFragment {
         refreshLayout.setRefreshFooter((RefreshFooter)new ClassicsFooter(this.mContentView.getContext()));
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             public void onRefresh(RefreshLayout param1RefreshLayout) {
-                param1RefreshLayout.finishRefresh(2000);
+                param1RefreshLayout.finishRefresh(5000);
+                System.out.println("onRefresh");
+                HomeActivity activity = (HomeActivity) mContext;
+                activity.refreshAllData();
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             public void onLoadMore(RefreshLayout param1RefreshLayout) {
-                param1RefreshLayout.finishLoadMore(2000);
+                param1RefreshLayout.finishLoadMore(5000);
+                System.out.println("onLoadMore");
+                HomeActivity activity = (HomeActivity) mContext;
+                activity.refreshAllData();
             }
         });
+        int goal = SpUtils.getInt(mContext, "goal");
+        if (goal > 0) {
+            tvGoal.setText("目标 | " + goal + "步");
+        }
     }
 
     public static HealthFragment newInstance(String paramString) {
@@ -100,15 +115,24 @@ public class HealthFragment extends BaseFragment {
             return;
         }
         tvStepValue.setText(todayData.step + "");
+        float f = Float.parseFloat(todayData.distance) / 1000;
+        DecimalFormat df = new DecimalFormat("#.00");
+        String right = df.format(f);
         tvKM.setText(todayData.distance + "公里");
         tvCalValue.setText(todayData.energy);
     }
 
     public  void refreshUIForHeart(String mHeartData) {
+        if (tvHeartValue == null) {
+            return;
+        }
         tvHeartValue.setText(mHeartData);
     }
 
     public void refreshUIForSleep(String sleep) {
+        if (tvSleepH == null) {
+            return;
+        }
         String[] array = sleep.split(":");
         tvSleepH.setText(array[0]);
         tvSleepM.setText(array[1]);
@@ -125,6 +149,20 @@ public class HealthFragment extends BaseFragment {
     @OnClick({R.id.health_foot})
     void onClick(View view) {
         Intent intent = new Intent(mContext, HealthDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt("type", 1);
+        intent.putExtras(bundle);
         mContext.startActivity(intent);
+    }
+
+    public void refreshUIGoal(String value) {
+        tvGoal.setText("目标 | " + value + "步");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        int goal = SpUtils.getInt(mContext, "goal");
+        tvGoal.setText("目标 | " + goal + "步");
     }
 }

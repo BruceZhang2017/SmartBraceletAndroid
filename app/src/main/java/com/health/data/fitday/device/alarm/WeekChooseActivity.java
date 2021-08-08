@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -29,6 +30,8 @@ public class WeekChooseActivity extends BaseActivity {
     ActionBarCommon actionBarCommon;
     WeekListAdapter adapter;
     List<Boolean> selectList = new ArrayList<>();
+    List<String> list = new ArrayList<>();
+    int week = 0;
 
     @Override
     protected int getLayoutId() {
@@ -38,26 +41,6 @@ public class WeekChooseActivity extends BaseActivity {
     @Override
     protected void initData() {
         adapter = new WeekListAdapter();
-        List<String> list = new ArrayList<>();
-        list.add("星期一");
-        list.add("星期二");
-        list.add("星期三");
-        list.add("星期四");
-        list.add("星期五");
-        list.add("星期六");
-        list.add("星期日");
-        adapter.list = list;
-
-        selectList.add(false);
-        selectList.add(false);
-        selectList.add(false);
-        selectList.add(false);
-        selectList.add(false);
-        selectList.add(false);
-        selectList.add(false);
-        adapter.selectList = selectList;
-        adapter.context = this;
-        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -74,6 +57,10 @@ public class WeekChooseActivity extends BaseActivity {
         ButterKnife.bind(this);
         actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
             public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra("week", 0);
+                // 设置返回码和返回携带的数据
+                setResult(Activity.RESULT_OK, intent);
                 finish();
             }
         });
@@ -114,5 +101,68 @@ public class WeekChooseActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        int week = bundle.getInt("week");
+        this.week = week;
+        list.add("星期一");
+        list.add("星期二");
+        list.add("星期三");
+        list.add("星期四");
+        list.add("星期五");
+        list.add("星期六");
+        list.add("星期日");
+        adapter.list = list;
+
+        if (((week >> 1) & 0x01) > 0) {
+            selectList.add(true);
+        } else {
+            selectList.add(false);
+        }
+        if (((week >> 2) & 0x01) > 0) {
+            selectList.add(true);
+        } else {
+            selectList.add(false);
+        }
+        if (((week >> 3) & 0x01) > 0) {
+            selectList.add(true);
+        } else {
+            selectList.add(false);
+        }
+        if (((week >> 4) & 0x01) > 0) {
+            selectList.add(true);
+        } else {
+            selectList.add(false);
+        }
+        if (((week >> 5) & 0x01) > 0) {
+            selectList.add(true);
+        } else {
+            selectList.add(false);
+        }
+        if (((week >> 6) & 0x01) > 0) {
+            selectList.add(true);
+        } else {
+            selectList.add(false);
+        }
+        if ((week & 0x01) > 0) {
+            selectList.add(true);
+        } else {
+            selectList.add(false);
+        }
+
+        adapter.selectList = selectList;
+        adapter.context = this;
+        listView.setAdapter(adapter);
+    }
+
+    public boolean onKeyDown(int paramInt, KeyEvent paramKeyEvent) {
+        if (paramInt == 4 && paramKeyEvent.getAction() == 0) {
+            Intent intent = new Intent();
+            intent.putExtra("week", 0);
+            // 设置返回码和返回携带的数据
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+            return true;
+        }
+        return super.onKeyDown(paramInt, paramKeyEvent);
     }
 }

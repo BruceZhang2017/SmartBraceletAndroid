@@ -18,12 +18,18 @@ public class SimpleAdapter extends BaseBannerAdapter<BLEModel> {
 
     protected void bindData(BaseViewHolder<BLEModel> holder, BLEModel bleModel, int position, int pagesize) {
         BLEModel model = bleModel;
+        holder.itemView.setOnClickListener(mOnClickListener);
+        TextView tvAddDevice = (TextView) holder.itemView.findViewById(R.id.tv_add_device);
+        if (model.getMac() == null || model.getMac().length() == 0) {
+            tvAddDevice.setVisibility(View.VISIBLE);
+            return;
+        }
+        tvAddDevice.setVisibility(View.INVISIBLE);
         TextView tvName = (TextView)holder.itemView.findViewById(R.id.tv_device_name);
         tvName.setText(model.getName());
         TextView tvBT = (TextView)holder.itemView.findViewById(R.id.tv_bt);
         TextView tvBattery = (TextView)holder.itemView.findViewById(R.id.tv_battery);
         String mac = model.getMac();
-        holder.itemView.setOnClickListener(mOnClickListener);
         System.out.println("当前连接成功的mac:" + L4M.GetConnectedMAC() + "当前设备的mac:" + mac);
         if (L4M.GetConnectedMAC().equals(mac)) {
             tvBT.setText("蓝牙已连接");

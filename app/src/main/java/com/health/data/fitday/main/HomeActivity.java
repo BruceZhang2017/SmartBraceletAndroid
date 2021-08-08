@@ -1,6 +1,8 @@
 package com.health.data.fitday.main;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,7 +12,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -28,6 +32,7 @@ import com.health.data.fitday.device.model.UserBean;
 import com.health.data.fitday.global.RealmOperationHelper;
 import com.health.data.fitday.global.RunUtils;
 import com.health.data.fitday.main.widget.AlphaTabsIndicator;
+import com.health.data.fitday.utils.SpUtils;
 import com.health.data.fitday.utils.ToastUtil;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.sinophy.smartbracelet.R;
@@ -35,6 +40,7 @@ import com.tjdL4.tjdmain.Dev;
 import com.tjdL4.tjdmain.L4M;
 import com.tjdL4.tjdmain.contr.BracltBatLevel;
 import com.tjdL4.tjdmain.contr.BrltUserParaSet;
+import com.tjdL4.tjdmain.contr.Health_BldoxyGen;
 import com.tjdL4.tjdmain.contr.Health_HeartBldPrs;
 import com.tjdL4.tjdmain.contr.Health_Sleep;
 import com.tjdL4.tjdmain.contr.Health_TodayPedo;
@@ -71,8 +77,11 @@ public class HomeActivity extends BaseActivity {
     KProgressHUD hud;
     private ViewPager viewPager;
     private TextView tvTitle;
-    static final String startTime="13:00:00";
-    static final String endTime="11:00:00";
+    static final String startTime="22:00:00";
+    static final String endTime="10:00:00";
+    private boolean bSingleFlag = false;
+    private int readDataProgress = 0; // 读取数据的进度
+    private String progress = ""; // 同步数据的进度
 
     protected int getLayoutId() {
         return R.layout.activity_home_layout;
@@ -82,26 +91,27 @@ public class HomeActivity extends BaseActivity {
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         PermissionUtil.checkPermissions(this);
-        Test_InMainActivity();
         L4M.registerBTStReceiver(this, DataReceiver);
     }
 
     protected void initData() {
-        //bleManager = new BlueToothManager((Application)MyApplication.getInstance(), (Context)this);
-
+        config();
+        Test_InMainActivity();
     }
 
     void config() {
-//        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_PEDO,myUpDateUiCb, L4UI_DATA_PEDO);
-//        Dev.EnUpdateUiListener(myUpDateUiCb, 1);
-//        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_SLEEP,myUpDateUiCbSleep, L4UI_DATA_SLEEP);
-//        Dev.EnUpdateUiListener(myUpDateUiCbSleep, 1);
-        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_HEARTRATE,myUpDateUiCbHrt, L4UI_DATA_HEARTRATE);
+        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_PEDO,myUpDateUiCb);
+        Dev.EnUpdateUiListener(myUpDateUiCb, 1);
+        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_SLEEP,myUpDateUiCbSleep);
+        Dev.EnUpdateUiListener(myUpDateUiCbSleep, 1);
+        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_HEARTRATE,myUpDateUiCbHrt);
         Dev.EnUpdateUiListener(myUpDateUiCbHrt, 1);
-        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_BLOODPRESS,myUpDateUiCbBldPrs, L4UI_DATA_BLOODPRESS);
+        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_BLOODPRESS,myUpDateUiCbBldPrs);
         Dev.EnUpdateUiListener(myUpDateUiCbBldPrs, 1);
-        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_HEALTH,myUpDateUiCb2, L4UI_DATA_SyncProgress); //onCreate
+        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_HEALTH,myUpDateUiCb2);
         Dev.EnUpdateUiListener(myUpDateUiCb2, 1);
+        Dev.SetUpdateUiListener(Dev.L4UI_PageDATA_BLDOXYGEN,myUpDateUiCb3);
+        Dev.EnUpdateUiListener(myUpDateUiCb3, 1);
     }
 
     void unconfig() {
@@ -110,6 +120,7 @@ public class HomeActivity extends BaseActivity {
         Dev.EnUpdateUiListener(myUpDateUiCbSleep, 0);
         Dev.EnUpdateUiListener(myUpDateUiCbBldPrs, 0);
         Dev.EnUpdateUiListener(myUpDateUiCb2, 0);
+        Dev.EnUpdateUiListener(myUpDateUiCb3, 0);
     }
 
     protected void initView() {
@@ -152,11 +163,7 @@ public class HomeActivity extends BaseActivity {
 
             }
         }
-        List<BLEModel> list = DeviceManager.getInstance().models;
-        if (list == null || list.size() == 0) {
-            Intent intent = new Intent(HomeActivity.this, SearchDeviceActivity.class);
-            startActivity(intent);
-        }
+        checkBlue();
         readDBData();
     }
 
@@ -167,10 +174,10 @@ public class HomeActivity extends BaseActivity {
             public void run() {
                 pedoData(getCurrentDate(), true);
                 Hrt(getCurrentDate(), true);
-                sleep(getCurrentDate(), true);
+                sleep(getYestodayDate(), true);
                 BldPrs(getCurrentDate(), true);
             }
-        }, 2000);
+        }, 100);
     }
 
     @Override
@@ -261,59 +268,26 @@ public class HomeActivity extends BaseActivity {
     }
 
     public void Test_InMainActivity() {
-        L4M.SetResultListener(new L4M.BTResultListenr() {
-            @Override
-            public void On_Result(String TypeInfo, String StrData, Object DataObj) {
-                Log.e(TAG, "【SetResultListener】 TypeInfo:" + TypeInfo + " StrData: " + StrData);
-                if (bReadUserinfoOnlyOnce == false) {
-                    bReadUserinfoOnlyOnce = true;
-                    getUserInfo();
-                }
-            }
-        });
+        L4M.SetResultListener(listener);
 
         L4M.SetResultToDBListener(new L4M.BTResultToDBListenr(){
             @Override
             public void On_Result(String TypeInfo, String StrData, Object DataObj) {
-                //Log.i(TAG,"【SetResultToDBListener】 TypeInfo:"+TypeInfo+"  StrData:"+StrData);
+
             }
 
             @Override
             public void On_ProgressResult(String TypeInfo, int datTotal, int datIdx, String StrData, Object DataObj) {
                 //返回数据
                 Log.w(TAG," TypeInfo:"+TypeInfo+"  Tatal:"+datTotal+"  index:"+datIdx+"  StrData:"+StrData);
-                final String[] split = StrData.replace("[", "").replace("]", "").split(",");
-                if (TypeInfo.equals("BLDPRESS_HISTORY")) {
-                    String[] arr = split;
-                    if (datIdx == datTotal) {
+                if (TypeInfo.equals("BLDOXY_HISTORY")) {
+                    StrData = StrData.replace("[", "").replace("]", "");
+                    String[] array = StrData.split(",");
+                    if (array.length >= 3) {
                         HealthFragment fragment = (HealthFragment)(arrayList.get(0));
                         if (fragment != null) {
-                            fragment.refreshUIBlood(arr[2] + "/" + arr[3]);
+                            fragment.refreshUIForOxy(array[2]);
                         }
-                        boolean isOxy=Dev.IsFunction(1);
-                        if (isOxy) {
-                            new Handler().postDelayed(new Runnable() {
-                                public void run() { //要执行的任务
-                                    L4Command.GetBldOxyGen();
-                                }
-                            }, 1000);
-                        }
-                        if (hud != null && hud.isShowing()) {
-                            hud.dismiss();
-                            hud = null;
-                        }
-                    }
-                }  else if (TypeInfo.equals("BLDOXY_HISTORY")) {
-                    String[] arr = split;
-                    if (datIdx == datTotal) {
-                        HealthFragment fragment = (HealthFragment)(arrayList.get(0));
-                        if (fragment != null) {
-                            fragment.refreshUIForOxy(arr[2]);
-                        }
-                    }
-                    if (hud != null && hud.isShowing()) {
-                        hud.dismiss();
-                        hud = null;
                     }
                 }
             }
@@ -331,18 +305,21 @@ public class HomeActivity extends BaseActivity {
                             .setAnimationSpeed(1)
                             .setSize(200, 200);
                     hud.show();
-                    timer.schedule(task, 20000);
                 }
             } else if (Info.contains("BT_BLE_Connected")) {
                 new Handler().postDelayed(new Runnable() {
                     public void run() { //要执行的任务
-                        L4Command.LanguageZH();
+                        L4Command.LanguageEN();
                     }
                 }, 3000);
                 addDeviceToDB(); // 连接成功后，将设备保持至数据库。
                 config();
             } else if (Info.contains("close")) {
                 unconfig();
+                if (hud != null) {
+                    hud.dismiss();
+                    hud = null;
+                }
             }
         }
     };
@@ -350,6 +327,12 @@ public class HomeActivity extends BaseActivity {
     private String getCurrentDate() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String time = sdf.format( new Date());
+        return time;
+    }
+
+    private String getYestodayDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String time = sdf.format( new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000));
         return time;
     }
 
@@ -380,38 +363,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void getUserInfo() {
-        L4Command.Brlt_UserParaGet(new L4M.BTResultListenr() {
-            @Override
-            public void On_Result(String TypeInfo, String StrData, Object DataObj)
-            {
-                final String tTypeInfo=TypeInfo;
-                final String TempStr=StrData;
-                final Object TempObj=DataObj;
-
-                Log.e(TAG, "inTempStr:"+TempStr);
-                if(TypeInfo.equals(L4M.ERROR) && StrData.equals(L4M.TIMEOUT)) {
-                    return;
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run()
-                    {
-                        if (tTypeInfo.equals(L4M.GetUserPara) && TempStr.equals(L4M.Data)) {
-                            BrltUserParaSet.UserParaSetData my = (BrltUserParaSet.UserParaSetData) TempObj;
-                            Log.e(TAG," 年龄 "+my.mAge
-                                    +" 体重 "+my.mWeight
-                                    +" 身高 "+my.mHeight
-                                    +" 性别 "+my.mGender);
-                            readBattery();
-                            saveUserInfo(my); // 将用户信息保存到数据中
-                        }
-
-                    }
-                });
-            }
-
-        });
+        L4Command.Brlt_UserParaGet(listener);
     }
 
     // 保存或更新用户信息
@@ -429,34 +381,7 @@ public class HomeActivity extends BaseActivity {
 
     // 读取电量逻辑
     private void readBattery() {
-        L4Command.BatLevel(new L4M.BTResultListenr() {
-            @Override
-            public void On_Result(String TypeInfo, String StrData, Object DataObj) {
-                final String tTypeInfo = TypeInfo;
-                final String TempStr = StrData;
-                final Object TempObj = DataObj;
-
-                if (TypeInfo.equals(L4M.ERROR) && StrData.equals(L4M.TIMEOUT)) {
-                    return;
-                }
-
-                HomeActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (tTypeInfo.equals(L4M.GetBatLevel) && TempStr.equals(L4M.Data)) {
-                            BracltBatLevel.BatLevel myBatLevel= (BracltBatLevel.BatLevel)TempObj;
-                            int batlevel=myBatLevel.batlevel;
-                            System.out.println("当前设备的电量为" + batlevel);
-                            MyApplication.getInstance().map.put(L4M.GetConnectedMAC(), batlevel + "");
-                            DeviceFragment fragment = (DeviceFragment)(arrayList.get(1));
-                            if (fragment != null) {
-                                fragment.refreshUI();
-                            }
-                        }
-                    }
-                });
-            }
-        });
+        L4Command.BatLevel(listener);
     }
 
     // 添加连接成功的设备至数据库
@@ -473,6 +398,7 @@ public class HomeActivity extends BaseActivity {
         Log.e(TAG, "将连接成功的设备保存至数据");
         DeviceManager.getInstance().initializeDevices();
         DeviceManager.getInstance().currentModel = bleModel;
+        SpUtils.putString(this, "lastDeviceMac", L4M.GetConnectedMAC());
     }
 
     Dev.UpdateUiListenerImpl myUpDateUiCb = new Dev.UpdateUiListenerImpl() {
@@ -497,6 +423,7 @@ public class HomeActivity extends BaseActivity {
                 public void run() {
                     Log.e(TAG,"Heart ParaA:"+ParaA);
                     Hrt(getCurrentDate(), true);
+                    L4Command.GetBloodPrs();
                 }
             });
         }
@@ -510,7 +437,7 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void run() {
                     Log.e(TAG,"Sleep ParaA:"+ParaA);
-                    sleep(getCurrentDate(), true);
+                    sleep(getYestodayDate(), true);
                 }
             });
         }
@@ -527,27 +454,6 @@ public class HomeActivity extends BaseActivity {
                     BldPrs(getCurrentDate(), true);
                 }
             });
-        }
-    };
-
-    private final Timer timer = new Timer();
-    private TimerTask  task = new TimerTask() {
-        @Override
-        public void run() {
-            Message message = new Message();
-            message.what = 1;
-            handler.sendMessage(message);
-        }
-    };
-
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if (hud != null && hud.isShowing()) {
-                hud.dismiss();
-                hud = null;
-            }
         }
     };
 
@@ -581,13 +487,6 @@ public class HomeActivity extends BaseActivity {
             if (tempAddr!=null){
                 Health_HeartBldPrs.HeartPageData mHeartData = Health_HeartBldPrs.GetHeart_Data(tempAddr, dateStr);
                 Log.e(TAG, "心率  " + mHeartData.HeartRate);
-                List<Health_HeartBldPrs.HrtDiz> HrtRateDizList = mHeartData.mHrtDiz;
-                if (HrtRateDizList != null) {
-                    for (int i = 0; i < HrtRateDizList.size(); i++) {
-                        Health_HeartBldPrs.HrtDiz mHrtRateDiz = HrtRateDizList.get(i);
-                        Log.e(TAG, "心率详细数据  时间  " + mHrtRateDiz.mMsrTime+" 心率值  "+mHrtRateDiz.mHrtRate);
-                    }
-                }
                 HealthFragment fragment = (HealthFragment)(arrayList.get(0));
                 if (fragment != null) {
                     fragment.refreshUIForHeart(mHeartData.HeartRate);
@@ -600,10 +499,8 @@ public class HomeActivity extends BaseActivity {
     private void sleep(String dateStr, boolean LoadDB) {
         if (LoadDB){
             String tempAddr = L4M.GetConnectedMAC();
-            String dateSlp="2021-07-15";
             if (tempAddr!=null){
-                Health_Sleep.HealthSleepData sleepData= Health_Sleep.GetSleep_Data(tempAddr,dateSlp,startTime,endTime);
-                List<Health_Sleep.TimeSlpDiz> TimeSlpDizList=sleepData.mTimeSlpDiz;
+                Health_Sleep.HealthSleepData sleepData= Health_Sleep.GetSleep_Data(tempAddr,dateStr,startTime,endTime);
                 Log.e(TAG, "睡眠  质量  " + sleepData.sleelLevel
                         + "  清醒  " + sleepData.awakeHour+":"+sleepData.awakeMinute
                         + "  浅睡  " + sleepData.lightHour+":"+sleepData.lightMinute
@@ -621,16 +518,14 @@ public class HomeActivity extends BaseActivity {
     private void BldPrs(String dateStr, boolean LoadDB) {
         if (LoadDB){
             String tempAddr = L4M.GetConnectedMAC();
-            System.out.println("[tempAddr]设备mac地址: " + tempAddr);
+            System.out.println("[血压]设备mac地址: " + tempAddr);
             if (tempAddr!=null){
                 Health_HeartBldPrs.BloodPrsData mBldPrsData = Health_HeartBldPrs.GetBloodPrs_Data(tempAddr, dateStr);
                 List<Health_HeartBldPrs.BldPrsDiz>   BldPrsDizList = mBldPrsData.mBldPrsDiz;
                 Log.e(TAG, "血压 " +mBldPrsData.BloodPrs);
-                if (BldPrsDizList != null) {
-                    for (int i = 0; i < BldPrsDizList.size(); i++) {
-                        Health_HeartBldPrs.BldPrsDiz mBldPrsDiz = BldPrsDizList.get(i);
-                        Log.e(TAG, "血压详细数据  时间  " + mBldPrsDiz.mMsrTime+" 血压值  "+mBldPrsDiz.mHPress+"/"+mBldPrsDiz.mLPress);
-                    }
+                HealthFragment fragment = (HealthFragment)(arrayList.get(0));
+                if (fragment != null) {
+                    fragment.refreshUIBlood(mBldPrsData.BloodPrs);
                 }
             }
         }
@@ -650,10 +545,180 @@ public class HomeActivity extends BaseActivity {
 
                     }
                     else if(TempPara== L4UI_DATA_SyncProgress && TempStrData.equals("100")) {
+                        if (progress.equals(TempStrData)) {
+                            refreshData();
+                        }
+                    }
+                    progress = TempStrData; // 当前进度
+                }
+            });
+        }
+    };
 
+    Dev.UpdateUiListenerImpl myUpDateUiCb3 = new Dev.UpdateUiListenerImpl() {
+        @Override
+        public void UpdateUi(int ParaA, String StrData) {
+            final int    TempPara=ParaA;
+            final String TempStrData=StrData;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG,"L4UI_DATA_BOOLDOxgen ="+TempStrData);
+                }
+            });
+        }
+    };
+
+    L4M.BTResultListenr listener = new L4M.BTResultListenr() {
+        @Override
+        public void On_Result(String TypeInfo, String StrData, Object DataObj) {
+            final String tTypeInfo = TypeInfo;
+            final String TempStr = StrData;
+            final Object TempObj = DataObj;
+            Log.i(TAG, "tTypeInfo: " + tTypeInfo + " TempStr: " + TempStr);
+            if (TypeInfo.equals(L4M.ERROR) && StrData.equals(L4M.TIMEOUT)) {
+                return;
+            }
+
+            HomeActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (bReadUserinfoOnlyOnce == false) {
+                        bReadUserinfoOnlyOnce = true;
+                        getUserInfo();
+                    }
+                    if (tTypeInfo.equals(L4M.GetBatLevel) && TempStr.equals(L4M.Data)) {
+                        BracltBatLevel.BatLevel myBatLevel= (BracltBatLevel.BatLevel)TempObj;
+                        int batlevel=myBatLevel.batlevel;
+                        System.out.println("当前设备的电量为" + batlevel);
+                        MyApplication.getInstance().map.put(L4M.GetConnectedMAC(), batlevel + "");
+                        DeviceFragment fragment = (DeviceFragment)(arrayList.get(1));
+                        if (fragment != null) {
+                            fragment.refreshUI();
+                        }
+                        refreshData();
+                    } else if (tTypeInfo.equals(L4M.GetUserPara) && TempStr.equals(L4M.Data)) {
+                        BrltUserParaSet.UserParaSetData my = (BrltUserParaSet.UserParaSetData) TempObj;
+                        Log.e(TAG," 年龄 "+my.mAge
+                                +" 体重 "+my.mWeight
+                                +" 身高 "+my.mHeight
+                                +" 性别 "+my.mGender);
+                        readBattery();
+                        saveUserInfo(my); // 将用户信息保存到数据中
+                    } else if (TempStr.startsWith("5A0925")) {
+                        String target = TempStr.substring(8, 16);
+                        int t = Integer.parseInt(target, 16);
+                        SpUtils.putInt(HomeActivity.this, "goal", t);
+                        HealthFragment fragment = (HealthFragment)(arrayList.get(0));
+                        if (fragment != null) {
+                            fragment.refreshUIGoal("目标 | " + t + "步");
+                        }
                     }
                 }
             });
         }
     };
+
+    // 如果蓝牙未开启，则弹框提示用户开启蓝牙
+    public void checkBlue() {
+        BluetoothAdapter blueadapter=BluetoothAdapter.getDefaultAdapter();
+        //支持蓝牙模块
+        if (blueadapter != null){
+            if (blueadapter.isEnabled()){
+                List<BLEModel> list = DeviceManager.getInstance().models;
+                boolean b = PermissionUtil.checkPermissionLocation(this);
+                if ((list == null || list.size() == 0) && bSingleFlag == false && b) {
+                    bSingleFlag = true;
+                    Intent intent = new Intent(HomeActivity.this, SearchDeviceActivity.class);
+                    startActivity(intent);
+                }
+            } else {
+                new AlertDialog.Builder(this).setTitle("蓝牙功能尚未打开，是否打开蓝牙")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (turnOnBluetooth()){
+                                    Toast tst = Toast.makeText(HomeActivity.this, "打开蓝牙成功", Toast.LENGTH_SHORT);
+                                    tst.show();
+                                }
+                                else {
+                                    Toast tst = Toast.makeText(HomeActivity.this, "打开蓝牙失败！！", Toast.LENGTH_SHORT);
+                                    tst.show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 点击“返回”后的操作,这里不设置没有任何操作
+                            }
+                        }).show();
+            }
+        }else{//不支持蓝牙模块
+            Toast tst = Toast.makeText(this, "该设备不支持蓝牙或没有蓝牙模块", Toast.LENGTH_SHORT);
+            tst.show();
+        }
+    }
+
+    // 判断蓝牙是否开启
+    public static boolean turnOnBluetooth() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (bluetoothAdapter != null) {
+            return bluetoothAdapter.enable();
+        }
+        return false;
+    }
+
+    private void refreshData() {
+        System.out.println("同步数据：" + readDataProgress);
+        if (readDataProgress == 0) {
+            readDataProgress = 1;
+            L4Command.GetPedo1(); // 获取步数
+            return;
+        }
+
+        if (readDataProgress == 1) {
+            L4Command.GetSleep1();
+            readDataProgress += 1;
+            return;
+        }
+
+        if (readDataProgress == 2) {
+            if (hud != null) {
+                hud.dismiss();
+                hud = null;
+            }
+            L4Command.GetHeart1();
+            readDataProgress += 1;
+
+            Handler handlerD = new Handler();
+            handlerD.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    L4Command.GetBloodPrs();
+                }
+            }, 6000);
+
+            Handler handlerE = new Handler();
+            handlerE.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    L4Command.GetBldOxyGen();
+                }
+            }, 8000);
+            Handler handlerF = new Handler();
+            handlerF.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    L4Command.TargetStepGet(listener);
+                }
+            }, 10000);
+            return;
+        }
+    }
+
+    public void refreshAllData() {
+        readDataProgress = 0;
+        refreshData();
+    }
 }

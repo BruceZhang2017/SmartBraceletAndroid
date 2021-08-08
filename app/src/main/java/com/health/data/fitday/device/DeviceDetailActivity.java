@@ -63,6 +63,9 @@ public class DeviceDetailActivity extends BaseActivity {
             }
         });
         BLEModel model = DeviceManager.getInstance().currentModel;
+        if (model == null) {
+            return;
+        }
         tvName.setText(model.getName());
         String mac = model.getMac();
         System.out.println("当前连接成功的mac:" + L4M.GetConnectedMAC() + "当前设备的mac:" + mac);

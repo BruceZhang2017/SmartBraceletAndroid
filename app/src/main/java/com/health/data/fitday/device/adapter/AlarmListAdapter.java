@@ -6,23 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.health.data.fitday.device.alarm.AlarmItemModel;
 import com.sinophy.smartbracelet.R;
 import com.suke.widget.SwitchButton;
-import com.tjdL4.tjdmain.contr.BractletFuncSet;
+import com.tjdL4.tjdmain.contr.AlarmClock;
+import com.tjdL4.tjdmain.contr.L4Command;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class AlarmListAdapter extends BaseAdapter {
-    public static final int TYPE_SWITCH = 1;
-    public static final int TYPE_NULL = 2;
     private Context context;
-    private List<AlarmItemModel> list;
+    private List<AlarmClock.AlarmClockData> list;
 
-    public AlarmListAdapter(Context context, List<AlarmItemModel> list) {
+    public AlarmListAdapter(Context context, List<AlarmClock.AlarmClockData> list) {
         super();
         this.context = context;
         this.list = list;
@@ -43,70 +41,72 @@ public class AlarmListAdapter extends BaseAdapter {
         return 0;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        AlarmItemModel model = list.get(position);
-        if (model.isbNull()) {
-            return TYPE_NULL;
-        }
-        return TYPE_SWITCH;
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return 3;
-    }
-
     @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         AlarmViewHolder comHolder;
-        switch (getItemViewType(position)) {
-            case TYPE_SWITCH:
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(context).inflate(R.layout.item_alarm_list, null);
-                    comHolder = new AlarmViewHolder();
-                    comHolder.com = (TextView) convertView.findViewById(R.id.tv_key);
-                    comHolder.icon = (SwitchButton) convertView.findViewById(R.id.switch_button);
-                    comHolder.ivArrow = (ImageView)convertView.findViewById(R.id.iv_arrow_right);
-                    comHolder.ivDelete = (ImageView)convertView.findViewById(R.id.iv_delete);
-                    convertView.setTag(comHolder);
-                } else {
-                    comHolder = (AlarmViewHolder) convertView.getTag();
-                }
-                AlarmItemModel model = list.get(position);
-                comHolder.com.setText(model.getKey());
-                comHolder.icon.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-
-                    }
-                });
-                if (model.isbSection()) {
-                    comHolder.ivArrow.setVisibility( View.GONE);
-                    comHolder.ivDelete.setVisibility( View.GONE);
-                    comHolder.icon.setVisibility( View.GONE);
-                } else {
-                    comHolder.ivArrow.setVisibility(model.isbEdit() ? View.VISIBLE : View.GONE);
-                    comHolder.ivDelete.setVisibility(model.isbEdit() ? View.VISIBLE : View.GONE);
-                    comHolder.icon.setVisibility(model.isbEdit() ? View.GONE : View.VISIBLE);
-                }
-
-                break;
-            case TYPE_NULL:
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(context).inflate(R.layout.item_device_detail_null, null);
-                }
-                break;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_alarm_list, null);
+            comHolder = new AlarmViewHolder();
+            comHolder.com = (TextView) convertView.findViewById(R.id.tv_key);
+            comHolder.icon = (SwitchButton) convertView.findViewById(R.id.switch_button);
+            comHolder.detail = (TextView)convertView.findViewById(R.id.tv_week);
+            convertView.setTag(comHolder);
+        } else {
+            comHolder = (AlarmViewHolder) convertView.getTag();
         }
+        AlarmClock.AlarmClockData model = list.get(position);
+        DecimalFormat decimalFormat =new DecimalFormat("00");
+        String hour = decimalFormat.format(model.hours);
+        String minute = decimalFormat.format(model.minutes);
+        comHolder.com.setText(hour + ":" + minute);
+        comHolder.detail.setText(bytesToString(model.week));
+        comHolder.icon.setChecked(model.clock_switch > 0);
+        comHolder.icon.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(SwitchButton view, boolean isChecked) {
+                model.clock_switch = isChecked ? 1 : 0;
+                String ret = L4Command.AlarmClockSet(model);
+            }
+        });
         return convertView;
     }
 
     class AlarmViewHolder {
+        TextView detail;
         TextView com;
         SwitchButton icon;
-        ImageView ivDelete;
-        ImageView ivArrow;
+    }
+
+    private String bytesToString(int week) {
+        String value = "";
+        if ((week & 0x01) > 0) {
+            value += "星期日、";
+        }
+        if ((week >> 1 & 0x01) > 0) {
+            value += "星期一、";
+        }
+        if ((week >> 2 & 0x01) > 0) {
+            value += "星期二、";
+        }
+        if ((week >> 3 & 0x01) > 0) {
+            value += "星期三、";
+        }
+        if ((week >> 4 & 0x01) > 0) {
+            value += "星期四、";
+        }
+        if ((week >> 5 & 0x01) > 0) {
+            value += "星期五、";
+        }
+        if ((week >> 6 & 0x01) > 0) {
+            value += "星期六、";
+        }
+        if (value.length() > 0) {
+            value = value.substring(0, value.length() - 1);
+        } else {
+            value = "无";
+        }
+        return value;
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -27,14 +28,20 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import per.goweii.actionbarex.common.ActionBarCommon;
+import per.goweii.actionbarex.common.OnActionBarChildClickListener;
+
 public class AddAlarmActivity extends BaseActivity {
+    private static String TAG = "AddAlarmActivity";
     private FrameLayout mFrameLayout;
     private TimePickerView pvTime;
     private ConstraintLayout cl;
-    private Button btnSubmit;
+    private ConstraintLayout cl2;
+    ActionBarCommon actionBarCommon;
     private TextView tvRepeatValue;
+    private TextView tvAmindValue;
     String time;
-    byte[] repeat = new byte[7];
+    AlarmClock.AlarmClockData model;
 
     @Override
     protected int getLayoutId() {
@@ -50,35 +57,55 @@ public class AddAlarmActivity extends BaseActivity {
     protected void initView() {
         mFrameLayout = (FrameLayout) findViewById(R.id.fragmen_fragment);
         cl = (ConstraintLayout)findViewById(R.id.cl_repeat);
-        btnSubmit = (Button)findViewById(R.id.btn_add);
+        cl2 = (ConstraintLayout)findViewById(R.id.cl_amind);
         tvRepeatValue = (TextView)findViewById(R.id.tv_repeat_value) ;
+        tvAmindValue = (TextView)findViewById(R.id.tv_amind_value);
         initTimePicker();
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
+
+        cl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (model == null) {
+                    return;
+                }
+                int week = model.week;
+                Intent intent = new Intent(AddAlarmActivity.this, WeekChooseActivity.class);
+                intent.putExtra("week", week);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        cl2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (model == null) {
+                    return;
+                }
+                int internal = model.interval;
+                Intent intent = new Intent(AddAlarmActivity.this, AmindActivity.class);
+                intent.putExtra("internal", internal);
+                startActivityForResult(intent, 2);
+            }
+        });
+
+        actionBarCommon = (ActionBarCommon)findViewById(R.id.simple_action_bar);
+        actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        actionBarCommon.setOnRightTextClickListener(new OnActionBarChildClickListener() {
             @Override
             public void onClick(View v) {
                 if (time == null || time.length() == 0) {
                     Toast.makeText(AddAlarmActivity.this, "请选择时间", Toast.LENGTH_LONG).show();
                     return;
                 }
-                AlarmClock.AlarmClockData myAlarmClockData=new AlarmClock.AlarmClockData();
-                myAlarmClockData.clockId_int = 1;     //clockId_int闹钟序号（id）
-                myAlarmClockData.clock_switch = 1;   //clock_switch  开关 0关闭1打开
-                myAlarmClockData.interval = 10;       //interval  重复间隔
-                myAlarmClockData.weeks = repeat;          //weeks 重复模式
                 String[] s = time.split(":");
-                myAlarmClockData.hours  = Integer.parseInt(s[0]);          //hour   时
-                myAlarmClockData.minutes = Integer.parseInt(s[1]);         //minute 分
-
-                String ret = L4Command.AlarmClockSet(myAlarmClockData);	/*ret  返回值类型在文档最下面*/
+                model.hours  = Integer.parseInt(s[0]);          //hour   时
+                model.minutes = Integer.parseInt(s[1]);         //minute 分
+                String ret = L4Command.AlarmClockSet(model);	/*ret  返回值类型在文档最下面*/
                 finish();
-            }
-        });
-
-        cl.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AddAlarmActivity.this, WeekChooseActivity.class);
-                startActivityForResult(intent, 1);
             }
         });
     }
@@ -86,6 +113,13 @@ public class AddAlarmActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        int i = bundle.getInt("i");
+        model = AlarmListActivity.alarmList.get(i);
+        if (model != null) {
+            refreshRepeat();
+            refreshInternal();
+        }
     }
 
     private void initTimePicker() {
@@ -134,39 +168,56 @@ public class AddAlarmActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        int week = data.getIntExtra("week", -1);
+        if (requestCode == 1) {
+            int week = data.getIntExtra("week", -1);
+            if (week > 0) {
+                model.week = week;
+                refreshRepeat();
+            }
+        } else {
+            int amind = data.getIntExtra("amind", -1);
+            if (amind > 0) {
+                model.interval = amind;
+                refreshInternal();
+            }
+        }
+    }
+
+    private void refreshRepeat() {
+        Log.i(TAG, "refreshRepeat" + model.clockId_int);
+        int week = model.week;
         String strRepeat = "";
         if (((week >> 1) & 0x01) > 0) {
-            strRepeat += "星期一/";
-            repeat[1] = 1;
+            strRepeat += "星期一、";
         }
         if (((week >> 2) & 0x01) > 0) {
-            strRepeat += "星期二/";
-            repeat[2] = 1;
+            strRepeat += "星期二、";
         }
         if (((week >> 3) & 0x01) > 0) {
-            strRepeat += "星期三/";
-            repeat[3] = 1;
+            strRepeat += "星期三、";
         }
         if (((week >> 4) & 0x01) > 0) {
-            strRepeat += "星期四/";
-            repeat[4] = 1;
+            strRepeat += "星期四、";
         }
         if (((week >> 5) & 0x01) > 0) {
-            strRepeat += "星期五/";
-            repeat[5] = 1;
+            strRepeat += "星期五、";
         }
         if (((week >> 6) & 0x01) > 0) {
-            strRepeat += "星期六/";
-            repeat[6] = 1;
+            strRepeat += "星期六、";
         }
         if ((week & 0x01) > 0) {
-            strRepeat += "星期日/";
-            repeat[0] = 1;
+            strRepeat += "星期日、";
         }
         if (strRepeat.length() > 0) {
             strRepeat = strRepeat.substring(0, strRepeat.length() - 1);
+        } else {
+            strRepeat = "无";
         }
         tvRepeatValue.setText(strRepeat);
+    }
+
+    private void refreshInternal() {
+        Log.i(TAG, "refreshInternal" + model.clockId_int);
+        tvAmindValue.setText(model.interval + "分钟");
     }
 }

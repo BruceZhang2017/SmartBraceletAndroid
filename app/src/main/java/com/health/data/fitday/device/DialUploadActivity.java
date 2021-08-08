@@ -11,8 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.health.data.fitday.device.model.DialBean;
+import com.health.data.fitday.global.CacheUtils;
 import com.health.data.fitday.main.BaseActivity;
 import com.health.data.fitday.mine.HelpCenterActivity;
+import com.health.data.fitday.utils.SpUtils;
 import com.lxj.xpopup.XPopup;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.BaseContents;
@@ -25,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -42,6 +46,9 @@ public class DialUploadActivity extends BaseActivity {
     int index = 0;
     String fileName = "";
     File outFile;
+    DialBean currentBean;
+    boolean cloud;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_dial_upload;
@@ -135,11 +142,13 @@ public class DialUploadActivity extends BaseActivity {
                     public void OnSucc(String EventStr) {
                         popupView.setResource(R.mipmap.content_icon_success);
                         popupView.setPopTitle("推送成功！");
+                        uploadsuccess();
                         new Handler().postDelayed(
                                 new Runnable() {
                                     public void run() {
                                         //要执行的任务
                                         popupView.dismiss();
+                                        finish();
                                     }
                                 }, 1000);
                     }
@@ -153,20 +162,31 @@ public class DialUploadActivity extends BaseActivity {
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
         index = getIntent().getIntExtra("index", 0);
-        if (index == 0) {
-            ivDial.setImageResource(R.mipmap.preview_watch1);
-            fileName = "preview_watch1_ClkResPKG.bin";
-        } else if (index == 1) {
-            ivDial.setImageResource(R.mipmap.preview_watch2);
-            fileName = "preview_watch2_ClkResPKG.bin";
-        } else if (index == 2) {
-            ivDial.setImageResource(R.mipmap.preview_watch3);
-            fileName = "preview_watch3_ClkResPKG.bin";
+        cloud = getIntent().getBooleanExtra("cloud", false);
+        if (cloud) {
+            currentBean = CloudDialFragment.list.get(index);
         } else {
-            ivDial.setImageResource(R.mipmap.preview_watch4);
-            fileName = "preview_watch4_ClkResPKG.bin";
+            String mac = SpUtils.getString(this, "lastDeviceMac");
+            if (mac != null && mac.length() > 0) {
+                LinkedHashMap<String,String> mapss = new LinkedHashMap<>();
+                mapss = CacheUtils.getMap(this, "MyClock");
+                if (mapss != null && mapss.size() > 0) {
+                    String value = mapss.get(mac);
+                    if (value != null && value.length() > 0) {
+                        String[] arr = value.split("&&&");
+                        String str = arr[index];
+                        String[] array = str.split("&&");
+                        currentBean = new DialBean();
+                        currentBean.setDialName(array[0]);
+                        currentBean.setImage(Integer.parseInt(array[1]));
+                        currentBean.setAsset(array[2]);
+                    }
+                }
+            }
         }
-        tvDialName.setText("ITIME - " + (index + 1));
+        ivDial.setImageResource(currentBean.getImage());
+        tvDialName.setText(currentBean.getDialName());
+        fileName = currentBean.getAsset();
         try {
             InputStream in = getAssets().open(fileName);
             outFile = new File(getCacheDir(), fileName);
@@ -185,6 +205,35 @@ public class DialUploadActivity extends BaseActivity {
             tvFileSize.setText("文件大小：" + theRealFileSizeInBytes / 1024 + "K");
         } catch (IOException exc) {
 
+        }
+
+        if (cloud) {
+            actionBarCommon.getRightTextView().setText("下载并使用");
+        }
+    }
+
+    private void uploadsuccess() {
+        if (cloud == false) {
+            return;
+        }
+        String mac = SpUtils.getString(this, "lastDeviceMac");
+        boolean b = false;
+        if (mac != null && mac.length() > 0) {
+            LinkedHashMap<String,String> mapss = new LinkedHashMap<>();
+            mapss = CacheUtils.getMap(this, "MyClock");
+            if (mapss != null && mapss.size() > 0) {
+                String value = mapss.get(mac);
+                if (value != null && value.length() > 0) {
+                    mapss.put(mac,  value + "&&&" + currentBean.getDialName() + "&&" + currentBean.getImage() + "&&" + currentBean.getAsset());
+                    CacheUtils.setMap(this, "MyClock", mapss);
+                } else {
+                    mapss.put(mac,  currentBean.getDialName() + "&&" + currentBean.getImage() + "&&" + currentBean.getAsset());
+                    CacheUtils.setMap(this, "MyClock", mapss);
+                }
+            } else {
+                mapss.put(mac,  currentBean.getDialName() + "&&" + currentBean.getImage() + "&&" + currentBean.getAsset());
+                CacheUtils.setMap(this, "MyClock", mapss);
+            }
         }
     }
 }

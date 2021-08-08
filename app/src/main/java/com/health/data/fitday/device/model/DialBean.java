@@ -4,7 +4,7 @@ public class DialBean {
     String dialName = "";
     int image = 0x00;
     int size = 0;
-    int asset = 0x00;
+    String asset = "";
 
     public String getDialName() {
         return dialName;
@@ -30,11 +30,11 @@ public class DialBean {
         this.size = size;
     }
 
-    public int getAsset() {
+    public String getAsset() {
         return asset;
     }
 
-    public void setAsset(int asset) {
+    public void setAsset(String asset) {
         this.asset = asset;
     }
 }

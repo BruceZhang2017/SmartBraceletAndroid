@@ -21,10 +21,10 @@
         app:abc_leftTextPaddingLeft="0.0dip"
         app:abc_leftTextPaddingRight="0.0dip"
         app:abc_rightText=""
+        app:abc_rightIconRes="@mipmap/nav_icon_edit"
         app:abc_rightTextPaddingLeft="0.0dip"
         app:abc_rightTextPaddingRight="10.0dip"
         app:abc_titleText="闹钟设置"
-        app:abc_rightIconRes="@mipmap/nav_icon_edit"
         app:abc_titleTextMaxWidth="180.0dip"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -41,7 +41,7 @@
     <ListView
         android:id="@+id/lv_week"
         android:layout_width="match_parent"
-        android:layout_height="336dp"
+        android:layout_height="0dp"
         android:divider="@null"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -54,6 +54,6 @@
         android:background="#fff5f5f5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lv_alarm"
+        app:layout_constraintTop_toBottomOf="@id/lv_week"
         app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

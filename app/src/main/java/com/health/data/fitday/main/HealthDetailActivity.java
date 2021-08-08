@@ -1,15 +1,29 @@
 package com.health.data.fitday.main;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+import com.bigkoo.pickerview2.view.TimePickerView;
+import com.bigkoo.pickerview2.builder.TimePickerBuilder;
+import com.bigkoo.pickerview2.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview2.listener.OnTimeSelectChangeListener;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -26,20 +40,37 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.health.data.fitday.main.adapter.HealthAdapter;
 import com.health.data.fitday.main.adapter.HealthBean;
+import com.health.data.fitday.mine.AboutActivity;
+import com.health.data.fitday.mine.UserInfoActivity;
+import com.health.data.fitday.mine.UserInfoBean;
+import com.health.data.fitday.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
+import com.tjdL4.tjdmain.L4M;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import per.goweii.actionbarex.common.ActionBarCommon;
+import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class HealthDetailActivity extends BaseActivity {
 
     @BindView(R.id.lv_health_knowledge)
     ListView lvKnowledge;
+    @BindView(R.id.simple_action_bar)
+    ActionBarCommon actionBarCommon;
     HealthAdapter adapter;
     private LineChart chart;
+    private ConstraintLayout cl;
+    private TextView tvGoal;
+    private TextView tvDate;
+    int type = 0; // 当前类型：1.步数
+    private Date currentDate;
 
     @Override
     protected int getLayoutId() {
@@ -52,8 +83,33 @@ public class HealthDetailActivity extends BaseActivity {
     }
 
     @Override
+    protected void onCreate(Bundle paramBundle) {
+        super.onCreate(paramBundle);
+        Bundle bundle = getIntent().getExtras();
+        int type = bundle.getInt("type");
+        this.type = type;
+        if (type == 1) {
+            cl.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int goal = SpUtils.getInt(HealthDetailActivity.this, "goal");
+        tvGoal.setText(goal + "");
+    }
+
+    @Override
     protected void initView() {
         ButterKnife.bind(this);
+        this.actionBarCommon.setOnLeftIconClickListener(new OnActionBarChildClickListener() {
+            public void onClick(View param1View) {
+                System.out.println("点击事件");
+                HealthDetailActivity.this.finish();
+            }
+        });
+
         List<HealthBean> list = new ArrayList<>();
         HealthBean walkBean = new HealthBean();
         walkBean.setDatetime("2020-11-08");
@@ -119,6 +175,26 @@ public class HealthDetailActivity extends BaseActivity {
         Legend l = chart.getLegend();
         // draw legend entries as lines
         l.setForm(Legend.LegendForm.LINE);
+
+        cl = (ConstraintLayout) findViewById(R.id.cl);
+        cl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HealthDetailActivity.this, SetTargetStepActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        tvGoal = (TextView) findViewById(R.id.tv_step_value);
+        tvDate = (TextView) findViewById(R.id.tv_date);
+        currentDate = new Date();
+        tvDate.setText(StringData(currentDate));
+        tvDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initTimePicker();
+            }
+        });
     }
 
     private void setData(int count, float range) {
@@ -178,5 +254,63 @@ public class HealthDetailActivity extends BaseActivity {
             // set data
             chart.setData(data);
         }
+    }
+
+    public static String StringData(Date date){
+        final Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        c.setTime(date);
+        String mYear = String.valueOf(c.get(Calendar.YEAR)); // 获取当前年份
+        String mMonth = String.valueOf(c.get(Calendar.MONTH) + 1);// 获取当前月份
+        String mDay = String.valueOf(c.get(Calendar.DAY_OF_MONTH));// 获取当前月份的日期号码
+        String mWay = String.valueOf(c.get(Calendar.DAY_OF_WEEK));
+        if("1".equals(mWay)){
+            mWay ="天";
+        }else if("2".equals(mWay)){
+            mWay ="一";
+        }else if("3".equals(mWay)){
+            mWay ="二";
+        }else if("4".equals(mWay)){
+            mWay ="三";
+        }else if("5".equals(mWay)){
+            mWay ="四";
+        }else if("6".equals(mWay)){
+            mWay ="五";
+        }else if("7".equals(mWay)){
+            mWay ="六";
+        }
+        return "星期" + mWay +" " + mMonth + "月" + mDay + "日";
+    }
+
+    private void initTimePicker() {
+        TimePickerView timePickerView = (new TimePickerBuilder((Context) this, new OnTimeSelectListener() {
+            public void onTimeSelect(Date param1Date, View param1View) {
+                Log.i("pvTime", "onTimeSelect");
+                currentDate = param1Date;
+                tvDate.setText(StringData(param1Date));
+            }
+        })).setTimeSelectChangeListener(new OnTimeSelectChangeListener() {
+            public void onTimeSelectChanged(Date param1Date) {
+                Log.i("pvTime", "onTimeSelectChanged");
+            }
+        }).setType(new boolean[]{true, true, true, false, false, false}).isDialog(false).isCenterLabel(false).setLabel(getResources().getString(R.string.pickerview_year), getResources().getString(R.string.pickerview_month), getResources().getString(R.string.pickerview_day), "", "", "").addOnCancelClickListener(new View.OnClickListener() {
+            public void onClick(View param1View) {
+                Log.i("pvTime", "onCancelClickListener");
+            }
+        }).setLineSpacingMultiplier(2.0F).setContentTextSize(20).isAlphaGradient(true).build();
+        Dialog dialog = timePickerView.getDialog();
+        if (dialog != null) {
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM);
+            layoutParams.leftMargin = 0;
+            layoutParams.rightMargin = 0;
+            timePickerView.getDialogContainerLayout().setLayoutParams((ViewGroup.LayoutParams) layoutParams);
+            Window window = dialog.getWindow();
+            if (window != null) {
+                window.setWindowAnimations(com.bigkoo.pickerview2.R.style.picker_view_slide_anim);
+                window.setGravity(Gravity.BOTTOM);
+                window.setDimAmount(0.3F);
+            }
+        }
+        timePickerView.show();
     }
 }

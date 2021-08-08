@@ -27,6 +27,7 @@
         android:textColor="#ff333333"
         android:textSize="12.0sp"
         android:text="00:00:00:00:00:00"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/tv_name"

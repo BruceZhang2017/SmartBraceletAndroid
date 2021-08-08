@@ -39,9 +39,12 @@ public class PermissionUtil {
             String[]  ps=pms.toArray(new String[pms.size()]);
             ActivityCompat.requestPermissions( cext,ps,MY_PERMISSIONS_REQUEST_CODE);
         }
-
-
     }
 
-
+    public static boolean checkPermissionLocation(Activity cext) {
+        if(ContextCompat.checkSelfPermission(cext,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            return true;
+        }
+        return false;
+    }
 }

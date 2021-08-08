@@ -21,7 +21,7 @@
         app:abc_leftText=""
         app:abc_leftTextPaddingLeft="0.0dip"
         app:abc_leftTextPaddingRight="0.0dip"
-        app:abc_rightText=""
+        app:abc_rightText="保存"
         app:abc_rightTextPaddingLeft="0.0dip"
         app:abc_rightTextPaddingRight="10.0dip"
         app:abc_titleText="闹钟设置"
@@ -52,6 +52,7 @@
         android:id="@+id/cl_repeat"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/fragmen_fragment">
@@ -79,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#ff666666"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:layout_marginRight="5dp"
             app:layout_constraintRight_toLeftOf="@id/iv_arrow_right"
             app:layout_constraintTop_toTopOf="parent"
@@ -93,23 +94,41 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_repeat"/>
-    <Button
-        android:id="@+id/btn_add"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_amind"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#ffffffff"
-        android:textColor="#ff333333"
-        android:textSize="18sp"
-        android:text="提交"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_default_2"/>
-    <ImageView
-        android:id="@+id/iv_default_3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#fff5f5f5"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_add"/>
+        app:layout_constraintTop_toBottomOf="@id/iv_default_2">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:textColor="#ff333333"
+            android:textSize="15sp"
+            android:text="稍后提醒"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <ImageView
+            android:id="@+id/iv_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:src="@mipmap/content_icon_next"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+        <TextView
+            android:id="@+id/tv_amind_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ff666666"
+            android:textSize="10sp"
+            android:layout_marginRight="5dp"
+            app:layout_constraintRight_toLeftOf="@id/iv_arrow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
