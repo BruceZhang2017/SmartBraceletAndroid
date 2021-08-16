@@ -40,6 +40,7 @@ dependencies {
     api files('libs/tjd-wristBand-lefun.jar')
     api project(':pickerview')
     api project(':datepicker')
+    api project(':camera2library')
     implementation 'com.jakewharton:butterknife:10.2.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
     implementation 'androidx.navigation:navigation-ui:2.3.0'
@@ -108,4 +109,5 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:latest.release'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.contrarywind:Android-PickerView:4.1.9'
+    implementation 'org.greenrobot:eventbus:3.0.0'
 }

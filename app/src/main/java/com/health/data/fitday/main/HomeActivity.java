@@ -82,7 +82,7 @@ public class HomeActivity extends BaseActivity {
     private boolean bSingleFlag = false;
     private int readDataProgress = 0; // 读取数据的进度
     private String progress = ""; // 同步数据的进度
-
+    private boolean bbbb = false;
     protected int getLayoutId() {
         return R.layout.activity_home_layout;
     }
@@ -164,7 +164,10 @@ public class HomeActivity extends BaseActivity {
             }
         }
         checkBlue();
-        readDBData();
+        if (bbbb == false) {
+            readDBData();
+            bbbb = true;
+        }
     }
 
     void readDBData() {
@@ -487,6 +490,23 @@ public class HomeActivity extends BaseActivity {
             if (tempAddr!=null){
                 Health_HeartBldPrs.HeartPageData mHeartData = Health_HeartBldPrs.GetHeart_Data(tempAddr, dateStr);
                 Log.e(TAG, "心率  " + mHeartData.HeartRate);
+                List<Health_HeartBldPrs.HrtDiz> HrtRateDizList = mHeartData.mHrtDiz;
+                String current = getCurrentDate();
+                if (HrtRateDizList != null) {
+                    int[] values = new int[]{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+                    for (int i = 0; i < HrtRateDizList.size(); i++) {
+                        Health_HeartBldPrs.HrtDiz mHrtRateDiz = HrtRateDizList.get(i);
+                        if (equalToTwoTime(current, mHrtRateDiz.mMsrTime)) {
+                            int hour = hourInTime(mHrtRateDiz.mMsrTime);
+                            values[hour] = Integer.parseInt(mHrtRateDiz.mHrtRate);
+                            Log.e(TAG, "心率详细数据  时间  " + mHrtRateDiz.mMsrTime+" 心率值  "+mHrtRateDiz.mHrtRate);
+                        }
+                    }
+                    HealthFragment fragment = (HealthFragment)(arrayList.get(0));
+                    if (fragment != null) {
+                        fragment.refreshUIForHeart(values);
+                    }
+                }
                 HealthFragment fragment = (HealthFragment)(arrayList.get(0));
                 if (fragment != null) {
                     fragment.refreshUIForHeart(mHeartData.HeartRate);
@@ -509,6 +529,13 @@ public class HomeActivity extends BaseActivity {
                 HealthFragment fragment = (HealthFragment)(arrayList.get(0));
                 if (fragment != null) {
                     fragment.refreshUIForSleep(sleepData.sumHour+":"+sleepData.sumMinute);
+                    int ah = Integer.parseInt(sleepData.awakeHour);
+                    int am = Integer.parseInt(sleepData.awakeMinute);
+                    int lh = Integer.parseInt(sleepData.lightHour);
+                    int lm = Integer.parseInt(sleepData.lightMinute);
+                    int dh = Integer.parseInt(sleepData.deepHour);
+                    int dm = Integer.parseInt(sleepData.deepMinute);
+                    fragment.refreshUIForSleep(new int[]{ah * 60 + am, lh * 60 + lm, dh * 60 + dm});
                 }
             }
 
@@ -720,5 +747,26 @@ public class HomeActivity extends BaseActivity {
     public void refreshAllData() {
         readDataProgress = 0;
         refreshData();
+    }
+
+    private boolean equalToTwoTime(String time1, String time2) {
+        System.out.print("时间对比" + time1 + " " + time2);
+        if (time1 == null || time1.length() < 10) {
+            return false;
+        }
+        if (time2 == null || time2.length() < 10) {
+            return false;
+        }
+        if (time1.substring(0, 10).equals(time2.substring(0, 10))) {
+            return true;
+        }
+        return false;
+    }
+
+    private int hourInTime(String time) {
+        if (time == null || time.length() < 13) {
+            return  0;
+        }
+        return Integer.parseInt(time.substring(11, 13));
     }
 }

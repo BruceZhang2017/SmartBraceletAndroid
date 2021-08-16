@@ -1,20 +1,13 @@
 package com.health.data.fitday.main;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import com.health.data.fitday.device.SearchDeviceActivity;
-import com.health.data.fitday.global.RunUtils;
 import com.health.data.fitday.utils.SpUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
@@ -24,13 +17,13 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.sinophy.smartbracelet.R;
-import com.tjdL4.tjdmain.contr.Health_HeartBldPrs;
 import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 
 import java.text.DecimalFormat;
 
-import per.goweii.actionbarex.common.ActionBarCommon;
-import per.goweii.actionbarex.common.OnActionBarChildClickListener;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class HealthFragment extends BaseFragment {
     public static final String BUNDLE_TITLE = "title";
@@ -55,6 +48,10 @@ public class HealthFragment extends BaseFragment {
     TextView tvGoal;
 
     private View mContentView;
+    @BindView(R.id.hv_view)
+    HeartView heartView;
+    @BindView(R.id.sv_view)
+    SleepView sleepView;
 
     private void initData() {
     }
@@ -84,6 +81,7 @@ public class HealthFragment extends BaseFragment {
         if (goal > 0) {
             tvGoal.setText("目标 | " + goal + "步");
         }
+
     }
 
     public static HealthFragment newInstance(String paramString) {
@@ -129,6 +127,12 @@ public class HealthFragment extends BaseFragment {
         tvHeartValue.setText(mHeartData);
     }
 
+    public  void refreshUIForHeart(int[] mHeartData) {
+        if (mHeartData != null && mHeartData.length == 24) {
+            heartView.refreshUI(mHeartData);
+        }
+    }
+
     public void refreshUIForSleep(String sleep) {
         if (tvSleepH == null) {
             return;
@@ -136,6 +140,12 @@ public class HealthFragment extends BaseFragment {
         String[] array = sleep.split(":");
         tvSleepH.setText(array[0]);
         tvSleepM.setText(array[1]);
+    }
+
+    public void refreshUIForSleep(int[] sleep) {
+        if (sleep != null && sleep.length == 3) {
+            sleepView.refreshUI(sleep);
+        }
     }
 
     public void refreshUIForOxy(String value) {

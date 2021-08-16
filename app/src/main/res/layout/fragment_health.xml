@@ -248,11 +248,12 @@
                         app:layout_constraintTop_toTopOf="parent"
                         />
 
-                    <ImageView
+                    <com.health.data.fitday.main.HeartView
+                        android:id="@+id/hv_view"
                         android:layout_width="242.0dip"
                         android:layout_height="50.0dip"
                         android:layout_marginBottom="10.0dip"
-                        android:background="@mipmap/images_heartbeat"
+                        android:background="@color/white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -321,11 +322,11 @@
                         app:layout_constraintTop_toTopOf="parent"
                         />
 
-                    <ImageView
+                    <com.health.data.fitday.main.SleepView
+                        android:id="@+id/sv_view"
                         android:layout_width="242.0dip"
                         android:layout_height="50.0dip"
                         android:layout_marginBottom="10.0dip"
-                        android:background="@mipmap/image_sleeping"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"

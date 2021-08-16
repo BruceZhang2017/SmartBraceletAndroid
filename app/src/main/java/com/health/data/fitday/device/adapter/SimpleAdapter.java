@@ -3,6 +3,7 @@ package com.health.data.fitday.device.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.health.data.fitday.MyApplication;
@@ -29,6 +30,7 @@ public class SimpleAdapter extends BaseBannerAdapter<BLEModel> {
         tvName.setText(model.getName());
         TextView tvBT = (TextView)holder.itemView.findViewById(R.id.tv_bt);
         TextView tvBattery = (TextView)holder.itemView.findViewById(R.id.tv_battery);
+        ImageView ivS = (ImageView)holder.itemView.findViewById(R.id.iv_shezhi);
         String mac = model.getMac();
         System.out.println("当前连接成功的mac:" + L4M.GetConnectedMAC() + "当前设备的mac:" + mac);
         if (L4M.GetConnectedMAC().equals(mac)) {

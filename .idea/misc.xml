@@ -9,11 +9,14 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.24814814814814815" />
         <entry key="app/src/main/res/layout/activity_health_detail.xml" value="0.12259371833839919" />
         <entry key="app/src/main/res/layout/activity_home_layout.xml" value="0.12208713272543059" />
+        <entry key="app/src/main/res/layout/activity_longsit_internal.xml" value="0.20244565217391305" />
         <entry key="app/src/main/res/layout/activity_set_target_step.xml" value="0.1875" />
+        <entry key="app/src/main/res/layout/activity_week_choose.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_cloud_dial.xml" value="0.12208713272543059" />
-        <entry key="app/src/main/res/layout/fragment_health.xml" value="0.12259371833839919" />
+        <entry key="app/src/main/res/layout/fragment_health.xml" value="0.2836827556655112" />
         <entry key="app/src/main/res/layout/fragment_local_dial.xml" value="0.12208713272543059" />
         <entry key="app/src/main/res/layout/item_cloud_dial.xml" value="0.16666666666666666" />
+        <entry key="app/src/main/res/layout/item_device_detail.xml" value="0.12208713272543059" />
         <entry key="app/src/main/res/layout/item_gift_package.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_local_dial.xml" value="0.12208713272543059" />
         <entry key="app/src/main/res/layout/view_device.xml" value="0.12259371833839919" />

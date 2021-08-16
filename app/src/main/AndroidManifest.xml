@@ -73,9 +73,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.health.data.fitday.main.SetTargetStepActivity"
+            android:name="com.health.data.fitday.device.LongsitInternalActivity"
             android:exported="true" />
-        <activity android:name="com.health.data.fitday.device.alarm.AmindActivity" />
+        <activity
+            android:name="com.health.data.fitday.main.SetTargetStepActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.health.data.fitday.device.alarm.AmindActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.health.data.fitday.device.alarm.WeekChooseActivity"
             android:screenOrientation="portrait" />

@@ -9,17 +9,24 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.cktim.camera2library.camera.MessageEvent;
 import com.health.data.fitday.MyApplication;
 import com.health.data.fitday.device.adapter.ComListAdapter;
 import com.health.data.fitday.device.model.BLEModel;
 import com.health.data.fitday.device.model.DeviceManager;
 import com.health.data.fitday.main.BaseActivity;
+import com.health.data.fitday.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.L4M;
 import com.tjdL4.tjdmain.contr.AlarmClock;
 import com.tjdL4.tjdmain.contr.BractletFuncSet;
 import com.tjdL4.tjdmain.contr.BractletSedentarySet;
 import com.tjdL4.tjdmain.contr.L4Command;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.TypeInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +53,13 @@ public class DeviceDetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        String[] titles = new String[]{"", "推送设置", "抬手亮屏", "久坐提醒", "天气推送", "", "闹钟设置", "查找设置", "设置信息"};
+        String[] titles = new String[]{"", "推送设置", "来电提醒","抬手亮屏", "久坐提醒", "久座提醒时间", "天气推送", "", "闹钟设置", "查找设置", "设置信息", "摇一摇拍照"};
         adapter = new ComListAdapter(this, titles);
         listView.setAdapter(adapter);
 
         L4Command.Brlt_FuncGet(listener);
-        //L4Command.SedentaryGet(listener);
+        L4Command.SedentaryGet(listener);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -102,7 +110,7 @@ public class DeviceDetailActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
     }
 
-    L4M.BTResultListenr listener = new L4M.BTResultListenr() {
+    public L4M.BTResultListenr listener = new L4M.BTResultListenr() {
         @Override
         public void On_Result(String TypeInfo, String StrData, Object DataObj) {
             final String tTypeInfo=TypeInfo;
@@ -133,9 +141,44 @@ public class DeviceDetailActivity extends BaseActivity {
                         adapter.funcSetData = funcSetData;
                         adapter.notifyDataSetChanged();
                     }
+
+                    if(tTypeInfo.equals(L4M.RemoteCapOn) && TempStr.equals(L4M.OK)) {
+                        System.out.println("打开相机");
+                    }
+                    if(tTypeInfo.equals(L4M.RemoteCapOFF) && TempStr.equals(L4M.OK)) {
+                        System.out.println("关闭相机");
+                    }
+                    if(tTypeInfo.equals(L4M.RemoteCapTakeCap) && TempStr.equals(L4M.OK)) {
+                        System.out.println("启动拍照");
+                        L4Command.CameraCap_Respone();//响应
+                        EventBus.getDefault().post(new MessageEvent("photo"));
+                    }
+                    if(tTypeInfo.equals(L4M.GetSedentary) && TempStr.equals(L4M.Data)) {
+                        BractletSedentarySet.SedentarySetData myDrinkSetData=(BractletSedentarySet.SedentarySetData)TempObj;
+                        //获取时分
+                        SpUtils.putInt(DeviceDetailActivity.this, "longsit", myDrinkSetData.allminutes);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             });
-
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(MessageEvent messageEvent) {
+        if (messageEvent.getMessage().equals("close")) {
+            L4Command.CameraOff();
+            L4M.SetResultListener(null);
+        } else if (messageEvent.getMessage().equals("longsit")) {
+            adapter.notifyDataSetChanged();
+        }
+    }
 }
