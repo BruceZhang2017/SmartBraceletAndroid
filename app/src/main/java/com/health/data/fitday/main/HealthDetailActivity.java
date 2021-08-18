@@ -26,6 +26,7 @@ import com.bigkoo.pickerview2.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview2.listener.OnTimeSelectChangeListener;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
@@ -34,7 +35,10 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IFillFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.dataprovider.LineDataProvider;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.Utils;
@@ -151,15 +155,34 @@ public class HealthDetailActivity extends BaseActivity {
             xAxis = chart.getXAxis();
             xAxis.setDrawAxisLine(false);
             xAxis.setDrawGridLines(false);
+            xAxis.setAxisMaximum(5f);
+            xAxis.setAxisMinimum(0f);
+            xAxis.setLabelCount(5, true);
             xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
             xAxis.setTextColor(Color.WHITE);
+            xAxis.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    int v = (int)value;
+                    if (v == 0) {
+                        return "00:00";
+                    } else if (v == 1) {
+                        return "06:00";
+                    } else if (v == 2) {
+                        return "12:00";
+                    } else if (v == 3) {
+                        return "18:00";
+                    } else {
+                        return "00:00";
+                    }
+                }
+            });
         }
 
         YAxis yAxis;
         {   // // Y-Axis Style // //
             yAxis = chart.getAxisRight();
             // axis range
-            yAxis.setAxisMaximum(100f);
             yAxis.setAxisMinimum(0f);
             yAxis.setGridColor(Color.parseColor("#ffF6F1EA"));
             yAxis.setDrawZeroLine(false);
@@ -167,6 +190,32 @@ public class HealthDetailActivity extends BaseActivity {
             yAxis.setGridLineWidth(0.5f);
             yAxis.setTextColor(Color.WHITE);
             chart.getAxisLeft().setEnabled(false);
+            if (type == 0) {
+                yAxis.setAxisMaximum(5000);
+            } else if (type == 1) {
+                yAxis.setAxisMaximum(40000);
+            } else if (type == 2) {
+                yAxis.setAxisMaximum(200);
+            } else if (type == 3) {
+                yAxis.setAxisMaximum(5);
+            }
+            yAxis.setLabelCount(6, true);
+
+            if (type == 3) {
+                yAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
+                        if (value == 1) {
+                            return "清醒";
+                        } else if (value == 3) {
+                            return "浅睡";
+                        } else if (value == 5) {
+                            return "深睡";
+                        }
+                        return "";
+                    }
+                });
+            }
         }
 
         setData(10, 100);
