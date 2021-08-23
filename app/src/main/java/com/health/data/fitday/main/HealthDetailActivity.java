@@ -50,7 +50,10 @@ import com.health.data.fitday.mine.UserInfoBean;
 import com.health.data.fitday.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.L4M;
+import com.tjdL4.tjdmain.contr.Health_Sleep;
+import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -63,7 +66,7 @@ import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
 public class HealthDetailActivity extends BaseActivity {
-
+    private static String TAG = "HealthDetailActivity";
     @BindView(R.id.lv_health_knowledge)
     ListView lvKnowledge;
     @BindView(R.id.simple_action_bar)
@@ -71,10 +74,12 @@ public class HealthDetailActivity extends BaseActivity {
     HealthAdapter adapter;
     private LineChart chart;
     private ConstraintLayout cl;
+    private ConstraintLayout clBig;
     private TextView tvGoal;
     private TextView tvDate;
     int type = 0; // 当前类型：1.步数
     private Date currentDate;
+    LineDataSet set1;
 
     @Override
     protected int getLayoutId() {
@@ -92,8 +97,117 @@ public class HealthDetailActivity extends BaseActivity {
         Bundle bundle = getIntent().getExtras();
         int type = bundle.getInt("type");
         this.type = type;
-        if (type == 1) {
+        if (type == 0) {
             cl.setVisibility(View.VISIBLE);
+        }
+
+        chart.setDragEnabled(false);
+        chart.setScaleEnabled(false);
+        chart.setPinchZoom(false);
+        Description description = new Description();
+        description.setText(" ");
+        chart.setDescription(description);
+
+        XAxis xAxis;
+        {   // // X-Axis Style // //
+            xAxis = chart.getXAxis();
+            xAxis.setDrawAxisLine(false);
+            xAxis.setDrawGridLines(false);
+            xAxis.setAxisMaximum(4f);
+            xAxis.setAxisMinimum(0f);
+            xAxis.setLabelCount(5, true);
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setTextColor(Color.WHITE);
+            xAxis.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    int v = (int)value;
+                    if (v == 0) {
+                        return "00:00";
+                    } else if (v == 1) {
+                        return "06:00";
+                    } else if (v == 2) {
+                        return "12:00";
+                    } else if (v == 3) {
+                        return "18:00";
+                    } else {
+                        return "00:00";
+                    }
+                }
+            });
+        }
+
+        YAxis yAxis;
+        {   // // Y-Axis Style // //
+            yAxis = chart.getAxisRight();
+            // axis range
+            yAxis.setAxisMinimum(0f);
+            yAxis.setGridColor(Color.parseColor("#ffF6F1EA"));
+            yAxis.setDrawZeroLine(false);
+            yAxis.setAxisLineColor(Color.TRANSPARENT);
+            yAxis.setGridLineWidth(0.5f);
+            yAxis.setTextColor(Color.WHITE);
+            chart.getAxisLeft().setEnabled(false);
+            chart.getAxisLeft().setAxisMaximum(5);
+            chart.getAxisLeft().setLabelCount(6, true);
+            yAxis.setAxisMaximum(5);
+            yAxis.setLabelCount(6, true);
+
+            if (type == 3) {
+                yAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
+                        if (value == 1) {
+                            return "清醒";
+                        } else if (value == 3) {
+                            return "浅睡";
+                        } else if (value == 5) {
+                            return "深睡";
+                        }
+                        return "";
+                    }
+                });
+            } else if (type == 0) {
+                yAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
+                        return "" + ((int)value * 1000);
+                    }
+                });
+            } else if (type == 1) {
+                yAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
+                        return "" + ((int)value * 20000);
+                    }
+                });
+            }
+        }
+
+        // get the legend (only possible after setting data)
+        Legend l = chart.getLegend();
+        // draw legend entries as lines
+        l.setForm(Legend.LegendForm.NONE);
+
+        currentDate = new Date();
+        tvDate.setText(StringData(currentDate));
+        tvDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initTimePicker();
+            }
+        });
+
+        setData(getCurrentDate(), false);
+
+        if (type == 0) {
+            clBig.setBackgroundResource(R.drawable.drawable_gradient_bg_color_2);
+        } else if (type == 1) {
+            clBig.setBackgroundResource(R.drawable.drawable_gradient_bg_color_3);
+        } else if (type == 2) {
+            clBig.setBackgroundResource(R.drawable.drawable_gradient_bg_color);
+        } else {
+            clBig.setBackgroundResource(R.drawable.drawable_gradient_bg_color_4);
         }
     }
 
@@ -142,89 +256,8 @@ public class HealthDetailActivity extends BaseActivity {
         LayoutInflater layoutInflater= LayoutInflater.from(this);
         View view = layoutInflater.inflate(R.layout.view_health_detail, null);
         lvKnowledge.addHeaderView(view);
+
         chart = (LineChart)view.findViewById(R.id.chart1);
-        chart.setDragEnabled(false);
-        chart.setScaleEnabled(false);
-        chart.setPinchZoom(false);
-        Description description = new Description();
-        description.setText(" ");
-        chart.setDescription(description);
-
-        XAxis xAxis;
-        {   // // X-Axis Style // //
-            xAxis = chart.getXAxis();
-            xAxis.setDrawAxisLine(false);
-            xAxis.setDrawGridLines(false);
-            xAxis.setAxisMaximum(5f);
-            xAxis.setAxisMinimum(0f);
-            xAxis.setLabelCount(5, true);
-            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-            xAxis.setTextColor(Color.WHITE);
-            xAxis.setValueFormatter(new ValueFormatter() {
-                @Override
-                public String getFormattedValue(float value) {
-                    int v = (int)value;
-                    if (v == 0) {
-                        return "00:00";
-                    } else if (v == 1) {
-                        return "06:00";
-                    } else if (v == 2) {
-                        return "12:00";
-                    } else if (v == 3) {
-                        return "18:00";
-                    } else {
-                        return "00:00";
-                    }
-                }
-            });
-        }
-
-        YAxis yAxis;
-        {   // // Y-Axis Style // //
-            yAxis = chart.getAxisRight();
-            // axis range
-            yAxis.setAxisMinimum(0f);
-            yAxis.setGridColor(Color.parseColor("#ffF6F1EA"));
-            yAxis.setDrawZeroLine(false);
-            yAxis.setAxisLineColor(Color.TRANSPARENT);
-            yAxis.setGridLineWidth(0.5f);
-            yAxis.setTextColor(Color.WHITE);
-            chart.getAxisLeft().setEnabled(false);
-            if (type == 0) {
-                yAxis.setAxisMaximum(5000);
-            } else if (type == 1) {
-                yAxis.setAxisMaximum(40000);
-            } else if (type == 2) {
-                yAxis.setAxisMaximum(200);
-            } else if (type == 3) {
-                yAxis.setAxisMaximum(5);
-            }
-            yAxis.setLabelCount(6, true);
-
-            if (type == 3) {
-                yAxis.setValueFormatter(new ValueFormatter() {
-                    @Override
-                    public String getFormattedValue(float value) {
-                        if (value == 1) {
-                            return "清醒";
-                        } else if (value == 3) {
-                            return "浅睡";
-                        } else if (value == 5) {
-                            return "深睡";
-                        }
-                        return "";
-                    }
-                });
-            }
-        }
-
-        setData(10, 100);
-
-        // get the legend (only possible after setting data)
-        Legend l = chart.getLegend();
-        // draw legend entries as lines
-        l.setForm(Legend.LegendForm.LINE);
-
         cl = (ConstraintLayout) findViewById(R.id.cl);
         cl.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,33 +269,24 @@ public class HealthDetailActivity extends BaseActivity {
 
         tvGoal = (TextView) findViewById(R.id.tv_step_value);
         tvDate = (TextView) findViewById(R.id.tv_date);
-        currentDate = new Date();
-        tvDate.setText(StringData(currentDate));
-        tvDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initTimePicker();
-            }
-        });
+
+        clBig = (ConstraintLayout) findViewById(R.id.cl_curve);
+
     }
 
-    private void setData(int count, float range) {
+    private void setData(String d, Boolean b) {
 
-        ArrayList<Entry> values = new ArrayList<>();
-
-        for (int i = 0; i < count; i++) {
-            float val = (float) (Math.random() * range);
-            values.add(new Entry(i, val));
+        ArrayList<Entry> values = null;
+        if (type == 0) {
+            values = pedoData(d, true);
+        } else if (type == 1) {
+            values = calData(d, true);
         }
 
-        LineDataSet set1;
-
-        if (chart.getData() != null &&
-                chart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) chart.getData().getDataSetByIndex(0);
+        if (b) {
+            chart.invalidate();
             set1.setValues(values);
             set1.notifyDataSetChanged();
-            chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
         } else {
             // create a dataset and give it a type
@@ -296,12 +320,87 @@ public class HealthDetailActivity extends BaseActivity {
 
             ArrayList<ILineDataSet> dataSets = new ArrayList<>();
             dataSets.add(set1); // add the data sets
-
+            //set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
             // create a data object with the data sets
             LineData data = new LineData(dataSets);
 
             // set data
             chart.setData(data);
+        }
+    }
+
+    private String getCurrentDate() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String time = sdf.format(currentDate);
+        return time;
+    }
+
+    private ArrayList<Entry> pedoData(String dateStr, boolean LoadDB) {
+        ArrayList<Entry> array = new ArrayList<>();
+        if (LoadDB) {
+            String tempAddr = L4M.GetConnectedMAC();
+            if (tempAddr!=null){
+                Health_TodayPedo.TodayStepPageData todayData = Health_TodayPedo.GetHealth_Data(tempAddr, dateStr);
+                Health_TodayPedo.StepDiz[] mStepDiz=todayData.stepDIZ;
+                if(mStepDiz!=null && mStepDiz.length>0){
+                    for(int i=0;i<mStepDiz.length;i++){
+                        String mTime=L4M.getCrtValStr(mStepDiz[i].mTime,"0");
+                        String mStep=L4M.getCrtValStr(mStepDiz[i].mStep,"0");
+                        if (!(mTime.equals("00") || mTime.equals("0"))) {
+                            float x = Float.parseFloat(mTime) / 6;
+                            float y = Float.parseFloat(mStep) / 1000;
+                            Entry entry = new Entry(x, y);
+                            Log.e(TAG, "计步详细数据" + x + "  y  " + y);
+                            array.add(entry);
+                        }
+                    }
+                }
+            }
+        }
+        return array;
+    }
+
+    private ArrayList<Entry> calData(String dateStr, boolean LoadDB) {
+        ArrayList<Entry> array = new ArrayList<>();
+        if (LoadDB) {
+            String tempAddr = L4M.GetConnectedMAC();
+            if (tempAddr!=null){
+                Health_TodayPedo.TodayStepPageData todayData = Health_TodayPedo.GetHealth_Data(tempAddr, dateStr);
+                Health_TodayPedo.StepDiz[] mStepDiz=todayData.stepDIZ;
+                if(mStepDiz!=null && mStepDiz.length>0){
+                    for(int i=0;i<mStepDiz.length;i++){
+                        String mTime=L4M.getCrtValStr(mStepDiz[i].mTime,"0");
+                        String mStep=L4M.getCrtValStr(mStepDiz[i].mStep,"0");
+                        String mCalorie=L4M.getCrtValStr(mStepDiz[i].mCalorie,"0");
+                        if (!(mTime.equals("00") || mTime.equals("0"))) {
+                            float x = Float.parseFloat(mTime) / 6;
+                            float s = Float.parseFloat(mStep);
+                            float c = s * 235080 / 10532;
+                            float y = c / 20000;
+                            Entry entry = new Entry(x, y);
+                            Log.e(TAG, "热量详细数据" + x + "  y  " + y);
+                            array.add(entry);
+                        }
+                    }
+                }
+            }
+        }
+        return array;
+    }
+
+    private void sleep(String dateStr, boolean LoadDB) {
+        if (LoadDB){
+            String tempAddr = L4M.GetConnectedMAC();
+            if (tempAddr!=null){
+                Health_Sleep.HealthSleepData sleepData= Health_Sleep.GetSleep_Data(tempAddr,dateStr,startTime,endTime);
+                Log.e(TAG, "睡眠  质量  " + sleepData.sleelLevel
+                        + "  清醒  " + sleepData.awakeHour+":"+sleepData.awakeMinute
+                        + "  浅睡  " + sleepData.lightHour+":"+sleepData.lightMinute
+                        + "  深睡  " + sleepData.deepHour+":"+sleepData.deepMinute
+                        + "  总时长  " + sleepData.sumHour+":"+sleepData.sumMinute);
+                
+            }
+
         }
     }
 
@@ -337,6 +436,7 @@ public class HealthDetailActivity extends BaseActivity {
                 Log.i("pvTime", "onTimeSelect");
                 currentDate = param1Date;
                 tvDate.setText(StringData(param1Date));
+                setData(getCurrentDate(), true);
             }
         })).setTimeSelectChangeListener(new OnTimeSelectChangeListener() {
             public void onTimeSelectChanged(Date param1Date) {

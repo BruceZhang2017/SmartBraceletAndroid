@@ -69,7 +69,6 @@ public class HomeActivity extends BaseActivity {
     ArrayList<Fragment> arrayList;
     //public BlueToothManager bleManager;
     private boolean bReadUserinfoOnlyOnce = false; // 只读取用户信息一次
-    private boolean bReadHeartOnlyOnce = false; // 只读取用户信息一次
     private long exitTime = 0L;
     private int step = 0, getup = 0, deep = 0, shellow = 0;
     private String preDate = "";
@@ -475,10 +474,6 @@ public class HomeActivity extends BaseActivity {
                 if (fragment != null) {
                     fragment.refreshUIForSport(todayData);
                 }
-                if (bReadHeartOnlyOnce == false) {
-                    bReadHeartOnlyOnce = true;
-
-                }
             }
         }
     }
@@ -638,7 +633,7 @@ public class HomeActivity extends BaseActivity {
                         SpUtils.putInt(HomeActivity.this, "goal", t);
                         HealthFragment fragment = (HealthFragment)(arrayList.get(0));
                         if (fragment != null) {
-                            fragment.refreshUIGoal("目标 | " + t + "步");
+                            fragment.refreshUIGoal(t + "");
                         }
                     }
                 }
