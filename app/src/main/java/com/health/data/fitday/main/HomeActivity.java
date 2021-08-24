@@ -1,12 +1,18 @@
 package com.health.data.fitday.main;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,40 +31,35 @@ import com.health.data.fitday.MyApplication;
 import com.health.data.fitday.PermissionUtil;
 import com.health.data.fitday.device.DeviceSwitchActivity;
 import com.health.data.fitday.device.SearchDeviceActivity;
+import com.health.data.fitday.device.mobile.MyPhoneStateListenService;
+import com.health.data.fitday.device.mobile.MyPhoneStateListener;
 import com.health.data.fitday.device.model.BLEModel;
-import com.health.data.fitday.device.model.DStepModel;
 import com.health.data.fitday.device.model.DeviceManager;
 import com.health.data.fitday.device.model.UserBean;
 import com.health.data.fitday.global.RealmOperationHelper;
-import com.health.data.fitday.global.RunUtils;
 import com.health.data.fitday.main.widget.AlphaTabsIndicator;
 import com.health.data.fitday.utils.SpUtils;
 import com.health.data.fitday.utils.ToastUtil;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.sinophy.smartbracelet.R;
+import com.tjd.tjdmain.icentre.ICC_Contents;
 import com.tjdL4.tjdmain.Dev;
 import com.tjdL4.tjdmain.L4M;
 import com.tjdL4.tjdmain.contr.BracltBatLevel;
 import com.tjdL4.tjdmain.contr.BrltUserParaSet;
-import com.tjdL4.tjdmain.contr.Health_BldoxyGen;
 import com.tjdL4.tjdmain.contr.Health_HeartBldPrs;
 import com.tjdL4.tjdmain.contr.Health_Sleep;
 import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 import com.tjdL4.tjdmain.contr.L4Command;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import io.realm.Realm;
 
-import static com.tjdL4.tjdmain.Dev.L4UI_DATA_BLOODPRESS;
-import static com.tjdL4.tjdmain.Dev.L4UI_DATA_HEARTRATE;
-import static com.tjdL4.tjdmain.Dev.L4UI_DATA_PEDO;
-import static com.tjdL4.tjdmain.Dev.L4UI_DATA_SLEEP;
 import static com.tjdL4.tjdmain.Dev.L4UI_DATA_SyncProgress;
 
 public class HomeActivity extends BaseActivity {
@@ -82,6 +83,8 @@ public class HomeActivity extends BaseActivity {
     private int readDataProgress = 0; // 读取数据的进度
     private String progress = ""; // 同步数据的进度
     private boolean bbbb = false;
+    private MediaPlayer mediaPlayer = new MediaPlayer();
+
     protected int getLayoutId() {
         return R.layout.activity_home_layout;
     }
@@ -91,6 +94,28 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(paramBundle);
         PermissionUtil.checkPermissions(this);
         L4M.registerBTStReceiver(this, DataReceiver);
+        telephony();
+        registerPhoneStateListener();
+        initReceiver();
+    }
+
+    void initReceiver() //放在 onCreate
+    {
+        IntentFilter IntentFilter_a = new IntentFilter();
+        IntentFilter_a.addAction(ICC_Contents.ToUi);
+        registerReceiver(DataReceiver2, IntentFilter_a);
+    }
+
+    void unReceiver() //放在 onDestroy
+    {
+        unregisterReceiver(DataReceiver2);
+    }
+
+
+    private void registerPhoneStateListener() {
+        Intent intent = new Intent(this,  MyPhoneStateListenService.class);
+        intent.setAction(MyPhoneStateListenService.ACTION_REGISTER_LISTENER);
+        startService(intent);
     }
 
     protected void initData() {
@@ -188,6 +213,12 @@ public class HomeActivity extends BaseActivity {
         L4M.unregisterBTStReceiver(this,DataReceiver);
         //销毁
         unconfig();
+        unReceiver();
+
+        if(mediaPlayer != null){
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
     }
 
     protected void onActivityResult(int paramInt1, int paramInt2, Intent paramIntent) {
@@ -763,5 +794,86 @@ public class HomeActivity extends BaseActivity {
             return  0;
         }
         return Integer.parseInt(time.substring(11, 13));
+    }
+
+    private void telephony() {
+        //获得相应的系统服务
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        System.out.println("TelephonyManager不为空" + (tm != null ? "YES" : "NO"));
+        if(tm != null) {
+            try {
+                MyPhoneStateListener myPhoneStateListener = new MyPhoneStateListener();
+                myPhoneStateListener.setCallListener(new MyPhoneStateListener.CallListener() {
+                    @Override
+                    public void onCallIdle() {
+                    }
+
+                    @Override
+                    public void onCallOffHook() {
+                    }
+
+                    @Override
+                    public void onCallRinging() {
+                        //走接口查询号码信息
+                        System.out.println("有电话打入");
+                    }
+                });
+                // 注册来电监听
+                tm.listen(myPhoneStateListener, MyPhoneStateListener.LISTEN_CALL_STATE);
+            } catch(Exception e) {
+                // 异常捕捉
+            }
+        }
+    }
+
+    // 找手机使用到的广播
+    private BroadcastReceiver DataReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //final String action = intent.getAction();
+            try {
+                String msgData1 = intent.getStringExtra(ICC_Contents.ToUi_D1);
+                if(msgData1==null)
+                    return;
+
+                if(msgData1!=null) {
+                    if(msgData1.contains("FindPhone_Ring")) {
+                        initMediaPlayer();
+                        mediaPlayer.start();
+                        showDialog();
+                    }
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private void initMediaPlayer() {
+        try {
+            AssetFileDescriptor fd = getAssets().openFd("Alarm.mp3");
+            mediaPlayer.setDataSource(fd.getFileDescriptor(), fd.getStartOffset(), fd.getLength());
+            mediaPlayer.prepare(); //让MediaPlayer进入到准备状态
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showDialog() {
+        (new android.app.AlertDialog.Builder(this)).setTitle("提示").setMessage("查找手机成功").setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface param1DialogInterface, int param1Int) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+            }
+        }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface param1DialogInterface, int param1Int) {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+            }
+        }).setCancelable(false).show();
     }
 }

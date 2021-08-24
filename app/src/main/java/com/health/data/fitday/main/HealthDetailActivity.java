@@ -50,6 +50,7 @@ import com.health.data.fitday.mine.UserInfoBean;
 import com.health.data.fitday.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.L4M;
+import com.tjdL4.tjdmain.contr.Health_HeartBldPrs;
 import com.tjdL4.tjdmain.contr.Health_Sleep;
 import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 
@@ -80,6 +81,8 @@ public class HealthDetailActivity extends BaseActivity {
     int type = 0; // 当前类型：1.步数
     private Date currentDate;
     LineDataSet set1;
+    static final String startTime="22:00:00";
+    static final String endTime="10:00:00";
 
     @Override
     protected int getLayoutId() {
@@ -179,6 +182,13 @@ public class HealthDetailActivity extends BaseActivity {
                     @Override
                     public String getFormattedValue(float value) {
                         return "" + ((int)value * 20000);
+                    }
+                });
+            } else if (type == 2) {
+                yAxis.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
+                        return "" + ((int)value * 40);
                     }
                 });
             }
@@ -281,6 +291,10 @@ public class HealthDetailActivity extends BaseActivity {
             values = pedoData(d, true);
         } else if (type == 1) {
             values = calData(d, true);
+        } else if (type == 2) {
+            values = Hrt(d, true);
+        } else if (type == 3) {
+            sleep(d, true);
         }
 
         if (b) {
@@ -299,7 +313,7 @@ public class HealthDetailActivity extends BaseActivity {
 
             // text size of values
             set1.setValueTextSize(9f);
-
+            //set1.setMode(LineDataSet.Mode.CUBIC_BEZIER);
             // set the filled area
             set1.setDrawFilled(true);
             set1.setFillFormatter(new IFillFormatter() {
@@ -393,15 +407,77 @@ public class HealthDetailActivity extends BaseActivity {
             String tempAddr = L4M.GetConnectedMAC();
             if (tempAddr!=null){
                 Health_Sleep.HealthSleepData sleepData= Health_Sleep.GetSleep_Data(tempAddr,dateStr,startTime,endTime);
-                Log.e(TAG, "睡眠  质量  " + sleepData.sleelLevel
-                        + "  清醒  " + sleepData.awakeHour+":"+sleepData.awakeMinute
-                        + "  浅睡  " + sleepData.lightHour+":"+sleepData.lightMinute
-                        + "  深睡  " + sleepData.deepHour+":"+sleepData.deepMinute
-                        + "  总时长  " + sleepData.sumHour+":"+sleepData.sumMinute);
-                
+                List<Health_Sleep.TimeSlpDiz> TimeSlpDizList=sleepData.mTimeSlpDiz;
+                if (TimeSlpDizList!=null && TimeSlpDizList.size()>0){
+                    for (int i = 0; i < TimeSlpDizList.size(); i++) {
+                        Health_Sleep.TimeSlpDiz mTimeSlpDiz=TimeSlpDizList.get(i);
+
+                        Log.e(TAG,"睡眠详细数据  "+mTimeSlpDiz.mRcdTime+"  "+mTimeSlpDiz.mSlpMode);
+                    }
+                }
+
             }
 
         }
+    }
+
+    private ArrayList<Entry> Hrt(String dateStr, boolean LoadDB) {
+        ArrayList<Entry> array = new ArrayList<>();
+        if (LoadDB){
+            String tempAddr = L4M.GetConnectedMAC();
+            System.out.println("[Hrt]设备mac地址: " + tempAddr + "日期：" + dateStr);
+            if (tempAddr!=null){
+                Health_HeartBldPrs.HeartPageData mHeartData = Health_HeartBldPrs.GetHeart_Data(tempAddr, dateStr);
+                Log.e(TAG, "心率  " + mHeartData.HeartRate);
+                List<Health_HeartBldPrs.HrtDiz> HrtRateDizList = mHeartData.mHrtDiz;
+                if (HrtRateDizList != null) {
+                    for (int i = 0; i < HrtRateDizList.size(); i++) {
+                        Health_HeartBldPrs.HrtDiz mHrtRateDiz = HrtRateDizList.get(i);
+                        if (Integer.parseInt(mHrtRateDiz.mHrtRate) > 0) {
+                            int n = timeToTimestamp(mHrtRateDiz.mMsrTime);
+                            int o = getZeroTime(mHrtRateDiz.mMsrTime);
+                            int dis = n - o;
+                            float x = (float)dis / (6 * 60 * 60);
+                            float y = Integer.parseInt(mHrtRateDiz.mHrtRate) / (float)40;
+                            Entry entry = new Entry(x, y);
+                            Log.e(TAG, "心率详细数据" + x + "  y  " + y);
+                            array.add(entry);
+                        }
+                    }
+                }
+            }
+            if (array.size() == 1) {
+                Entry entry = array.get(0);
+                array.add(0, new Entry(entry.getX() - 0.33f, 0));
+                array.add(new Entry(entry.getX() + 0.33f, 0));
+            }
+        }
+        return array;
+    }
+
+    private static int timeToTimestamp(String startDate) {
+        long start = 0;
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            start = df.parse(startDate).getTime();
+        } catch (Exception e) {
+
+        }
+        int minutes = (int)(start / 1000);
+        return minutes;
+    }
+
+    private static int getZeroTime(String startDate) {
+        long start = 0;
+        try {
+            String date = startDate.substring(0, 10);
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            start = df.parse(date + " 00:00:00").getTime();
+        } catch (Exception e) {
+
+        }
+        int minutes = (int)(start / 1000);
+        return minutes;
     }
 
     public static String StringData(Date date){

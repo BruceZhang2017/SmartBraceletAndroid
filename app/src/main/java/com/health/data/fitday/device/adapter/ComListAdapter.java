@@ -24,8 +24,11 @@ import com.health.data.fitday.device.alarm.AlarmListActivity;
 import com.health.data.fitday.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
 import com.suke.widget.SwitchButton;
+import com.tjdL4.tjdmain.L4M;
 import com.tjdL4.tjdmain.contr.BractletFuncSet;
 import com.tjdL4.tjdmain.contr.L4Command;
+
+
 
 public class ComListAdapter extends BaseAdapter {
     public static final int TYPE_ARROW = 0;
@@ -33,7 +36,7 @@ public class ComListAdapter extends BaseAdapter {
     public static final int TYPE_NULL = 2;
     private Context context;
     private String[] comNames;
-    public BractletFuncSet.FuncSetData funcSetData;
+    public static BractletFuncSet.FuncSetData funcSetData;
 
     public ComListAdapter(Context context, String[] comNames) {
         super();
@@ -92,7 +95,10 @@ public class ComListAdapter extends BaseAdapter {
                 titleHolder.title.setText(comNames[position]);
                 titleHolder.value.setText(" ");
                 if (position == 5) {
-                    int value = SpUtils.getInt(context, "Longsit");
+                    int value = SpUtils.getInt(context, "longsit");
+                    if (value <= 0) {
+                        value = 60;
+                    }
                     titleHolder.value.setText(value + "分钟");
                 }
                 convertView.setOnClickListener(new View.OnClickListener() {
@@ -142,24 +148,33 @@ public class ComListAdapter extends BaseAdapter {
                     comHolder = (ComViewHolder) convertView.getTag();
                 }
                 comHolder.com.setText(comNames[position]);
-                if (position == 2) {
+                if (position == 3) {
                     comHolder.icon.setChecked(funcSetData.mSW_manage);
-                } else if (position == 3) {
-                    comHolder.icon.setChecked(funcSetData.mSW_sed);
                 } else if (position == 4) {
-
+                    String s = SpUtils.getString(context, "sed");
+                    if (s.length() > 0) {
+                        String mac = L4M.GetConnectedMAC();
+                        String[] arr = s.split("_");
+                        boolean b = Integer.parseInt(arr[1]) > 0;
+                        comHolder.icon.setChecked(b);
+                    } else {
+                        comHolder.icon.setChecked(funcSetData.mSW_sed);
+                    }
+                } else if (position == 2) {
+                    boolean c = SpUtils.getBoolean(context, "call");
+                    comHolder.icon.setChecked(c);
                 }
                 comHolder.icon.setOnCheckedChangeListener(new SwitchButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(SwitchButton view, boolean isChecked) {
-                        if (position == 2) {
+                        if (position == 3) {
                             funcSetData.mSW_manage = isChecked;
                             String ret= L4Command.Brlt_FuncSet(funcSetData);/*ret  返回值类型在文档最下面*/
-                        } else if (position == 3) {
+                        } else if (position == 4) {
                             funcSetData.mSW_sed = isChecked;
                             String ret= L4Command.Brlt_FuncSet(funcSetData);/*ret  返回值类型在文档最下面*/
-                        } else if (position == 4) {
-
+                        } else if (position == 2) {
+                            SpUtils.putBoolean(context, "call", isChecked);
                         }
 
                     }

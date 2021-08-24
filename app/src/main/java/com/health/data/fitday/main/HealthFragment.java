@@ -129,7 +129,9 @@ public class HealthFragment extends BaseFragment {
 
     public  void refreshUIForHeart(int[] mHeartData) {
         if (mHeartData != null && mHeartData.length == 24) {
-            heartView.refreshUI(mHeartData);
+            if (heartView != null) {
+                heartView.refreshUI(mHeartData);
+            }
         }
     }
 

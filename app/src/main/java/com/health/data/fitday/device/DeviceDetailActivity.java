@@ -53,7 +53,7 @@ public class DeviceDetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        String[] titles = new String[]{"", "推送设置", "来电提醒","抬手亮屏", "久坐提醒", "久座提醒时间", "天气推送", "", "闹钟设置", "查找设置", "设置信息", "摇一摇拍照"};
+        String[] titles = new String[]{"", "推送设置", "来电提醒","抬手亮屏", "久坐提醒", "久座提醒时间", "天气推送", "", "闹钟设置", "查找设置", "设备信息", "摇一摇拍照"};
         adapter = new ComListAdapter(this, titles);
         listView.setAdapter(adapter);
 
@@ -140,6 +140,8 @@ public class DeviceDetailActivity extends BaseActivity {
                         funcSetData = (BractletFuncSet.FuncSetData)TempObj;
                         adapter.funcSetData = funcSetData;
                         adapter.notifyDataSetChanged();
+                        String mac = L4M.GetConnectedMAC();
+                        SpUtils.putString(DeviceDetailActivity.this, "sed",mac + "_" + (funcSetData.mSW_sed ? 1 : 0));
                     }
 
                     if(tTypeInfo.equals(L4M.RemoteCapOn) && TempStr.equals(L4M.OK)) {

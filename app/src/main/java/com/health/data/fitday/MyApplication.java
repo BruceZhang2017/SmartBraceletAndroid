@@ -7,7 +7,6 @@ import android.telephony.TelephonyManager;
 
 import androidx.multidex.MultiDex;
 
-import com.health.data.fitday.global.MyPhoneStateListener;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tjdL4.tjdmain.L4M;
 
@@ -36,8 +35,6 @@ public class MyApplication extends Application {
 		RealmConfiguration config = new RealmConfiguration.Builder().name("bracelet").build();
 		Realm.setDefaultConfiguration(config);
 		CrashReport.initCrashReport(getApplicationContext(), "7680174387", false);
-
-		monitorphone();
 	}
 
 
@@ -62,19 +59,6 @@ public class MyApplication extends Application {
 		//L4M.InitData(this,1,-2);//外部存储方式，所有数据都是临时的，需要使用者自己创建数据库
 
 	}
-
-	private void monitorphone() {
-		MyPhoneStateListener phoneListener=new MyPhoneStateListener(); //我们派生的类
-
-		TelephonyManager telephonyManager
-
-				=(TelephonyManager)getSystemService(TELEPHONY_SERVICE);
-
-		telephonyManager.listen(phoneListener,
-
-				PhoneStateListener.LISTEN_CALL_STATE);
-	}
-
 }
 
 

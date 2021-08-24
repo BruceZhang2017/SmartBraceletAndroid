@@ -68,7 +68,7 @@ public class LongsitInternalActivity extends BaseActivity {
 
 //设置
                 String ret = L4Command.SedentarySet(mySedSetData);/*ret  返回值类型文档最下面*/
-                SpUtils.putInt(LongsitInternalActivity.this, "Longsit", minute);
+                SpUtils.putInt(LongsitInternalActivity.this, "longsit", minute);
                 EventBus.getDefault().post(new MessageEvent("longsit"));
                 finish();
             }
@@ -93,7 +93,10 @@ public class LongsitInternalActivity extends BaseActivity {
         list.add("120分钟");
         list.add("180分钟");
         adapter.list = list;
-        int value = SpUtils.getInt(this, "Longsit");
+        int value = SpUtils.getInt(this, "longsit");
+        if (value <= 0) {
+            value = 60;
+        }
         if (value == 30) {
             selectList.add(true);
         } else {
