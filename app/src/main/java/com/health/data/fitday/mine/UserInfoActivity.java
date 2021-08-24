@@ -94,7 +94,7 @@ public class UserInfoActivity extends BaseActivity {
         OptionsPickerView optionsPickerView = (new OptionsPickerBuilder((Context) this, new OnOptionsSelectListener() {
             public void onOptionsSelect(int param1Int1, int param1Int2, int param1Int3, View param1View) {
                 String str = ((CardBean) UserInfoActivity.this.optionsHeight1Items.get(param1Int1)).getPickerViewText();
-                ((UserInfoBean) UserInfoActivity.this.mList.get(5)).setValue(str + "CM");
+                ((UserInfoBean) UserInfoActivity.this.mList.get(4)).setValue(str + "CM");
                 //UserInfoActivity.this.user.setHeight(Integer.parseInt(str));
                 L4M.SaveUser_Height(str + "CM");
             }
@@ -110,7 +110,7 @@ public class UserInfoActivity extends BaseActivity {
         OptionsPickerView optionsPickerView = (new OptionsPickerBuilder((Context) this, new OnOptionsSelectListener() {
             public void onOptionsSelect(int param1Int1, int param1Int2, int param1Int3, View param1View) {
                 String str = ((CardBean) UserInfoActivity.this.optionsSex.get(param1Int1)).getPickerViewText();
-                ((UserInfoBean) UserInfoActivity.this.mList.get(3)).setValue(str);
+                ((UserInfoBean) UserInfoActivity.this.mList.get(2)).setValue(str);
                 //UserInfoActivity.this.user.setSex(param1Int1);
                 L4M.SaveUser_Gender(param1Int1 + "");
             }
@@ -126,7 +126,7 @@ public class UserInfoActivity extends BaseActivity {
         OptionsPickerView optionsPickerView = (new OptionsPickerBuilder((Context) this, new OnOptionsSelectListener() {
             public void onOptionsSelect(int param1Int1, int param1Int2, int param1Int3, View param1View) {
                 String str = ((CardBean) UserInfoActivity.this.optionsWeight1Items.get(param1Int1)).getPickerViewText();
-                ((UserInfoBean) UserInfoActivity.this.mList.get(6)).setValue(str + "KG");
+                ((UserInfoBean) UserInfoActivity.this.mList.get(5)).setValue(str + "KG");
                 //UserInfoActivity.this.user.setWeight(Integer.parseInt(str));
                 L4M.SaveUser_Weight(str + "KG");
             }
@@ -143,7 +143,7 @@ public class UserInfoActivity extends BaseActivity {
             public void onTimeSelect(Date param1Date, View param1View) {
                 Log.i("pvTime", "onTimeSelect");
                 String str = UserInfoActivity.this.getTime(param1Date);
-                ((UserInfoBean) UserInfoActivity.this.mList.get(4)).setValue(str);
+                ((UserInfoBean) UserInfoActivity.this.mList.get(3)).setValue(str);
                 UserInfoActivity.this.adapter.notifyDataSetChanged();
                 //UserInfoActivity.this.user.setBirthday(str);
                 L4M.SaveUser_Birthday(str);
@@ -336,7 +336,7 @@ public class UserInfoActivity extends BaseActivity {
         });
         this.actionBarCommon.setOnRightTextClickListener(new OnActionBarChildClickListener() {
             public void onClick(View param1View) {
-                UserInfoActivity.this.updateUserInfo();
+                //UserInfoActivity.this.updateUserInfo();
                 UserInfoActivity.this.finish();
             }
         });

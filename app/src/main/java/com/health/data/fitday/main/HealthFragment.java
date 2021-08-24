@@ -146,7 +146,9 @@ public class HealthFragment extends BaseFragment {
 
     public void refreshUIForSleep(int[] sleep) {
         if (sleep != null && sleep.length == 3) {
-            sleepView.refreshUI(sleep);
+            if (sleepView != null) {
+                sleepView.refreshUI(sleep);
+            }
         }
     }
 
