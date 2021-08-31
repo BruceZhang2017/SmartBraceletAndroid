@@ -66,7 +66,7 @@
         android:required="false" />
 
     <application
-        android:name="com.health.data.fitday.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:icon="@mipmap/ic_launcher"
@@ -75,79 +75,79 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.health.data.fitday.device.LongsitInternalActivity"
+            android:name=".device.LongsitInternalActivity"
             android:exported="true" />
         <activity
-            android:name="com.health.data.fitday.main.SetTargetStepActivity"
+            android:name=".main.SetTargetStepActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.alarm.AmindActivity"
+            android:name=".device.alarm.AmindActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.alarm.WeekChooseActivity"
+            android:name=".device.alarm.WeekChooseActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.alarm.AddAlarmActivity"
+            android:name=".device.alarm.AddAlarmActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.alarm.AlarmListActivity"
+            android:name=".device.alarm.AlarmListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.DeviceSwitchActivity"
+            android:name=".device.DeviceSwitchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.main.HealthDetailActivity"
+            android:name=".main.HealthDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.DeviceFoundActivity"
+            android:name=".device.DeviceFoundActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.DeviceInfoActivity"
+            android:name=".device.DeviceInfoActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.DeviceDetailPushActivity"
+            android:name=".device.DeviceDetailPushActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.DeviceDetailActivity"
+            android:name=".device.DeviceDetailActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.DialUploadActivity"
+            android:name=".device.DialUploadActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.DialMarketAcitivity"
+            android:name=".device.DialMarketAcitivity"
             android:label="@string/title_activity_dial_market_acitivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.health.data.fitday.device.WeatherSearchActivity"
+            android:name=".device.WeatherSearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.device.SearchDeviceActivity"
+            android:name=".device.SearchDeviceActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.mine.EditContentActivity"
+            android:name=".mine.EditContentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.mine.LoginActivity"
+            android:name=".mine.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.mine.EditHeadActivity"
+            android:name=".mine.EditHeadActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.mine.DataRecordActivity"
+            android:name=".mine.DataRecordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.mine.HelpCenterActivity"
+            android:name=".mine.HelpCenterActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.mine.AboutActivity"
+            android:name=".mine.AboutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.mine.UserInfoActivity"
+            android:name=".mine.UserInfoActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.health.data.fitday.mine.AccountAndSafeActivity"
+            android:name=".mine.AccountAndSafeActivity"
             android:label="@string/title_activity_account_and_safe"
             android:screenOrientation="portrait" />
 
@@ -156,7 +156,7 @@
             android:value="7a0d9f6439671914761f0e9f1a61b1bd" />
 
         <activity
-            android:name="com.health.data.fitday.main.SplashActivity"
+            android:name=".main.SplashActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
@@ -168,26 +168,37 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.health.data.fitday.MainActivity"
+            android:name=".MainActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.health.data.fitday.main.WelcomeGuideActivity"
+            android:name=".main.WelcomeGuideActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.health.data.fitday.main.HomeActivity"
+            android:name=".main.HomeActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <service android:name="com.amap.api.location.APSService" />
 
-        <service android:name="com.health.data.fitday.device.mobile.MyPhoneStateListenService" >
+        <service android:name=".device.mobile.MyPhoneStateListenService" >
         </service>
+
+        <service
+            android:name=".device.mobile.NotificationCollectorService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+
     </application>
 
 </manifest>

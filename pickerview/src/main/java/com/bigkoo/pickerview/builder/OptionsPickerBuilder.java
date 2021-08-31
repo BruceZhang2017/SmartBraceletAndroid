@@ -1,4 +1,4 @@
-package com.bigkoo.pickerview2.builder;
+package com.bigkoo.pickerview.builder;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.ColorInt;
 
-import com.bigkoo.pickerview2.configure.PickerOptions;
-import com.bigkoo.pickerview2.listener.CustomListener;
-import com.bigkoo.pickerview2.listener.OnOptionsSelectChangeListener;
-import com.bigkoo.pickerview2.listener.OnOptionsSelectListener;
-import com.bigkoo.pickerview2.view.OptionsPickerView;
+import com.bigkoo.pickerview.configure.PickerOptions;
+import com.bigkoo.pickerview.listener.CustomListener;
+import com.bigkoo.pickerview.listener.OnOptionsSelectChangeListener;
+import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
+import com.bigkoo.pickerview.view.OptionsPickerView;
 import com.contrarywind.view.WheelView;
 
 /**

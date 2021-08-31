@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.health.data.fitday.main.SetTargetStepActivity"
+    tools:context=".main.SetTargetStepActivity"
     >
     <per.goweii.actionbarex.common.ActionBarCommon
         android:id="@+id/simple_action_bar"
@@ -29,7 +29,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
-    <com.health.data.fitday.main.MyWheelView
+    <com.sinophy.smartbracelet.main.MyWheelView
         android:id="@+id/test_wheelview"
         android:layout_width="match_parent"
         android:layout_height="280dp"

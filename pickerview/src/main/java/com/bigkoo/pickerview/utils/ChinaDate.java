@@ -1,4 +1,4 @@
-package com.bigkoo.pickerview2.utils;
+package com.bigkoo.pickerview.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

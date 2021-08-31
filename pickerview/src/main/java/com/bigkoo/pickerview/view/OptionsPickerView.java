@@ -1,4 +1,4 @@
-package com.bigkoo.pickerview2.view;
+package com.bigkoo.pickerview.view;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -9,8 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bigkoo.pickerview2.R;
-import com.bigkoo.pickerview2.configure.PickerOptions;
+import com.bigkoo.pickerview.R;
+import com.bigkoo.pickerview.configure.PickerOptions;
 
 import java.util.List;
 

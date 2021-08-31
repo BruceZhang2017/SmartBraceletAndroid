@@ -30,7 +30,7 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <com.health.data.fitday.device.SearchLoadingView
+    <com.sinophy.smartbracelet.device.SearchLoadingView
         android:id="@+id/v_search"
         android:layout_width="fill_parent"
         android:layout_height="20.0dip"

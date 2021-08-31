@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.health.data.fitday.main.HealthDetailActivity"
+    tools:context=".main.HealthDetailActivity"
     >
     <per.goweii.actionbarex.common.ActionBarCommon
         android:id="@+id/simple_action_bar"

@@ -1,13 +1,13 @@
-package com.bigkoo.pickerview2.view;
+package com.bigkoo.pickerview.view;
 
 import android.view.View;
 
-import com.bigkoo.pickerview2.R;
-import com.bigkoo.pickerview2.adapter.ArrayWheelAdapter;
-import com.bigkoo.pickerview2.adapter.NumericWheelAdapter;
-import com.bigkoo.pickerview2.listener.ISelectTimeCallback;
-import com.bigkoo.pickerview2.utils.ChinaDate;
-import com.bigkoo.pickerview2.utils.LunarCalendar;
+import com.bigkoo.pickerview.R;
+import com.bigkoo.pickerview.adapter.ArrayWheelAdapter;
+import com.bigkoo.pickerview.adapter.NumericWheelAdapter;
+import com.bigkoo.pickerview.listener.ISelectTimeCallback;
+import com.bigkoo.pickerview.utils.ChinaDate;
+import com.bigkoo.pickerview.utils.LunarCalendar;
 import com.contrarywind.listener.OnItemSelectedListener;
 import com.contrarywind.view.WheelView;
 

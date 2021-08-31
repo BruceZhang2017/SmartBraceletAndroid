@@ -4,6 +4,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     >
 
     <com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -248,7 +250,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         />
 
-                    <com.health.data.fitday.main.HeartView
+                    <com.sinophy.smartbracelet.main.HeartView
                         android:id="@+id/hv_view"
                         android:layout_width="242.0dip"
                         android:layout_height="50.0dip"
@@ -322,7 +324,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         />
 
-                    <com.health.data.fitday.main.SleepView
+                    <com.sinophy.smartbracelet.main.SleepView
                         android:id="@+id/sv_view"
                         android:layout_width="242.0dip"
                         android:layout_height="50.0dip"

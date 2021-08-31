@@ -1,4 +1,4 @@
-package com.bigkoo.pickerview2.view;
+package com.bigkoo.pickerview.view;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -16,10 +16,10 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
-import com.bigkoo.pickerview2.R;
-import com.bigkoo.pickerview2.configure.PickerOptions;
-import com.bigkoo.pickerview2.listener.OnDismissListener;
-import com.bigkoo.pickerview2.utils.PickerViewAnimateUtil;
+import com.bigkoo.pickerview.R;
+import com.bigkoo.pickerview.configure.PickerOptions;
+import com.bigkoo.pickerview.listener.OnDismissListener;
+import com.bigkoo.pickerview.utils.PickerViewAnimateUtil;
 
 /**
  * Created by Sai on 15/11/22.

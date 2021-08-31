@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.health.data.fitday.main.HomeActivity"
+    tools:context=".main.HomeActivity"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/simple_action_bar"
@@ -46,7 +46,7 @@
         app:layout_constraintTop_toBottomOf="@id/simple_action_bar"
         />
 
-    <com.health.data.fitday.main.widget.AlphaTabsIndicator
+    <com.sinophy.smartbracelet.main.widget.AlphaTabsIndicator
         android:id="@+id/alphaIndicator"
         android:layout_width="match_parent"
         android:layout_height="50.0dip"
@@ -56,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         >
 
-        <com.health.data.fitday.main.widget.AlphaTabView
+        <com.sinophy.smartbracelet.main.widget.AlphaTabView
             android:layout_width="0.0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
@@ -82,7 +82,7 @@
 <!--            app:textColorSelected="@color/colorTabSelected"-->
 <!--            />-->
 
-        <com.health.data.fitday.main.widget.AlphaTabView
+        <com.sinophy.smartbracelet.main.widget.AlphaTabView
             android:layout_width="0.0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
@@ -95,7 +95,7 @@
             app:textColorSelected="@color/colorTabSelected"
             />
 
-        <com.health.data.fitday.main.widget.AlphaTabView
+        <com.sinophy.smartbracelet.main.widget.AlphaTabView
             android:layout_width="0.0dip"
             android:layout_height="fill_parent"
             android:layout_weight="1.0"
@@ -107,5 +107,5 @@
             app:textColorNormal="@color/colorTabNormal"
             app:textColorSelected="@color/colorTabSelected"
             />
-    </com.health.data.fitday.main.widget.AlphaTabsIndicator>
+    </com.sinophy.smartbracelet.main.widget.AlphaTabsIndicator>
 </androidx.constraintlayout.widget.ConstraintLayout>

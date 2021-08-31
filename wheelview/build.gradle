@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.github.dcendents.android-maven'
 //apply plugin: 'com.novoda.bintray-release'//添加插件
 
 
@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 26
-        versionCode 31
-        versionName "4.1.0"
     }
     buildTypes {
         release {

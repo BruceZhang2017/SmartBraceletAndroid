@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffffff"
-    tools:context="com.health.data.fitday.device.alarm.AddAlarmActivity"
+    tools:context=".device.alarm.AddAlarmActivity"
     >
     <per.goweii.actionbarex.common.ActionBarCommon
         android:id="@+id/simple_action_bar"

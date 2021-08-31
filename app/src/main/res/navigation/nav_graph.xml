@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/First2Fragment"
-        android:name="com.health.data.fitday.device.LocalDialFragment"
+        android:name="com.sinophy.smartbracelet.device.LocalDialFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_local_dial">
 
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/Second2Fragment"
-        android:name="com.health.data.fitday.device.CloudDialFragment"
+        android:name="com.sinophy.smartbracelet.device.CloudDialFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_cloud_dial">
 

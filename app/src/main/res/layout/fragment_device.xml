@@ -82,7 +82,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     />
 
-                <com.health.data.fitday.device.widget.HorizontalListView
+                <com.sinophy.smartbracelet.device.widget.HorizontalListView
                     android:id="@+id/horizontal_listview"
                     android:layout_width="fill_parent"
                     android:layout_height="155.0dip"

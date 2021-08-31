@@ -1,11 +1,11 @@
-package com.bigkoo.pickerview2.view;
+package com.bigkoo.pickerview.view;
 
 import android.graphics.Typeface;
 import android.view.View;
 
-import com.bigkoo.pickerview2.R;
-import com.bigkoo.pickerview2.adapter.ArrayWheelAdapter;
-import com.bigkoo.pickerview2.listener.OnOptionsSelectChangeListener;
+import com.bigkoo.pickerview.R;
+import com.bigkoo.pickerview.adapter.ArrayWheelAdapter;
+import com.bigkoo.pickerview.listener.OnOptionsSelectChangeListener;
 import com.contrarywind.listener.OnItemSelectedListener;
 import com.contrarywind.view.WheelView;
 

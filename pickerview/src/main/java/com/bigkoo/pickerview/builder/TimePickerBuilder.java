@@ -1,4 +1,4 @@
-package com.bigkoo.pickerview2.builder;
+package com.bigkoo.pickerview.builder;
 
 import android.content.Context;
 
@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.ColorInt;
 
-import com.bigkoo.pickerview2.configure.PickerOptions;
-import com.bigkoo.pickerview2.listener.CustomListener;
-import com.bigkoo.pickerview2.listener.OnTimeSelectChangeListener;
-import com.bigkoo.pickerview2.listener.OnTimeSelectListener;
-import com.bigkoo.pickerview2.view.TimePickerView;
+import com.bigkoo.pickerview.configure.PickerOptions;
+import com.bigkoo.pickerview.listener.CustomListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview.view.TimePickerView;
 import com.contrarywind.view.WheelView;
 
 import java.util.Calendar;

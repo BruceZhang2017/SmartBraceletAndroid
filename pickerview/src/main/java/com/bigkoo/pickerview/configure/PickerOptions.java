@@ -1,4 +1,4 @@
-package com.bigkoo.pickerview2.configure;
+package com.bigkoo.pickerview.configure;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -6,12 +6,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bigkoo.pickerview2.R;
-import com.bigkoo.pickerview2.listener.CustomListener;
-import com.bigkoo.pickerview2.listener.OnOptionsSelectChangeListener;
-import com.bigkoo.pickerview2.listener.OnOptionsSelectListener;
-import com.bigkoo.pickerview2.listener.OnTimeSelectChangeListener;
-import com.bigkoo.pickerview2.listener.OnTimeSelectListener;
+import com.bigkoo.pickerview.R;
+import com.bigkoo.pickerview.listener.CustomListener;
+import com.bigkoo.pickerview.listener.OnOptionsSelectChangeListener;
+import com.bigkoo.pickerview.listener.OnOptionsSelectListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
+import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.contrarywind.view.WheelView;
 
 import java.util.Calendar;

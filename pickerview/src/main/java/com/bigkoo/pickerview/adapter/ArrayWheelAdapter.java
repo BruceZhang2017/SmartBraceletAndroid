@@ -1,4 +1,4 @@
-package com.bigkoo.pickerview2.adapter;
+package com.bigkoo.pickerview.adapter;
 
 import com.contrarywind.adapter.WheelAdapter;
 
