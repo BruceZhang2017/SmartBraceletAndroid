@@ -128,6 +128,17 @@ public class RealmOperationHelper {
 
             }
         });
+    }
+
+    public void deleteDevice(Class<? extends RealmObject> clazz, String mac) {
+        mRealm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                final RealmObject students1 = realm.where(clazz).equalTo("mac", mac).findFirst();
+                students1.deleteFromRealm();
+                System.out.println("删除设备成功");
+            }
+        });
 
 
     }

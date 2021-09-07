@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.cktim.camera2library.Camera2Config;
 import com.cktim.camera2library.camera.Camera2RecordActivity;
+import com.cktim.camera2library.camera.MessageEvent;
 import com.sinophy.smartbracelet.device.DeviceDetailActivity;
 import com.sinophy.smartbracelet.device.DeviceDetailPushActivity;
 import com.sinophy.smartbracelet.device.DeviceFoundActivity;
@@ -23,13 +24,20 @@ import com.sinophy.smartbracelet.device.DeviceInfoActivity;
 import com.sinophy.smartbracelet.device.LongsitInternalActivity;
 import com.sinophy.smartbracelet.device.WeatherSearchActivity;
 import com.sinophy.smartbracelet.device.alarm.AlarmListActivity;
+import com.sinophy.smartbracelet.device.model.BLEModel;
+import com.sinophy.smartbracelet.device.model.DeviceManager;
+import com.sinophy.smartbracelet.global.RealmOperationHelper;
 import com.sinophy.smartbracelet.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
 import com.suke.widget.SwitchButton;
+import com.tjdL4.tjdmain.Dev;
 import com.tjdL4.tjdmain.L4M;
 import com.tjdL4.tjdmain.contr.BractletFuncSet;
 import com.tjdL4.tjdmain.contr.L4Command;
 
+import org.greenrobot.eventbus.EventBus;
+
+import io.realm.Realm;
 
 
 public class ComListAdapter extends BaseAdapter {
@@ -38,8 +46,10 @@ public class ComListAdapter extends BaseAdapter {
     public static final int TYPE_NULL = 2;
     public static final int TYPE_DELETE = 3;
     private Context context;
+    public int index;
     private String[] comNames;
     public static BractletFuncSet.FuncSetData funcSetData;
+    public String mac;
 
     public ComListAdapter(Context context, String[] comNames) {
         super();
@@ -130,11 +140,6 @@ public class ComListAdapter extends BaseAdapter {
                             context.startActivity(intent);
                         } else if (position == 11) {
                             Camera2Config.ENABLE_CAPTURE=true;
-                            if(Build.BRAND .equals("Xiaomi") ){ // 小米手机
-                                Camera2Config.PATH_SAVE_PIC= Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/";
-                            }else{ // Meizu 、Oppo
-                                Camera2Config.PATH_SAVE_PIC= Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/";
-                            }
 
                             Camera2RecordActivity.start(context);
                             L4Command.CameraOn(((DeviceDetailActivity)context).listener);
@@ -205,7 +210,19 @@ public class ComListAdapter extends BaseAdapter {
                             }
                         }).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface param1DialogInterface, int param1Int) {
-                                Toast.makeText(context, "逻辑暂未加入", Toast.LENGTH_SHORT).show();
+                                // 将设备解绑
+                                if (L4M.Get_Connect_flag() == 2) {
+                                    Dev.ClearConnectedDevice();
+                                    Dev.RemoteDev_CloseManual(); // 手动断开
+                                }
+                                SpUtils.deleteContent(context, "lastDeviceMac");
+                                SpUtils.deleteContent(context, "blood");
+                                SpUtils.deleteContent(context, "oxy");
+                                DeviceManager.getInstance().models.remove(index);
+                                EventBus.getDefault().post(new MessageEvent("healthclear"));
+                                EventBus.getDefault().post(new MessageEvent("deleteDevice"));
+                                ((DeviceDetailActivity)context).finish();
+
                             }
                         }).setCancelable(false).show();
                     }

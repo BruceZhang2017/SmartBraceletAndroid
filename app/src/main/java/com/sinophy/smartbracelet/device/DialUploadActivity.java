@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.sinophy.smartbracelet.device.model.DialBean;
 import com.sinophy.smartbracelet.global.CacheUtils;
 import com.sinophy.smartbracelet.main.BaseActivity;
+import com.sinophy.smartbracelet.mine.MessageEvent;
 import com.sinophy.smartbracelet.utils.SpUtils;
 import com.lxj.xpopup.XPopup;
 import com.sinophy.smartbracelet.R;
@@ -18,6 +19,8 @@ import com.tjdL4.tjdmain.BaseContents;
 import com.tjdL4.tjdmain.Dev;
 import com.tjdL4.tjdmain.L4M;
 import com.tjdL4.tjdmain.ctrls.DialPushManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -117,8 +120,14 @@ public class DialUploadActivity extends BaseActivity {
                         new XPopup.Builder(DialUploadActivity.this)
                                 .asCustom(popupView)
                                 .show();
-                        popupView.setResource(R.mipmap.conten_icon_refresh);
-                        popupView.setPopTitle("正在同步至手环，请稍后...");
+                        new Handler().postDelayed(
+                                new Runnable() {
+                                    public void run() {
+                                        //要执行的任务
+                                        popupView.setResource(R.mipmap.conten_icon_refresh);
+                                        popupView.setPopTitle("正在同步至手环，请稍后...");
+                                    }
+                                }, 500);
                     }
                 });
             }
@@ -134,30 +143,41 @@ public class DialUploadActivity extends BaseActivity {
 
             @Override
             public void OnFail(String EventStr) {
-                popupView.setResource(R.mipmap.content_icon_fail);
-                popupView.setPopTitle("推送失败！");
-                new Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                //要执行的任务
-                                popupView.dismiss();
-                            }
-                        }, 1000);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        popupView.setResource(R.mipmap.content_icon_fail);
+                        popupView.setPopTitle("推送失败！");
+                        new Handler().postDelayed(
+                                new Runnable() {
+                                    public void run() {
+                                        //要执行的任务
+                                        popupView.dismiss();
+                                    }
+                                }, 1000);
+                    }
+                });
+
             }
 
             @Override
             public void OnSucc(String EventStr) {
-                popupView.setResource(R.mipmap.content_icon_success);
-                popupView.setPopTitle("推送成功！");
-                uploadsuccess();
-                new Handler().postDelayed(
-                        new Runnable() {
-                            public void run() {
-                                //要执行的任务
-                                popupView.dismiss();
-                                finish();
-                            }
-                        }, 1000);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        popupView.setResource(R.mipmap.content_icon_success);
+                        popupView.setPopTitle("推送成功！");
+                        uploadsuccess();
+                        new Handler().postDelayed(
+                                new Runnable() {
+                                    public void run() {
+                                        //要执行的任务
+                                        popupView.dismiss();
+                                        finish();
+                                    }
+                                }, 1000);
+                    }
+                });
             }
 
         });
@@ -229,6 +249,9 @@ public class DialUploadActivity extends BaseActivity {
             if (mapss != null && mapss.size() > 0) {
                 String value = mapss.get(mac);
                 if (value != null && value.length() > 0) {
+                    if (value.contains(currentBean.getDialName())) { // 已经加过该设备，则不用重复添加
+                        return;
+                    }
                     mapss.put(mac,  value + "&&&" + currentBean.getDialName() + "&&" + currentBean.getImage() + "&&" + currentBean.getAsset());
                     CacheUtils.setMap(this, "MyClock", mapss);
                 } else {
@@ -239,6 +262,7 @@ public class DialUploadActivity extends BaseActivity {
                 mapss.put(mac,  currentBean.getDialName() + "&&" + currentBean.getImage() + "&&" + currentBean.getAsset());
                 CacheUtils.setMap(this, "MyClock", mapss);
             }
+            EventBus.getDefault().post(new MessageEvent("clockrefresh"));
         }
     }
 }

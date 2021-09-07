@@ -20,6 +20,8 @@ public class SimpleAdapter extends BaseBannerAdapter<BLEModel> {
     protected void bindData(BaseViewHolder<BLEModel> holder, BLEModel bleModel, int position, int pagesize) {
         BLEModel model = bleModel;
         holder.itemView.setOnClickListener(mOnClickListener);
+        System.out.println("当前是第" + position + "位设备绑定信息");
+        holder.itemView.setId(position);
         TextView tvAddDevice = (TextView) holder.itemView.findViewById(R.id.tv_add_device);
         if (model.getMac() == null || model.getMac().length() == 0) {
             System.out.println("当前连接成功的mac为空");

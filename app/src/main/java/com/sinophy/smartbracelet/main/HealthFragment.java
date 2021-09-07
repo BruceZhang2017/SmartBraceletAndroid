@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.cktim.camera2library.camera.MessageEvent;
+import com.sinophy.smartbracelet.device.model.DialBean;
+import com.sinophy.smartbracelet.global.CacheUtils;
 import com.sinophy.smartbracelet.utils.SpUtils;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
@@ -19,7 +22,14 @@ import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.contr.Health_TodayPedo;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,6 +64,7 @@ public class HealthFragment extends BaseFragment {
     SleepView sleepView;
 
     private void initData() {
+        EventBus.getDefault().register(this);
     }
 
     private void initView() {
@@ -108,15 +119,28 @@ public class HealthFragment extends BaseFragment {
         super.onDestroyView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
     public void refreshUIForSport(Health_TodayPedo.TodayStepPageData todayData) {
         if (todayData == null || tvStepValue == null) {
             return;
         }
         tvStepValue.setText(todayData.step + "");
-        float f = Float.parseFloat(todayData.distance) / 1000;
-        DecimalFormat df = new DecimalFormat("#.00");
-        String right = df.format(f);
-        tvKM.setText(todayData.distance + "公里");
+        if (todayData.distanceUnit.equals("0")) {
+            float f = Float.parseFloat(todayData.distance) / 1000;
+            DecimalFormat df = new DecimalFormat("#.##");
+            String right = df.format(f);
+            tvKM.setText(right + "公里");
+        } else {
+            tvKM.setText(todayData.distance + "公里");
+        }
+
         tvCalValue.setText(todayData.energy);
     }
 
@@ -218,6 +242,24 @@ public class HealthFragment extends BaseFragment {
         int goal = SpUtils.getInt(mContext, "goal");
         if (goal > 0) {
             tvGoal.setText("目标 | " + goal + "步");
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(MessageEvent messageEvent) {
+        if (messageEvent.getMessage().equals("healthclear")) {
+            Health_TodayPedo.TodayStepPageData data = new Health_TodayPedo.TodayStepPageData();
+            data.distance = "0";
+            data.step = "0";
+            data.energy = "0";
+            data.distanceUnit = "0";
+            refreshUIForSport(data);
+            refreshUIForHeart("0");
+            refreshUIForHeart(new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+            refreshUIForSleep("00:00");
+            refreshUIForSleep(new int[]{0, 0, 0});
+            tvOXValue.setText("0");
+            tvBloodValue.setText("00/00");
         }
     }
 }

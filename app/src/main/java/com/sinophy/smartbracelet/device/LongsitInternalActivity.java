@@ -5,9 +5,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.cktim.camera2library.camera.MessageEvent;
+
 import com.sinophy.smartbracelet.device.adapter.WeekListAdapter;
 import com.sinophy.smartbracelet.main.BaseActivity;
+import com.sinophy.smartbracelet.mine.MessageEvent;
 import com.sinophy.smartbracelet.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
 import com.tjdL4.tjdmain.contr.BractletSedentarySet;

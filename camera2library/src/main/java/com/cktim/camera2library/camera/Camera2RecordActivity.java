@@ -349,8 +349,8 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
                 byte[] data = new byte[buffer.remaining()];
                 buffer.get(data);
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                Camera2Util.createSavePath(Camera2Config.PATH_SAVE_PIC);//判断有没有这个文件夹，没有的话需要创建
-                picSavePath = Camera2Config.PATH_SAVE_PIC + "IMG_" + timeStamp + ".jpg";
+                Camera2Util.createSavePath(Camera2Util.getCamera2Path(Camera2RecordActivity.this));//判断有没有这个文件夹，没有的话需要创建
+                picSavePath = Camera2Util.getCamera2Path(Camera2RecordActivity.this) + "IMG_" + timeStamp + ".jpg";
                 FileOutputStream fos = null;
                 try {
                     fos = new FileOutputStream(picSavePath);
@@ -599,9 +599,9 @@ public class Camera2RecordActivity extends AppCompatActivity implements TextureV
             }
 
             //判断有没有配置过视频地址了
-            Camera2Util.createSavePath(Camera2Config.PATH_SAVE_VIDEO);//判断有没有这个文件夹，没有的话需要创建
+            Camera2Util.createSavePath(Camera2Util.getCamera2Path(Camera2RecordActivity.this));//判断有没有这个文件夹，没有的话需要创建
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            videoSavePath = Camera2Config.PATH_SAVE_VIDEO + "VIDEO_" + timeStamp + ".mp4";
+            videoSavePath = Camera2Util.getCamera2Path(Camera2RecordActivity.this) + "VIDEO_" + timeStamp + ".mp4";
             mMediaRecorder.setOutputFile(videoSavePath);
 
             //判断是不是前置摄像头,是的话需要旋转对应的角度

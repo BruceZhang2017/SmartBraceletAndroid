@@ -61,4 +61,12 @@ public class SpUtils {
         editor.putString(paramString1, paramString2);
         editor.commit();
     }
+
+    public static void deleteContent(Context paramContext, String paramString1){
+        SharedPreferences.Editor editor = paramContext.getSharedPreferences("app", 0).edit();
+        editor.remove(paramString1);
+        editor.commit();
+    }
+
+
 }

@@ -1,5 +1,9 @@
 package com.sinophy.smartbracelet.device;
 
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +15,7 @@ import com.sinophy.smartbracelet.MyApplication;
 import com.sinophy.smartbracelet.device.adapter.ComListAdapter;
 import com.sinophy.smartbracelet.device.model.BLEModel;
 import com.sinophy.smartbracelet.device.model.DeviceManager;
+import com.sinophy.smartbracelet.global.RealmOperationHelper;
 import com.sinophy.smartbracelet.main.BaseActivity;
 import com.sinophy.smartbracelet.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
@@ -25,6 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
 import per.goweii.actionbarex.common.ActionBarCommon;
 import per.goweii.actionbarex.common.OnActionBarChildClickListener;
 
@@ -37,6 +43,8 @@ public class DeviceDetailActivity extends BaseActivity {
     @BindView(R.id.tv_battery) TextView tvBattery;
     ComListAdapter adapter;
     BractletFuncSet.FuncSetData funcSetData;
+    MediaPlayer shootMP;
+    String mac;
 
     @Override
     protected int getLayoutId() {
@@ -100,6 +108,12 @@ public class DeviceDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String mac = getIntent().getStringExtra("mac");
+        if (mac != null) {
+            System.out.println("接收下去的mac值: " + mac);
+            this.mac = mac;
+            adapter.mac = mac;
+        }
     }
 
     public L4M.BTResultListenr listener = new L4M.BTResultListenr() {
@@ -146,6 +160,7 @@ public class DeviceDetailActivity extends BaseActivity {
                         System.out.println("启动拍照");
                         L4Command.CameraCap_Respone();//响应
                         EventBus.getDefault().post(new MessageEvent("photo"));
+                        shootSound();
                     }
                     if(tTypeInfo.equals(L4M.GetSedentary) && TempStr.equals(L4M.Data)) {
                         BractletSedentarySet.SedentarySetData myDrinkSetData=(BractletSedentarySet.SedentarySetData)TempObj;
@@ -173,6 +188,30 @@ public class DeviceDetailActivity extends BaseActivity {
             L4M.SetResultListener(null);
         } else if (messageEvent.getMessage().equals("longsit")) {
             adapter.notifyDataSetChanged();
+        } else if (messageEvent.getMessage().equals("deleteDevice")) {
+            System.out.println("删除设备: " + mac);
+            if (mac != null && mac.length() > 0) {
+                RealmOperationHelper.getInstance(Realm.getDefaultInstance()).deleteDevice(BLEModel.class, mac);
+            }
         }
     }
+
+    /**
+     *   播放系统拍照声音
+     */
+    public void shootSound()
+    {
+        AudioManager meng = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        int volume = meng.getStreamVolume( AudioManager.STREAM_NOTIFICATION);
+
+        if (volume != 0)
+        {
+            if (shootMP == null)
+                shootMP = MediaPlayer.create(this, Uri.parse("file:///system/media/audio/ui/camera_click.ogg"));
+            if (shootMP != null)
+                shootMP.start();
+        }
+    }
+
+
 }

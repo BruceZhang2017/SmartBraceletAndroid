@@ -27,6 +27,7 @@ public class ProgressPopupView extends CenterPopupView {
     @Override
     protected void onCreate() {
         super.onCreate();
+        System.out.println("执行这里，舒适化视图");
         ivIcon = (ImageView)findViewById(R.id.iv_icon);
         tvTile = (TextView)findViewById(R.id.tv_title);
     }
@@ -78,7 +79,7 @@ public class ProgressPopupView extends CenterPopupView {
     }
 
     public void rotate() {
-
+        //ivIcon.animate().rotation(360).setDuration(10000).
     }
 }
 

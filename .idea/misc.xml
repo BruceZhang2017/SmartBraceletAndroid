@@ -13,11 +13,13 @@
         <entry key="app/src/main/res/drawable/drawable_gradient_bg_color_4.xml" value="0.17604166666666668" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.24814814814814815" />
         <entry key="app/src/main/res/layout/activity_device_detail.xml" value="0.1838768115942029" />
+        <entry key="app/src/main/res/layout/activity_edit_head.xml" value="0.21195652173913043" />
         <entry key="app/src/main/res/layout/activity_health_detail.xml" value="0.12259371833839919" />
         <entry key="app/src/main/res/layout/activity_home_layout.xml" value="0.12208713272543059" />
         <entry key="app/src/main/res/layout/activity_longsit_internal.xml" value="0.20244565217391305" />
         <entry key="app/src/main/res/layout/activity_set_target_step.xml" value="0.1875" />
         <entry key="app/src/main/res/layout/activity_week_choose.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/dialog_progress.xml" value="0.21195652173913043" />
         <entry key="app/src/main/res/layout/fragment_cloud_dial.xml" value="0.12208713272543059" />
         <entry key="app/src/main/res/layout/fragment_health.xml" value="0.2836827556655112" />
         <entry key="app/src/main/res/layout/fragment_local_dial.xml" value="0.12208713272543059" />
@@ -27,6 +29,8 @@
         <entry key="app/src/main/res/layout/item_device_detail_null.xml" value="0.1838768115942029" />
         <entry key="app/src/main/res/layout/item_gift_package.xml" value="0.1" />
         <entry key="app/src/main/res/layout/item_local_dial.xml" value="0.12208713272543059" />
+        <entry key="app/src/main/res/layout/item_search.xml" value="0.21195652173913043" />
+        <entry key="app/src/main/res/layout/item_user_info.xml" value="0.1390625" />
         <entry key="app/src/main/res/layout/view_device.xml" value="0.12259371833839919" />
         <entry key="app/src/main/res/layout/view_health_detail.xml" value="0.23197338387645752" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.24814814814814815" />

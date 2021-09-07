@@ -40,6 +40,7 @@ public class AlarmListActivity extends BaseActivity {
         adapter = new AlarmListAdapter(this, alarmList);
         listView.setAdapter(adapter);
         L4Command.AlarmClockGet(listener); // 获取闹钟
+        System.out.println("获取闹钟信息");
     }
 
     @Override

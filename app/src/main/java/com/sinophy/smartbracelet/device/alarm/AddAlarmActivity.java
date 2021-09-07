@@ -124,6 +124,7 @@ public class AddAlarmActivity extends BaseActivity {
             refreshInternal();
             Calendar date = Calendar.getInstance();
             date.set(2021, 8, 30, model.hours, model.minutes);
+            time = model.hours + ":" + model.minutes;
             pvTime.setDate(date);
         }
     }

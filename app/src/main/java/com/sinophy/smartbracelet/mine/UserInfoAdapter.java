@@ -11,6 +11,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.shehuan.niv.NiceImageView;
 import com.sinophy.smartbracelet.utils.SpUtils;
 import com.sinophy.smartbracelet.R;
 
@@ -46,7 +49,7 @@ class UserInfoAdapter extends BaseAdapter {
         if (paramView == null) {
             viewHolder1 = new ViewHolder();
             paramView = this.mLayoutInflater.inflate(R.layout.item_user_info, null);
-            viewHolder1.headImageView = (ImageView)paramView.findViewById(R.id.iv_head);
+            viewHolder1.headImageView = (NiceImageView)paramView.findViewById(R.id.iv_head);
             viewHolder1.keyTextView = (TextView)paramView.findViewById(R.id.tv_key);
             viewHolder1.valueTextView = (TextView)paramView.findViewById(R.id.tv_value);
             paramView.setTag(viewHolder1);
@@ -59,17 +62,14 @@ class UserInfoAdapter extends BaseAdapter {
         viewHolder1.valueTextView.setText(userInfoBean.getValue());
         if (paramInt == 0) {
             if (userInfoBean.getValue() != null && userInfoBean.getValue().length() > 0) {
-                Uri uri = Uri.parse(userInfoBean.getValue());
-                viewHolder1.headImageView.setImageURI(uri);
+                Glide.with(mContext)
+                        .load(userInfoBean.getValue())
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(viewHolder1.headImageView);
             }
             viewHolder1.headImageView.setVisibility(View.VISIBLE);
             viewHolder1.valueTextView.setVisibility(View.INVISIBLE);
-            String imagePath = SpUtils.getString(mContext, "UserHead");
-            if(imagePath!=null) {
-                Uri uri = Uri.parse(imagePath);
-                Bitmap bm = getBitmapFromUri(mContext, uri);
-                viewHolder1.headImageView.setImageBitmap(bm);
-            }
         } else {
             viewHolder1.headImageView.setVisibility(View.INVISIBLE);
             viewHolder1.valueTextView.setVisibility(View.VISIBLE);
@@ -78,7 +78,7 @@ class UserInfoAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        public ImageView headImageView;
+        public NiceImageView headImageView;
 
         public TextView keyTextView;
 

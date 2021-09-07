@@ -74,7 +74,6 @@ public class HomeActivity extends BaseActivity {
     private static final String TAG = "HomeActivity";
     private AlphaTabsIndicator alphaTabsIndicator;
     ArrayList<Fragment> arrayList;
-    //public BlueToothManager bleManager;
     private boolean bReadUserinfoOnlyOnce = false; // 只读取用户信息一次
     private long exitTime = 0L;
     private int step = 0, getup = 0, deep = 0, shellow = 0;
@@ -246,6 +245,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     void readDBData() {
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

@@ -1,5 +1,6 @@
 package com.cktim.camera2library.camera;
 
+import android.content.Context;
 import android.os.Environment;
 import android.util.Size;
 
@@ -129,11 +130,15 @@ public class Camera2Util {
     /**
      * 使用Camera2录制和所拍的照片都会在这里
      */
-    public static String getCamera2Path() {
-        String picturePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/CameraV2/";
-        File file = new File(picturePath);
-        if (!file.exists()) {
-            file.mkdirs();
+    public static String getCamera2Path(Context context) {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            return null;
+        }
+        //创建文件路径
+        String picturePath = context.getExternalFilesDir(null).getPath()+"/CameraV2/";
+        File dir=new File(picturePath);
+        if (!dir.exists()){
+            dir.mkdirs();
         }
         return picturePath;
     }

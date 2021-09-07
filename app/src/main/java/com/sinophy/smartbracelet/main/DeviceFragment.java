@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cktim.camera2library.camera.MessageEvent;
+import com.lxj.xpopup.XPopup;
+import com.sinophy.smartbracelet.R;
 import com.sinophy.smartbracelet.device.CustomPopup;
 import com.sinophy.smartbracelet.device.DeviceDetailActivity;
 import com.sinophy.smartbracelet.device.DialMarketAcitivity;
@@ -20,9 +23,11 @@ import com.sinophy.smartbracelet.device.model.DialBean;
 import com.sinophy.smartbracelet.device.widget.HorizontalListView;
 import com.sinophy.smartbracelet.global.CacheUtils;
 import com.sinophy.smartbracelet.utils.SpUtils;
-import com.lxj.xpopup.XPopup;
-import com.sinophy.smartbracelet.R;
 import com.zhpan.bannerview.BannerViewPager;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -74,6 +79,9 @@ public class DeviceFragment extends BaseFragment {
                 String value = mapss.get(mac);
                 if (value != null && value.length() > 0) {
                     String[] arr = value.split("&&&");
+                    if (arr.length > 2) {
+                        arr = new String[]{arr[0], arr[1]};
+                    }
                     clockArray = arr;
                     for (String str: arr) {
                         String[] array = str.split("&&");
@@ -124,9 +132,19 @@ public class DeviceFragment extends BaseFragment {
                     return;
                 }
                 Intent intent = new Intent(mContext, DeviceDetailActivity.class);
+                int i = v.getId();
+                System.out.println("你当前点击第" + i + "个设备");
+                intent.putExtra("index", i);
+                String mac = DeviceFragment.this.list.get(i).getMac();
+                if (mac != null && mac.length() > 0) {
+                    System.out.println("传递下去的mac值: " + mac);
+                    intent.putExtra("mac", mac);
+                }
                 startActivity(intent);
             }
         });
+
+        EventBus.getDefault().register(this);
     }
 
     void initView() {}
@@ -137,6 +155,14 @@ public class DeviceFragment extends BaseFragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
     public void refreshUI() {
         if (DeviceManager.getInstance().models.size() > 0) {
             list = DeviceManager.getInstance().models;
@@ -144,6 +170,9 @@ public class DeviceFragment extends BaseFragment {
             if (list.size() == 0) {
                 list.add(new BLEModel());
             }
+        }
+        if (mViewPager == null) {
+            return;
         }
         mViewPager.refreshData(list);
     }
@@ -168,5 +197,71 @@ public class DeviceFragment extends BaseFragment {
 
     public void onViewCreated(View view, Bundle bundle) {
         super.onViewCreated(view, bundle);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void Event(MessageEvent messageEvent) {
+        if (messageEvent.getMessage().equals("clockrefresh")) {
+            List<DialBean> list = new ArrayList<>();
+            String mac = SpUtils.getString(mContext, "lastDeviceMac");
+            boolean b = false;
+            if (mac != null && mac.length() > 0) {
+                LinkedHashMap<String,String> mapss = new LinkedHashMap<>();
+                mapss = CacheUtils.getMap(mContext, "MyClock");
+                if (mapss != null && mapss.size() > 0) {
+                    String value = mapss.get(mac);
+                    if (value != null && value.length() > 0) {
+                        String[] arr = value.split("&&&");
+                        if (arr.length > 2) {
+                            arr = new String[]{arr[0], arr[1]};
+                        }
+                        clockArray = arr;
+                        for (String str: arr) {
+                            String[] array = str.split("&&");
+                            DialBean dial = new DialBean();
+                            dial.setDialName(array[0]);
+                            dial.setImage(Integer.parseInt(array[1]));
+                            dial.setAsset(array[2]);
+                            list.add(dial);
+                            b = true;
+                        }
+                        if (arr.length < 3) {
+                            for (int i=0;i < 3 - arr.length; i++) {
+                                DialBean dial = new DialBean();
+                                dial.setDialName("");
+                                dial.setImage(0);
+                                list.add(dial);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (b == false) {
+                for (int i=0;i < 3; i++) {
+                    DialBean dial = new DialBean();
+                    dial.setDialName("");
+                    dial.setImage(0);
+                    list.add(dial);
+                }
+            }
+
+            dailAdapter.list = list;
+            dailAdapter.notifyDataSetChanged();
+        } else if (messageEvent.getMessage().equals("healthclear")) {
+            List<DialBean> list = new ArrayList<>();
+            for (int i=0;i < 3; i++) {
+                DialBean dial = new DialBean();
+                dial.setDialName("");
+                dial.setImage(0);
+                list.add(dial);
+            }
+            dailAdapter.list = list;
+            dailAdapter.notifyDataSetChanged();
+
+            SpUtils.deleteContent(mContext, "MyClock");
+
+            refreshUI();
+        }
     }
 }
