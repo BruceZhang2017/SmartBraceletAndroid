@@ -314,7 +314,7 @@ public class HomeActivity extends BaseActivity {
             arrayList = new ArrayList();
             this.fragments = arrayList;
             String[] arrayOfString = new String[3];
-            arrayOfString[0] = "健康";
+            arrayOfString[0] = getString(R.string.health_head);
             //arrayOfString[1] = "运动";
             arrayOfString[1] = "设备";
             arrayOfString[2] = "我的";
@@ -343,7 +343,7 @@ public class HomeActivity extends BaseActivity {
 
         public void onPageSelected(int param1Int) {
             if (param1Int == 0) {
-                tvTitle.setText("健康");
+                tvTitle.setText(R.string.health_head);
             } else if (param1Int == 1) {
                 tvTitle.setText("设备");
                 DeviceFragment fragment = (DeviceFragment)(arrayList.get(1));

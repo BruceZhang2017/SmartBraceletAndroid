@@ -33,7 +33,7 @@
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginRight="15dp"
             android:textSize="18sp"
-            android:text="健康"
+            android:text="@string/health_head"
             android:textColor="#ff333333"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <androidx.viewpager.widget.ViewPager
@@ -63,7 +63,7 @@
             android:padding="5.0dip"
             app:tabIconNormal="@mipmap/tab_icon_health_default"
             app:tabIconSelected="@mipmap/tab_icon_health_highlight"
-            app:tabText="健康"
+            app:tabText="@string/health_head"
             app:tabTextSize="13.0sp"
             app:textColorNormal="@color/colorTabNormal"
             app:textColorSelected="@color/colorTabSelected"
